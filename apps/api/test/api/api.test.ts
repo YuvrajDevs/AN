@@ -332,3 +332,69 @@ describe('briefs', () => {
     expect((await viewer.post('/api/briefs').send({ scope: { type: 'sector', slug: 'legal-ai' } })).status).toBe(403);
   });
 });
+
+describe('admin and manual funding entry', () => {
+  it('lets admins change roles but not their own', async () => {
+    const admin = await env.login('admin@test.dev');
+    const users = (await admin.get('/api/users')).body.items as { _id: string; email: string }[];
+    const self = users.find((u) => u.email === 'admin@test.dev')!;
+    const viewer = users.find((u) => u.email === 'viewer@test.dev')!;
+    expect((await admin.patch(`/api/users/${self._id}`).send({ role: 'viewer' })).status).toBe(400);
+    expect((await admin.patch(`/api/users/${viewer._id}`).send({ role: 'analyst' })).body.user.role).toBe('analyst');
+    await admin.patch(`/api/users/${viewer._id}`).send({ role: 'viewer' });
+    const analyst = await env.login('analyst@test.dev');
+    expect((await analyst.get('/api/users')).status).toBe(403);
+  });
+
+  it('records a cited manual round, rejects duplicates and future dates, and alerts', async () => {
+    const analyst = await env.login('analyst@test.dev');
+    const body = {
+      companySlug: 'acme-legal',
+      date: '2026-06-01',
+      roundType: 'seed',
+      amountUsd: 4_000_000,
+      investors: ['Seed Fund'],
+      sourceUrl: 'https://acme-legal.example/blog/seed',
+      sourceTitle: 'Acme Legal raises a $4M seed',
+      sourceExcerpt: 'Acme Legal raised $4 million in seed funding led by Seed Fund.',
+    };
+    const me = await User.findOne({ email: 'analyst@test.dev' }).lean();
+    const before = await Alert.countDocuments({ userId: me!._id });
+    const res = await analyst.post('/api/funding').send(body);
+    expect(res.status).toBe(201);
+    await env.settle();
+    expect(await Alert.countDocuments({ userId: me!._id })).toBe(before + 1);
+    expect((await analyst.post('/api/funding').send(body)).status).toBe(409);
+    expect((await analyst.post('/api/funding').send({ ...body, date: '2099-01-01' })).status).toBe(400);
+    expect((await analyst.post('/api/funding').send({ ...body, roundType: 'series_a', sourceUrl: 'javascript:alert(1)' })).status).toBe(400);
+    const viewer = await env.login('viewer@test.dev');
+    expect((await viewer.post('/api/funding').send({ ...body, roundType: 'grant' })).status).toBe(403);
+  });
+
+  it('does not overwrite an existing source when a manual round reuses its URL', async () => {
+    const sec = await Source.findOne({ kind: 'sec_form_d' }).lean();
+    const analyst = await env.login('analyst@test.dev');
+    await analyst.post('/api/funding').send({
+      companySlug: 'acme-legal', date: '2025-01-01', roundType: 'grant', amountUsd: null, investors: [],
+      sourceUrl: sec!.url, sourceTitle: 'overwrite attempt', sourceExcerpt: 'overwrite attempt',
+    });
+    const after = await Source.findById(sec!._id).lean();
+    expect(after).toMatchObject({ kind: 'sec_form_d', title: sec!.title });
+  });
+
+  it('paginates the funding feed', async () => {
+    const agent = await env.login('viewer@test.dev');
+    const p1 = await agent.get('/api/funding?limit=2&page=1');
+    const p2 = await agent.get('/api/funding?limit=2&page=2');
+    expect(p1.body.total).toBeGreaterThanOrEqual(3);
+    expect(p1.body.items).toHaveLength(2);
+    expect(p2.body.items[0]._id).not.toBe(p1.body.items[0]._id);
+  });
+
+  it('only admins can trigger connectors', async () => {
+    const analyst = await env.login('analyst@test.dev');
+    expect((await analyst.post('/api/ingest/runs').send({ connector: 'yc', params: {} })).status).toBe(403);
+    const admin = await env.login('admin@test.dev');
+    expect((await admin.post('/api/ingest/runs').send({ connector: 'rss', params: { feeds: [{ url: 'not-a-url' }] } })).status).toBe(400);
+  });
+});

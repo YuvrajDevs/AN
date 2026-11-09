@@ -55,7 +55,7 @@ export default function DashboardPage() {
           ) : (
             <BarChart
               ariaLabel="Disclosed funding by quarter"
-              data={data.quarterly.map((q) => ({ label: q.period.replace('-', ' '), value: q.disclosedUsd, secondary: q.rounds }))}
+              data={data.quarterly.map((q) => ({ label: `${q.period.slice(5)} '${q.period.slice(2, 4)}`, value: q.disclosedUsd, secondary: q.rounds }))}
               format={(v) => usd(v, '$0')}
             />
           )}

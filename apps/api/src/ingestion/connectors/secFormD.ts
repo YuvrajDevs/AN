@@ -38,6 +38,11 @@ export interface FtsHit {
   bizLocations: string[];
 }
 
+/** SEC's fair-access policy asks automated clients to identify themselves with a contact. */
+export function hasSecContact(userAgent = config.SEC_USER_AGENT): boolean {
+  return /\S+@\S+\.\S+/.test(userAgent);
+}
+
 export async function searchFormD(name: string, fetchImpl: typeof fetch = fetch): Promise<FtsHit[]> {
   const url = `${FTS_URL}?q=${encodeURIComponent(`"${name}"`)}&forms=D`;
   const res = await secFetch(url, fetchImpl);
@@ -155,7 +160,11 @@ export async function collectFormDForCompany(target: FormDTarget, fetchImpl: typ
       if (!matchMethod) continue;
       const { url, indexUrl } = filingUrls(hit.cik, hit.adsh);
       const res = await secFetch(url, fetchImpl);
-      if (!res.ok) continue;
+      if (!res.ok) {
+        throw new Error(
+          `SEC returned HTTP ${res.status} for ${hit.adsh}${res.status === 403 ? ' (SEC requires SEC_USER_AGENT with a contact email)' : ''}`,
+        );
+      }
       const parsed = parseFormDXml(await res.text());
       if (target.rejectedCiks?.includes(parsed.cik)) continue;
       if (!plausibleFiling({ filingDate: hit.fileDate, yearOfInc: parsed.yearOfInc }, target.batchYear)) continue;
@@ -191,7 +200,7 @@ export async function runFormDConnector(
       }
     } catch (err) {
       errors++;
-      ctx.log('form d lookup failed', { company: t.slug, err: (err as Error).message });
+      ctx.warn(`${t.slug}: ${(err as Error).message}`, { company: t.slug });
     }
   }
   ctx.log('form d connector finished', { targets: targets.length, published, errors });

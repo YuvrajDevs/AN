@@ -38,7 +38,7 @@ export async function runGithubConnector(
       published++;
     } catch (err) {
       errors++;
-      ctx.log('github org failed', { org: t.org, err: (err as Error).message });
+      ctx.warn(`${t.org}: ${(err as Error).message}`, { org: t.org });
     }
   }
   return { fetched: targets.length, published, errors };

@@ -28,6 +28,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user } = useSession();
+  const navItems = user?.role === 'admin' ? [...NAV, { href: '/admin', label: 'Admin', key: 'x' }] : NAV;
   const [palette, setPalette] = useState(false);
   const [menu, setMenu] = useState(false);
   const { data: unread } = useApi<{ unread: number }>('/alerts/unread-count', { refreshInterval: 60_000 });
@@ -50,7 +51,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       }
       // "g then <key>" navigation, like Gmail/GitHub.
       if (leader) {
-        const item = NAV.find((n) => n.key === e.key);
+        const item = [...NAV, { href: '/admin', key: 'x' }].find((n) => n.key === e.key);
         leader = false;
         if (item) router.push(item.href);
         return;
@@ -76,7 +77,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const nav = (
     <nav aria-label="Main" className="flex flex-col gap-0.5">
-      {NAV.map((n) => (
+      {navItems.map((n) => (
         <Link
           key={n.href}
           href={n.href}
@@ -135,8 +136,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           ☰ Menu
         </button>
         <span className="text-sm font-semibold">Strata</span>
-        <button onClick={() => setPalette(true)} className="rounded-md px-2 py-1 text-sm hover:bg-muted" aria-label="Search">
-          ⌕
+        <button onClick={() => setPalette(true)} className="rounded-md px-2 py-1 text-sm hover:bg-muted">
+          Search
         </button>
       </header>
       {menu && (

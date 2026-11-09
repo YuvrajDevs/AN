@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { Badge, EmptyState, ErrorState, Logo, PageHeader, TableSkeleton } from '@/components/ui';
+import { Badge, Button, EmptyState, ErrorState, Logo, PageHeader, TableSkeleton } from '@/components/ui';
 import { qs, useApi } from '@/lib/api';
 import { date, ROUND_LABELS, usd } from '@/lib/format';
 import type { TaxonomyNode } from '@/lib/types';
@@ -21,8 +21,10 @@ interface Round {
 export default function FundingPage() {
   const [sector, setSector] = useState('');
   const [roundType, setRoundType] = useState('');
-  const params = { sector, roundType, limit: 100 };
-  const { data, error, isLoading, mutate } = useApi<{ items: Round[] }>(`/funding${qs(params)}`);
+  const [page, setPage] = useState(1);
+  const params = { sector, roundType, limit: 50, page };
+  const { data, error, isLoading, mutate } = useApi<{ items: Round[]; total: number }>(`/funding${qs(params)}`);
+  const pages = data ? Math.max(1, Math.ceil(data.total / 50)) : 1;
   const { data: tax } = useApi<{ taxonomy: TaxonomyNode[] }>('/sectors');
 
   return (
@@ -37,7 +39,7 @@ export default function FundingPage() {
         }
       />
       <div className="mb-4 flex flex-wrap gap-3">
-        <select aria-label="Sector" className="input w-52" value={sector} onChange={(e) => setSector(e.target.value)}>
+        <select aria-label="Sector" className="input w-52" value={sector} onChange={(e) => (setSector(e.target.value), setPage(1))}>
           <option value="">All sectors</option>
           {tax?.taxonomy.map((s) => (
             <option key={s.slug} value={s.slug}>
@@ -45,7 +47,7 @@ export default function FundingPage() {
             </option>
           ))}
         </select>
-        <select aria-label="Round type" className="input w-52" value={roundType} onChange={(e) => setRoundType(e.target.value)}>
+        <select aria-label="Round type" className="input w-52" value={roundType} onChange={(e) => (setRoundType(e.target.value), setPage(1))}>
           <option value="">All round types</option>
           {Object.entries(ROUND_LABELS).map(([k, v]) => (
             <option key={k} value={k}>
@@ -74,7 +76,7 @@ export default function FundingPage() {
                   <th className="th">Source</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className={`divide-y divide-border ${isLoading ? 'opacity-60' : ''}`}>
                 {data.items.map((r) => (
                   <tr key={r._id} className="hover:bg-muted/60">
                     <td className="td tabular whitespace-nowrap text-subtle">{date(r.date)}</td>
@@ -96,6 +98,21 @@ export default function FundingPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+        {data && data.total > 50 && (
+          <div className="flex items-center justify-between border-t border-border px-3 py-2 text-xs text-subtle">
+            <span>
+              {data.total.toLocaleString()} rounds · page {page} of {pages}
+            </span>
+            <span className="flex gap-2">
+              <Button size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)}>
+                Previous
+              </Button>
+              <Button size="sm" disabled={page >= pages} onClick={() => setPage(page + 1)}>
+                Next
+              </Button>
+            </span>
           </div>
         )}
       </div>

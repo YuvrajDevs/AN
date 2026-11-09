@@ -20,7 +20,8 @@ x-api-env: &api-env
   OPENAI_API_KEY: ${OPENAI_API_KEY:-}
   ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
   GEMINI_API_KEY: ${GEMINI_API_KEY:-}
-  SEC_USER_AGENT: ${SEC_USER_AGENT:-Strata local demo (set SEC_USER_AGENT)}
+  # SEC requires a contact, e.g. "Jane Doe jane@example.com"; the Form D connector refuses to run without one.
+  SEC_USER_AGENT: ${SEC_USER_AGENT:-}
   SEED_PASSWORD: ${SEED_PASSWORD:-strata-demo-2026}
   SCHEDULE_INGESTION: ${SCHEDULE_INGESTION:-false}
 

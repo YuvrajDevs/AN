@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { use, useState } from 'react';
+import { AddRoundForm } from '@/components/AddRoundForm';
 import { useCan } from '@/components/session';
 import { Badge, Button, Card, ConfidenceBadge, EmptyState, ErrorState, Logo, PageHeader, Skeleton, StatusBadge } from '@/components/ui';
 import { api, ApiError, useApi } from '@/lib/api';
@@ -24,6 +25,7 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
   const canAnalyse = useCan('analyst');
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+  const [addingRound, setAddingRound] = useState(false);
 
   if (error) return <ErrorState error={error} retry={() => mutate()} />;
   if (!data)
@@ -59,6 +61,11 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
     }
   }
 
+  async function toggleNotable() {
+    await api(`/companies/${slug}`, { method: 'PATCH', json: { notable: !data!.company.notable } });
+    mutate();
+  }
+
   async function toggleWatch(id: string, contains: boolean) {
     await api(contains ? `/watchlists/${id}/companies/${slug}` : `/watchlists/${id}/companies`, contains ? { method: 'DELETE' } : { method: 'POST', json: { companySlug: slug } });
     mutate();
@@ -83,6 +90,11 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
         subtitle={c.oneLiner}
         actions={
           <>
+            {canAnalyse && (
+              <Button onClick={toggleNotable} aria-pressed={c.notable} title="Notable companies are featured first in landscapes">
+                {c.notable ? '★ Notable' : '☆ Mark notable'}
+              </Button>
+            )}
             {c.website && (
               <a href={c.website} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex h-9 items-center rounded-md border border-border bg-surface px-3.5 text-sm font-medium hover:bg-muted">
                 Website ↗
@@ -98,7 +110,7 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card title="About" bodyClass="p-4">
-            <p className="whitespace-pre-line text-sm leading-relaxed">{c.description || c.oneLiner || 'No description available.'}</p>
+            <p className="whitespace-pre-line break-words text-sm leading-relaxed">{c.description || c.oneLiner || 'No description available.'}</p>
             <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-4">
               {[
                 ['HQ', [c.hq.city, c.hq.country].filter(Boolean).join(', ') || '—'],
@@ -121,7 +133,28 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
             )}
           </Card>
 
-          <Card title="Funding timeline" actions={<span className="text-xs text-subtle">{rounds.length} entries</span>}>
+          <Card
+            title="Funding timeline"
+            actions={
+              <span className="flex items-center gap-3">
+                <span className="text-xs text-subtle">{rounds.length} entries</span>
+                {canAnalyse && !addingRound && (
+                  <Button size="sm" onClick={() => setAddingRound(true)}>
+                    Add round
+                  </Button>
+                )}
+              </span>
+            }
+          >
+            {addingRound && (
+              <AddRoundForm
+                companySlug={slug}
+                onDone={() => {
+                  setAddingRound(false);
+                  mutate();
+                }}
+              />
+            )}
             {rounds.length === 0 ? (
               <EmptyState title="No funding recorded" body="No primary-source funding has been linked to this company yet." />
             ) : (
@@ -221,7 +254,7 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
             {watchlists.length === 0 ? (
               <p className="text-xs text-subtle">
                 You have no watchlists.{' '}
-                <Link className="text-accent hover:underline" href="/watchlists">
+                <Link className="text-accent underline" href="/watchlists">
                   Create one
                 </Link>
               </p>

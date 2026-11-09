@@ -70,10 +70,10 @@ export async function resolveSafeTarget(rawUrl: string): Promise<{ url: URL; add
   }
   if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new BlockedUrlError('Only http(s) URLs are allowed');
   if (url.username || url.password) throw new BlockedUrlError('Credentials in URLs are not allowed');
-  if (!ALLOWED_PORTS.has(url.port)) throw new BlockedUrlError('Only default ports (80/443) are allowed');
-
   const hostname = url.hostname.replace(/^\[|\]$/g, '');
+  // FETCH_ALLOW_HOSTS (local dev / tests only) exempts a host from the address and port rules.
   const exempt = allowListed(hostname);
+  if (!exempt && !ALLOWED_PORTS.has(url.port)) throw new BlockedUrlError('Only default ports (80/443) are allowed');
 
   let addresses: { address: string; family: number }[];
   if (net.isIP(hostname)) {
@@ -111,24 +111,31 @@ function requestOnce(
         method: opts.method ?? 'GET',
         headers: { 'user-agent': 'StrataBot/0.1 (+https://github.com/YuvrajDevs/AN)', ...opts.headers },
         // Pin the connection to the address we validated (defeats DNS rebinding).
-        lookup: (_host, _o, cb) => cb(null, address, family),
+        // Node ≥20 calls lookup with { all: true } (happy-eyeballs); support both shapes.
+        lookup: ((_host: string, o: { all?: boolean }, cb: (...args: unknown[]) => void) =>
+          o?.all ? cb(null, [{ address, family }]) : cb(null, address, family)) as unknown as http.RequestOptions['lookup'],
         timeout: opts.timeoutMs,
         servername: net.isIP(url.hostname) ? undefined : url.hostname,
       },
       (res) => {
         const chunks: Buffer[] = [];
         let size = 0;
+        let tooLarge = false;
         res.on('data', (c: Buffer) => {
+          if (tooLarge) return;
           size += c.length;
           if (size > opts.maxBytes) {
-            req.destroy(new Error('Response too large'));
+            // Reject now: if the whole body arrived in one chunk, destroy() alone would not error.
+            tooLarge = true;
+            reject(new Error('Response too large'));
+            req.destroy();
             return;
           }
           chunks.push(c);
         });
-        res.on('end', () =>
-          resolve({ status: res.statusCode ?? 0, headers: res.headers, text: Buffer.concat(chunks).toString('utf8') }),
-        );
+        res.on('end', () => {
+          if (!tooLarge) resolve({ status: res.statusCode ?? 0, headers: res.headers, text: Buffer.concat(chunks).toString('utf8') });
+        });
         res.on('error', reject);
       },
     );
@@ -146,6 +153,7 @@ export async function safeFetch(rawUrl: string, options: SafeFetchOptions = {}):
     const target = await resolveSafeTarget(current);
     const res = await requestOnce(target, opts);
     if (res.status >= 300 && res.status < 400 && res.headers.location) {
+      if ((opts.method ?? 'GET') !== 'GET') return { ...res, url: current }; // never replay a body to a new URL
       current = new URL(res.headers.location, target.url).toString();
       continue;
     }

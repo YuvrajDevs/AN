@@ -12,7 +12,7 @@
   --accent: 67 56 202;
   --accent-fg: 255 255 255;
   --success: 4 120 87;
-  --warning: 180 83 9;
+  --warning: 146 64 14; /* amber-800: ≥4.5:1 on tinted badges at 10–11px */
   --danger: 190 18 60;
   color-scheme: light;
 }
@@ -71,6 +71,13 @@ body {
   .td {
     @apply px-3 py-2.5 align-middle text-sm;
   }
+}
+
+/* Grid/flex children default to min-width:auto, which lets long words or wide tables
+   push a single-column mobile layout past the viewport. */
+.grid > *,
+.flex > * {
+  min-width: 0;
 }
 
 @keyframes shimmer {

@@ -74,4 +74,6 @@ export interface GithubOrgRecord {
 export interface ConnectorContext {
   publish: (record: RawRecord) => Promise<void>;
   log: (msg: string, extra?: Record<string, unknown>) => void;
+  /** A target failed but the run continues; surfaced on the ingest run record. */
+  warn: (msg: string, extra?: Record<string, unknown>) => void;
 }

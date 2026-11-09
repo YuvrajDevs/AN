@@ -289,7 +289,7 @@ const ingestRunSchema = new Schema(
   {
     connector: { type: String, required: true },
     params: { type: Schema.Types.Mixed, default: {} },
-    status: { type: String, enum: ['running', 'succeeded', 'failed'], default: 'running' },
+    status: { type: String, enum: ['running', 'succeeded', 'partial', 'failed'], default: 'running' },
     counts: {
       fetched: { type: Number, default: 0 },
       published: { type: Number, default: 0 },

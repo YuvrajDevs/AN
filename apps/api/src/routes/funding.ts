@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { getBus, Topics } from '../events';
 import { csvRow } from '../lib/csv';
-import { notFound } from '../lib/errors';
+import { conflict, notFound } from '../lib/errors';
 import { Company, FundingRound, ROUND_TYPES, Source } from '../models';
 import { requireRole } from '../security/auth';
 import { slug, validate } from '../security/validate';
@@ -18,6 +18,7 @@ const listQuery = z.object({
   to: z.coerce.date().optional(),
   includeAccelerator: z.enum(['true', 'false']).default('false'),
   limit: z.coerce.number().int().min(1).max(200).default(50),
+  page: z.coerce.number().int().min(1).max(1000).default(1),
 });
 
 async function companyIdsForSector(sector?: string) {
@@ -34,12 +35,16 @@ fundingRouter.get('/', validate({ query: listQuery }), async (req, res) => {
   if (q.roundType) match.roundType = q.roundType;
   else if (q.includeAccelerator === 'false') match.roundType = { $ne: 'accelerator' };
   if (q.from || q.to) match.date = { ...(q.from ? { $gte: q.from } : {}), ...(q.to ? { $lte: q.to } : {}) };
-  const items = await FundingRound.find(match)
-    .sort({ date: -1 })
-    .limit(q.limit)
-    .populate('companyId', 'slug name logoUrl classification.subsectorSlug')
-    .lean();
-  res.json({ items });
+  const [items, total] = await Promise.all([
+    FundingRound.find(match)
+      .sort({ date: -1, _id: -1 })
+      .skip((q.page - 1) * q.limit)
+      .limit(q.limit)
+      .populate('companyId', 'slug name logoUrl classification.subsectorSlug')
+      .lean(),
+    FundingRound.countDocuments(match),
+  ]);
+  res.json({ items, total, page: q.page, pageSize: q.limit });
 });
 
 fundingRouter.get('/recent', async (_req, res) => {
@@ -70,7 +75,7 @@ fundingRouter.get('/export.csv', validate({ query: listQuery }), async (req, res
 
 const manualRound = z.object({
   companySlug: slug,
-  date: z.coerce.date(),
+  date: z.coerce.date().refine((d) => d.getTime() <= Date.now() + 86_400_000, 'Date cannot be in the future'),
   roundType: z.enum(ROUND_TYPES),
   amountUsd: z.number().nonnegative().nullable(),
   investors: z.array(z.string().trim().min(1).max(120)).max(30).default([]),
@@ -87,11 +92,14 @@ fundingRouter.post('/', requireRole('analyst'), validate({ body: manualRound }),
   const source = await Source.findOneAndUpdate(
     { url: body.sourceUrl },
     {
-      $set: { kind: 'manual', title: body.sourceTitle, excerpt: body.sourceExcerpt, publisher: new URL(body.sourceUrl).hostname, publishedAt: body.date },
+      // An existing source (e.g. an SEC filing) keeps its own kind and text; we only link it.
+      $setOnInsert: { kind: 'manual', title: body.sourceTitle, excerpt: body.sourceExcerpt, publisher: new URL(body.sourceUrl).hostname, publishedAt: body.date },
       $addToSet: { companyIds: company._id },
     },
     { upsert: true, new: true },
   );
+  const dedupeKey = `manual:${company.slug}:${body.date.toISOString().slice(0, 10)}:${body.roundType}`;
+  if (await FundingRound.exists({ dedupeKey })) throw conflict('A round of this type on this date is already recorded');
   const round = await FundingRound.create({
     companyId: company._id,
     companySlug: company.slug,
@@ -100,7 +108,7 @@ fundingRouter.post('/', requireRole('analyst'), validate({ body: manualRound }),
     amountUsd: body.amountUsd,
     investors: body.investors,
     sourceIds: [source._id],
-    dedupeKey: `manual:${company.slug}:${body.date.toISOString().slice(0, 10)}:${body.roundType}`,
+    dedupeKey,
     extractedBy: `manual:${req.user!.email}`,
     confidence: 1,
   });

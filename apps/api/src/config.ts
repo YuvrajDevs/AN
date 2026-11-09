@@ -38,7 +38,7 @@ const schema = z.object({
   LLM_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
   /** Classifications below this confidence go to the human review queue. */
   REVIEW_CONFIDENCE_THRESHOLD: z.coerce.number().min(0).max(1).default(0.75),
-  SEC_USER_AGENT: z.string().default('Strata research tool (set SEC_USER_AGENT to your contact)'),
+  SEC_USER_AGENT: z.string().default(''),
   GITHUB_TOKEN: z.string().optional().default(''),
   /** Comma-separated hostnames exempt from the private-address block (local dev/tests only). */
   FETCH_ALLOW_HOSTS: z.string().default(''),

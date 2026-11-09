@@ -6,7 +6,7 @@ import { enqueue, registerJobHandler } from '../queue/jobs';
 import { classifyCompanyById } from '../services/classification';
 import { deliverAlertsForRound } from '../services/alerts';
 import { generateBrief } from '../services/briefs';
-import { runFormDConnector } from './connectors/secFormD';
+import { hasSecContact, runFormDConnector } from './connectors/secFormD';
 import { runGithubConnector } from './connectors/github';
 import { runRssConnector } from './connectors/rss';
 import { runYcConnector } from './connectors/yc';
@@ -47,11 +47,19 @@ export async function startConsumers() {
 export async function runConnector(connector: ConnectorName, params: Record<string, any>, triggeredBy: string | null = null) {
   const run = await IngestRun.create({ connector, params, triggeredBy });
   const bus = getBus();
+  const warnings: string[] = [];
   const ctx: ConnectorContext = {
     publish: (r) => bus.publish(Topics.ingestRaw, r.key, `ingest.${r.connector}`, r),
     log: (msg, extra) => logger.info({ connector, ...extra }, msg),
+    warn: (msg, extra) => {
+      logger.warn({ connector, ...extra }, msg);
+      if (warnings.length < 5) warnings.push(msg.slice(0, 300));
+    },
   };
   try {
+    if (connector === 'sec_form_d' && !hasSecContact()) {
+      throw new Error('SEC_USER_AGENT must include a contact email (SEC fair-access policy), e.g. "Jane Doe jane@example.com"');
+    }
     let result: { fetched: number; published: number; errors?: number };
     if (connector === 'yc') {
       const sectors = await Sector.find({ parentSlug: null, tracked: true }).lean();
@@ -65,8 +73,11 @@ export async function runConnector(connector: ConnectorName, params: Record<stri
     } else {
       result = await runGithubConnector(ctx, (params.targets ?? []) as { companySlug: string; org: string }[]);
     }
-    run.status = 'succeeded';
-    run.counts = { fetched: result.fetched, published: result.published, errors: result.errors ?? 0 } as any;
+    const errors = result.errors ?? 0;
+    run.counts = { fetched: result.fetched, published: result.published, errors } as any;
+    // succeeded: no target failed · partial: some did · failed: every target failed.
+    run.status = errors === 0 ? 'succeeded' : errors >= result.fetched && result.published === 0 ? 'failed' : 'partial';
+    if (warnings.length) run.error = warnings.join(' · ').slice(0, 1000);
   } catch (err) {
     run.status = 'failed';
     run.error = (err as Error).message.slice(0, 1000);

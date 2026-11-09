@@ -83,7 +83,7 @@ export async function runRssConnector(
       }
     } catch (err) {
       errors++;
-      ctx.log('feed failed', { url: feed.url, err: (err as Error).message });
+      ctx.warn(`${feed.url}: ${(err as Error).message}`, { url: feed.url });
     }
   }
   return { fetched: feeds.length, published, errors };

@@ -16,11 +16,11 @@ interface Watchlist {
   companyIds: { _id: string; slug: string; name: string; logoUrl: string | null; metrics: { totalRaisedUsd: number } }[];
 }
 
-function CreateForm({ taxonomy, onDone }: { taxonomy: TaxonomyNode[]; onDone: () => void }) {
-  const [name, setName] = useState('');
-  const [sectors, setSectors] = useState<string[]>([]);
-  const [min, setMin] = useState('');
-  const [webhook, setWebhook] = useState('');
+function WatchlistForm({ taxonomy, onDone, initial }: { taxonomy: TaxonomyNode[]; onDone: () => void; initial?: Watchlist }) {
+  const [name, setName] = useState(initial?.name ?? '');
+  const [sectors, setSectors] = useState<string[]>(initial?.sectorSlugs ?? []);
+  const [min, setMin] = useState(initial?.minAmountUsd ? String(initial.minAmountUsd / 1e6) : '');
+  const [webhook, setWebhook] = useState(initial?.webhookUrl ?? '');
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -29,13 +29,12 @@ function CreateForm({ taxonomy, onDone }: { taxonomy: TaxonomyNode[]; onDone: ()
     setSaving(true);
     setError(null);
     try {
-      await api('/watchlists', {
-        method: 'POST',
-        json: { name, sectorSlugs: sectors, minAmountUsd: min ? Number(min) * 1e6 : null, webhookUrl: webhook || null },
-      });
+      const json = { name, sectorSlugs: sectors, minAmountUsd: min ? Number(min) * 1e6 : null, webhookUrl: webhook || null };
+      if (initial) await api(`/watchlists/${initial._id}`, { method: 'PATCH', json });
+      else await api('/watchlists', { method: 'POST', json });
       onDone();
     } catch (err) {
-      setError(err instanceof ApiError ? (err.details as { message: string }[] | undefined)?.[0]?.message ?? err.message : 'Could not create watchlist');
+      setError(err instanceof ApiError ? (err.details as { message: string }[] | undefined)?.[0]?.message ?? err.message : 'Could not save watchlist');
     } finally {
       setSaving(false);
     }
@@ -44,18 +43,18 @@ function CreateForm({ taxonomy, onDone }: { taxonomy: TaxonomyNode[]; onDone: ()
   const all = taxonomy.flatMap((s) => [{ slug: s.slug, name: s.name, root: true }, ...s.children.map((c) => ({ slug: c.slug, name: `${s.name} › ${c.name}`, root: false }))]);
 
   return (
-    <form onSubmit={submit} className="card mb-6 grid gap-3 p-4 sm:grid-cols-2">
+    <form onSubmit={submit} className={`grid gap-3 sm:grid-cols-2 ${initial ? 'p-4' : 'card mb-6 p-4'}`} onKeyDown={(e) => e.key === 'Escape' && onDone()}>
       <div>
-        <label className="label" htmlFor="wl-name">
+        <label className="label" htmlFor={`wl-name-${initial?._id ?? 'new'}`}>
           Name
         </label>
-        <input id="wl-name" className="input" value={name} onChange={(e) => setName(e.target.value)} required autoFocus />
+        <input id={`wl-name-${initial?._id ?? 'new'}`} className="input" value={name} onChange={(e) => setName(e.target.value)} required autoFocus />
       </div>
       <div>
-        <label className="label" htmlFor="wl-min">
+        <label className="label" htmlFor={`wl-min-${initial?._id ?? 'new'}`}>
           Minimum round size ($M, optional)
         </label>
-        <input id="wl-min" type="number" min="0" step="0.5" className="input" value={min} onChange={(e) => setMin(e.target.value)} />
+        <input id={`wl-min-${initial?._id ?? 'new'}`} type="number" min="0" step="0.5" className="input" value={min} onChange={(e) => setMin(e.target.value)} />
       </div>
       <div className="sm:col-span-2">
         <span className="label">Alert on any new round in</span>
@@ -78,10 +77,10 @@ function CreateForm({ taxonomy, onDone }: { taxonomy: TaxonomyNode[]; onDone: ()
         <p className="mt-1 text-xs text-subtle">Add individual companies from their profile page.</p>
       </div>
       <div className="sm:col-span-2">
-        <label className="label" htmlFor="wl-hook">
+        <label className="label" htmlFor={`wl-hook-${initial?._id ?? 'new'}`}>
           Webhook URL (optional, https only — private and internal addresses are blocked)
         </label>
-        <input id="wl-hook" className="input" placeholder="https://hooks.example.com/…" value={webhook} onChange={(e) => setWebhook(e.target.value)} />
+        <input id={`wl-hook-${initial?._id ?? 'new'}`} className="input" placeholder="https://hooks.example.com/…" value={webhook} onChange={(e) => setWebhook(e.target.value)} />
       </div>
       {error && (
         <p role="alert" className="text-sm text-danger sm:col-span-2">
@@ -90,7 +89,7 @@ function CreateForm({ taxonomy, onDone }: { taxonomy: TaxonomyNode[]; onDone: ()
       )}
       <div className="flex gap-2 sm:col-span-2">
         <Button type="submit" variant="primary" loading={saving}>
-          Create watchlist
+          {initial ? 'Save changes' : 'Create watchlist'}
         </Button>
         <Button type="button" variant="ghost" onClick={onDone}>
           Cancel
@@ -104,6 +103,7 @@ export default function WatchlistsPage() {
   const { data, error, mutate } = useApi<{ items: Watchlist[] }>('/watchlists');
   const { data: tax } = useApi<{ taxonomy: TaxonomyNode[] }>('/sectors');
   const [creating, setCreating] = useState(false);
+  const [editing, setEditing] = useState<string | null>(null);
   const names = new Map<string, string>();
   tax?.taxonomy.forEach((s) => {
     names.set(s.slug, s.name);
@@ -131,7 +131,7 @@ export default function WatchlistsPage() {
         }
       />
       {creating && tax && (
-        <CreateForm
+        <WatchlistForm
           taxonomy={tax.taxonomy}
           onDone={() => {
             setCreating(false);
@@ -155,12 +155,28 @@ export default function WatchlistsPage() {
               key={w._id}
               title={w.name}
               actions={
-                <Button size="sm" variant="ghost" onClick={() => remove(w._id)} aria-label={`Delete ${w.name}`}>
-                  Delete
-                </Button>
+                <span className="flex gap-1">
+                  <Button size="sm" variant="ghost" onClick={() => setEditing(editing === w._id ? null : w._id)} aria-label={`Edit ${w.name}`}>
+                    Edit
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => remove(w._id)} aria-label={`Delete ${w.name}`}>
+                    Delete
+                  </Button>
+                </span>
               }
-              bodyClass="p-4 space-y-3"
+              bodyClass={editing === w._id ? '' : 'p-4 space-y-3'}
             >
+              {editing === w._id && tax ? (
+                <WatchlistForm
+                  taxonomy={tax.taxonomy}
+                  initial={w}
+                  onDone={() => {
+                    setEditing(null);
+                    mutate();
+                  }}
+                />
+              ) : (
+              <>
               <div className="flex flex-wrap gap-1.5">
                 {w.sectorSlugs.map((s) => (
                   <Badge key={s} tone="accent">
@@ -183,6 +199,8 @@ export default function WatchlistsPage() {
                     </li>
                   ))}
                 </ul>
+              )}
+              </>
               )}
             </Card>
           ))}

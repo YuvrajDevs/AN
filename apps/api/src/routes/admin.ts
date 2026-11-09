@@ -11,7 +11,7 @@ import { enqueue, jobCounts } from '../queue/jobs';
 import { requireAuth, requireRole } from '../security/auth';
 import { objectId, validate } from '../security/validate';
 import { dashboard } from '../services/analytics';
-import { notFound } from '../lib/errors';
+import { badRequest, notFound } from '../lib/errors';
 
 export const metaRouter = Router();
 export const ingestRouter = Router();
@@ -68,6 +68,8 @@ usersRouter.get('/', requireRole('admin'), async (_req, res) => {
 });
 
 usersRouter.patch('/:id', requireRole('admin'), validate({ params: z.object({ id: objectId }), body: z.object({ role: z.enum(ROLES) }) }), async (req, res) => {
+  // Prevents the last admin from locking everyone out by demoting themselves.
+  if (req.params.id === req.user!.id) throw badRequest('You cannot change your own role');
   const user = await User.findByIdAndUpdate(req.params.id, { $set: { role: req.body.role } }, { new: true }).select('email name role').lean();
   if (!user) throw notFound('User');
   res.json({ user });

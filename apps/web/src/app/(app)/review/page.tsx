@@ -106,10 +106,10 @@ export default function ReviewPage() {
             <div className="sticky top-0 border-b border-border bg-surface px-3 py-2 text-xs text-subtle">
               {data?.total} pending · <Kbd>j</Kbd>/<Kbd>k</Kbd>
             </div>
-            <ul role="listbox" aria-label="Pending items">
+            <ul aria-label="Pending items">
               {items.map((it, i) => (
-                <li key={it._id} role="option" aria-selected={i === index}>
-                  <button onClick={() => setIndex(i)} className={cx('flex w-full items-center gap-2 border-b border-border px-3 py-2 text-left', i === index ? 'bg-accent/10' : 'hover:bg-muted')}>
+                <li key={it._id}>
+                  <button onClick={() => setIndex(i)} aria-current={i === index ? 'true' : undefined} className={cx('flex w-full items-center gap-2 border-b border-border px-3 py-2 text-left', i === index ? 'bg-accent/10' : 'hover:bg-muted')}>
                     <Logo src={it.company.logoUrl} name={it.company.name} size={22} />
                     <span className="min-w-0 flex-1 truncate text-sm">{it.company.name}</span>
                     <span className="tabular text-xs text-subtle">{pct(it.confidence)}</span>

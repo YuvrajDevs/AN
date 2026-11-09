@@ -25,6 +25,7 @@ async function main() {
         if (r.connector === 'yc') yc.push(r.data);
       },
       log: (m, e) => console.log(m, e ?? ''),
+      warn: (m) => console.warn(m),
     },
     TAXONOMY.map((s) => ({ slug: s.slug, sourceTags: s.sourceTags })),
     { companies: all },
@@ -42,8 +43,9 @@ async function main() {
         if (r.connector === 'sec_form_d') formD.push(r.data);
       },
       log: (m, e) => {
-        if (++i % 25 === 0 || m.includes('failed')) console.log(m, e ?? '');
+        if (++i % 25 === 0) console.log(m, e ?? '');
       },
+      warn: (m) => console.warn(m),
     },
     yc.map((c) => ({
       slug: c.slug,
