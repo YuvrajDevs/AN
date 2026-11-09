@@ -1,4 +1,4 @@
-import rateLimit, { type Options } from 'express-rate-limit';
+import rateLimit, { ipKeyGenerator, type Options } from 'express-rate-limit';
 import { RedisStore, type RedisReply } from 'rate-limit-redis';
 import type { Request } from 'express';
 import { config } from '../config';
@@ -16,7 +16,9 @@ function store(prefix: string): Partial<Options> {
 }
 
 // Authenticated users are limited per account, anonymous clients per IP.
-const keyByUserOrIp = (req: Request) => (req.user ? `u:${req.user.id}` : `ip:${req.ip}`);
+// ipKeyGenerator collapses IPv6 addresses to their /56 so one client cannot rotate addresses.
+const ipKey = (req: Request) => `ip:${ipKeyGenerator(req.ip ?? '')}`;
+const keyByUserOrIp = (req: Request) => (req.user ? `u:${req.user.id}` : ipKey(req));
 
 const common: Partial<Options> = {
   standardHeaders: 'draft-7',
@@ -41,7 +43,7 @@ export const authLimiter = () =>
     ...store('auth'),
     windowMs: 15 * 60_000,
     limit: config.AUTH_RATE_LIMIT_PER_15M,
-    keyGenerator: (req) => `ip:${req.ip}`,
+    keyGenerator: ipKey,
     skipSuccessfulRequests: true,
   });
 

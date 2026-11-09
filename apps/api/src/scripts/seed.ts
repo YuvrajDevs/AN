@@ -20,38 +20,17 @@ import { registerJobHandlers, startConsumers } from '../ingestion/pipeline';
 import type { FormDRecord, YcCompanyRecord } from '../ingestion/types';
 import { invalidate, CacheNs } from '../lib/cache';
 import { closeRedis } from '../lib/redis';
-import { Classification, Company, Sector, User, Watchlist } from '../models';
+import { Classification, Company, User, Watchlist } from '../models';
 import { drainInlineJobs } from '../queue/jobs';
 import { createBriefRecord, generateBrief } from '../services/briefs';
 import { TAXONOMY } from '../seed/taxonomy';
+import { seedTaxonomy } from '../seed/seedTaxonomy';
 
 const DATA = process.env.SEED_DIR ?? path.resolve(__dirname, '../../../../data/seed');
 
 function readJson<T>(file: string, fallback: T): T {
   const p = path.join(DATA, file);
   return existsSync(p) ? (JSON.parse(readFileSync(p, 'utf8')) as T) : fallback;
-}
-
-export async function seedTaxonomy() {
-  for (const [i, sector] of TAXONOMY.entries()) {
-    await Sector.updateOne(
-      { slug: sector.slug },
-      {
-        $setOnInsert: {
-          name: sector.name, description: sector.description, parentSlug: null, path: [], keywords: [],
-          tracked: true, sourceTags: sector.sourceTags, color: sector.color ?? null, order: i,
-        },
-      },
-      { upsert: true },
-    );
-    for (const [j, child] of sector.children.entries()) {
-      await Sector.updateOne(
-        { slug: child.slug },
-        { $setOnInsert: { name: child.name, description: child.description, parentSlug: sector.slug, path: [sector.slug], keywords: child.keywords ?? [], order: j } },
-        { upsert: true },
-      );
-    }
-  }
 }
 
 async function seedUsers() {

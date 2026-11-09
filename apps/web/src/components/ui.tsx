@@ -168,8 +168,9 @@ export function Stat({ label, value, hint }: { label: string; value: ReactNode; 
 export function Logo({ src, name, size = 28 }: { src?: string | null; name: string; size?: number }) {
   const [failed, setFailed] = useState(false);
   if (src && !failed) {
-    // eslint-disable-next-line @next/next/no-img-element
     return (
+      // External logos from the YC directory; next/image optimisation is disabled for remote hosts.
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         src={src}
         alt=""

@@ -135,6 +135,8 @@ companySchema.index(
 );
 companySchema.index({ 'classification.sectorSlug': 1, 'classification.subsectorSlug': 1 });
 companySchema.index({ 'classification.state': 1 });
+// Needed for prefix search: $text may only sit inside $or when every clause is indexed.
+companySchema.index({ name: 1 });
 companySchema.index({ 'metrics.totalRaisedUsd': -1 });
 companySchema.index({ 'externalIds.yc': 1 }, { sparse: true });
 export type CompanyDoc = HydratedDocument<InferSchemaType<typeof companySchema>>;

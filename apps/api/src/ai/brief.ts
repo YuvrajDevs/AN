@@ -156,14 +156,15 @@ export function validateClaims(
         rejected.push({ text: claim.text, reason: `unknown citation ${refs.filter((r) => !byRef.has(r)).join(', ')}` });
         continue;
       }
+      // Strip any inline "[S1]" markers the model added; citations are rendered from sourceIds.
+      const text = claim.text.replace(/\s*\[S\d+(?:\s*,\s*S\d+)*\]/gi, '').trim();
       const evidenceNumbers = new Set(cited.flatMap((c) => numbersIn(`${c!.title} ${c!.excerpt}`)));
-      const unsupported = numbersIn(claim.text).filter((n) => !evidenceNumbers.has(n));
+      const unsupported = numbersIn(text).filter((n) => !evidenceNumbers.has(n));
       if (unsupported.length) {
         rejected.push({ text: claim.text, reason: `numbers not found in cited sources: ${unsupported.join(', ')}` });
         continue;
       }
-      // Strip any inline "[S1]" markers the model added; citations are rendered from sourceIds.
-      claims.push({ text: claim.text.replace(/\s*\[S\d+(?:,\s*S\d+)*\]/gi, '').trim(), sourceIds: cited.map((c) => c!.sourceId) });
+      claims.push({ text, sourceIds: cited.map((c) => c!.sourceId) });
     }
     if (claims.length) out.push({ heading: section.heading, claims });
   }
