@@ -32,6 +32,11 @@ export interface SectorSelector {
   sourceTags: string[];
 }
 
+/** The directory uses a relative placeholder ("/company/thumb/missing.png") when there is no logo. */
+export function absoluteUrl(u?: string | null): string | null {
+  return u && /^https:\/\//i.test(u) ? u : null;
+}
+
 const SEASON_MONTH: Record<string, number> = { winter: 0, spring: 3, summer: 5, fall: 8 };
 
 /** "Winter 2024" -> 2024-01-01, "Summer 2015" -> 2015-06-01. */
@@ -78,7 +83,7 @@ export function mapYc(c: YcRaw, sectors: string[], retrievedAt: string): YcCompa
     website: c.website || null,
     oneLiner: (c.one_liner ?? '').trim(),
     description: (c.long_description ?? '').trim(),
-    logoUrl: c.small_logo_thumb_url || null,
+    logoUrl: absoluteUrl(c.small_logo_thumb_url),
     teamSize: typeof c.team_size === 'number' ? c.team_size : null,
     status: mapStatus(c.status),
     batch: c.batch ?? null,

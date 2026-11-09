@@ -215,7 +215,7 @@ function CompaniesView() {
             }
           />
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Companies">
             <table className="w-full">
               <thead className="border-b border-border bg-muted/50">
                 <tr>

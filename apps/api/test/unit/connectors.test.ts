@@ -3,7 +3,7 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { matchEntity, parseFormDXml, plausibleFiling } from '../../src/ingestion/connectors/secFormD';
 import { parseFeed } from '../../src/ingestion/connectors/rss';
-import { batchShort, batchToDate, matchSectors, mapYc } from '../../src/ingestion/connectors/yc';
+import { absoluteUrl, batchShort, batchToDate, matchSectors, mapYc } from '../../src/ingestion/connectors/yc';
 import { normalizeName, slugify } from '../../src/lib/text';
 import { MemoryEventBus } from '../../src/events/memoryBus';
 import { Topics } from '../../src/events/bus';
@@ -56,6 +56,11 @@ describe('SEC Form D', () => {
 });
 
 describe('YC directory', () => {
+  it('drops relative or non-https logo placeholders', () => {
+    expect(absoluteUrl('/company/thumb/missing.png')).toBeNull();
+    expect(absoluteUrl('http://insecure.example/logo.png')).toBeNull();
+    expect(absoluteUrl('https://bookface-images.s3.amazonaws.com/x.png')).toBe('https://bookface-images.s3.amazonaws.com/x.png');
+  });
   it('maps batches', () => {
     expect(batchToDate('Winter 2024')).toBe('2024-01-01T00:00:00.000Z');
     expect(batchShort('Summer 2015')).toBe('S15');

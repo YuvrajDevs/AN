@@ -64,7 +64,7 @@ export default function FundingPage() {
         ) : !data?.items.length ? (
           <EmptyState title="No rounds" body="No funding rounds match these filters." />
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Funding rounds">
             <table className="w-full">
               <thead className="border-b border-border bg-muted/50">
                 <tr>

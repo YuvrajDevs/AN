@@ -172,7 +172,7 @@ function Users() {
           {err}
         </p>
       )}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Users">
         <table className="w-full">
           <thead className="border-b border-border bg-muted/50">
             <tr>
@@ -270,7 +270,7 @@ export default function AdminPage() {
           ) : runs.data.items.length === 0 ? (
             <EmptyState title="No runs yet" body="The seed loads a snapshot without calling sources. Run a connector to fetch live data." />
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Ingestion runs">
               <table className="w-full">
                 <thead className="border-b border-border bg-muted/50">
                   <tr>

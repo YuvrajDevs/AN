@@ -6,7 +6,7 @@ import { logger } from '../logger';
 import { formatUsd, hostnameOf, normalizeName, slugify } from '../lib/text';
 import { Company, FundingRound, Source, type RoundType } from '../models';
 import { recomputeCompanyMetrics } from '../services/funding';
-import { batchShort } from './connectors/yc';
+import { absoluteUrl, batchShort } from './connectors/yc';
 import type { FormDRecord, GithubOrgRecord, RawRecord, RssItemRecord, YcCompanyRecord } from './types';
 
 /**
@@ -90,7 +90,7 @@ export async function processYc(r: YcCompanyRecord) {
         domain: hostnameOf(r.website),
         oneLiner: r.oneLiner.slice(0, 300),
         description: r.description.slice(0, 5000),
-        logoUrl: r.logoUrl,
+        logoUrl: absoluteUrl(r.logoUrl),
         teamSize: r.teamSize,
         status: r.status,
         tags: r.tags,
