@@ -278,7 +278,7 @@ flowchart LR
 
 | Failure | Behaviour |
 |---|---|
-| Source down / 429 / 5xx | Connectors retry with exponential backoff (SEC: 4 attempts); the run is recorded in `ingest_runs` with counts and the error; other targets continue. |
+| Source down / 429 / 5xx | Connectors retry with exponential backoff (SEC: 4 attempts). A failing target never stops the run: the run is recorded in `ingest_runs` as `succeeded`, `partial` or `failed`, with counts and the first error messages, which the admin console shows. The Form D connector refuses to start without a contact in `SEC_USER_AGENT`, since SEC answers 403 otherwise. |
 | Poison message | `runWithRetry` retries 3× with backoff, then publishes to `<topic>.dlq` and moves on, so one bad record never blocks a partition. |
 | Worker crash mid-message | Kafka offsets and Redis Stream acks happen after the handler, so the message is redelivered. Idempotent upserts make redelivery safe. |
 | Duplicate delivery | Natural-key upserts; unique alert index; BullMQ `jobId` deduplication. |
@@ -301,9 +301,10 @@ Graceful shutdown (SIGTERM) closes the HTTP server, workers, consumers and conne
 | **CSRF** | `SameSite=Lax` cookie, a JSON-only content-type check on writes, and a CORS allow-list. |
 | **Rate limiting** | Redis-backed (shared across replicas): 300 requests/min per user or IP; 20 failed logins per 15 min per IP; 60 LLM-backed operations per hour per user. IPv6 clients are keyed by /56. |
 | **Secrets** | Only in server environment variables (`.env` is git-ignored; `.env.example` documents them). The browser never sees LLM keys: it talks to the Next.js origin, which proxies to the API. Logs redact `authorization`, cookies, passwords and keys. Production refuses to start with the default JWT secret. |
-| **Safe outbound fetching (SSRF)** | `safeFetch`: http/https only, default ports, no credentials in URLs; DNS is resolved and *every* address must be public unicast (blocks loopback, RFC 1918, link-local incl. 169.254.169.254, CGNAT, ULA, IPv4-mapped IPv6, multicast…); the socket is pinned to the vetted IP (no DNS rebinding); redirects are re-validated hop by hop; timeouts and size caps. Webhook URLs are validated when saved and again when sent. |
+| **Safe outbound fetching (SSRF)** | `safeFetch`: http/https only, default ports, no credentials in URLs; DNS is resolved and *every* address must be public unicast (blocks loopback, RFC 1918, link-local incl. 169.254.169.254, CGNAT, ULA, IPv4-mapped IPv6, multicast…); the socket is pinned to the vetted IP (no DNS rebinding); redirects are re-validated hop by hop and a request body is never replayed to a new URL; timeouts and size caps. Covered by tests that open real sockets. Webhook URLs are validated when saved and again when sent. |
 | **LLM safety** | Untrusted text is fenced as data; outputs are schema-validated; invented taxonomy slugs are rejected; extraction must quote its evidence; brief claims must cite sources and pass the numeric check; low-confidence labels need a human. |
 | **Output** | CSV exports neutralise spreadsheet formulas (`=`, `+`, `-`, `@`); React escapes HTML; external links use `rel="noopener noreferrer nofollow"`; Helmet and Next headers set `nosniff`, `frame-ancestors 'none'` / `X-Frame-Options: DENY` and a restrictive API CSP. |
+| **Browser** | Production Content-Security-Policy (`default-src 'self'`, no `unsafe-eval`, `frame-ancestors 'none'`, `object-src 'none'`), `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`. |
 | **Containers** | Non-root `node` user, production dependencies only, database ports bound to `127.0.0.1` in Compose. |
 
 ### Threats not addressed (yet)
