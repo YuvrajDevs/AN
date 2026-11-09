@@ -36,10 +36,10 @@ export async function startConsumers() {
   const bus = getBus();
   await bus.subscribe<RawRecord>(Topics.ingestRaw, 'processor', async (e) => processRawRecord(e.payload));
   await bus.subscribe<{ companyId: string }>(Topics.companyCreated, 'classifier', async (e) => {
-    await enqueue('classify-company', { companyId: e.payload.companyId }, { jobId: `classify:${e.payload.companyId}:${e.id}` });
+    await enqueue('classify-company', { companyId: e.payload.companyId }, { jobId: `classify-${e.payload.companyId}-${e.id}` });
   });
   await bus.subscribe<{ fundingRoundId: string }>(Topics.fundingCreated, 'alerts', async (e) => {
-    await enqueue('deliver-alerts', { fundingRoundId: e.payload.fundingRoundId }, { jobId: `alerts:${e.payload.fundingRoundId}` });
+    await enqueue('deliver-alerts', { fundingRoundId: e.payload.fundingRoundId }, { jobId: `alerts-${e.payload.fundingRoundId}` });
   });
   logger.info({ bus: bus.kind }, 'ingestion consumers started');
 }

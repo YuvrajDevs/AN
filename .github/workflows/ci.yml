@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Lint, typecheck, unit + API tests, eval
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:7
+        ports: ["27017:27017"]
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand(\"ping\").ok'"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Unit + API tests
+        run: npm test
+        env:
+          MONGO_URL_TEST: mongodb://localhost:27017
+      - name: Classification eval (offline baseline)
+        run: npm run eval -w apps/api -- --out eval-ci.md && cat apps/api/eval-ci.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Build
+        run: npm run build
+
+  e2e:
+    name: Docker Compose stack + Playwright
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Start full stack (seeded)
+        run: docker compose up -d --build
+      - name: Wait for web + API
+        run: |
+          for i in $(seq 1 90); do
+            if curl -fsS http://localhost:4000/api/health >/dev/null && curl -fsS http://localhost:3000/login >/dev/null; then
+              echo "stack is up"; exit 0
+            fi
+            sleep 4
+          done
+          docker compose ps; docker compose logs --tail 100; exit 1
+      - name: Seed ran
+        run: docker compose ps -a seed | grep -q "Exited (0)"
+      - run: npm ci
+      - run: npx -w e2e playwright install --with-deps chromium
+      - name: Playwright
+        run: npm run test:e2e
+        env:
+          CI: "true"
+          BASE_URL: http://localhost:3000
+      - name: Stack logs
+        if: failure()
+        run: docker compose logs --tail 200
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: e2e/playwright-report
+          retention-days: 7

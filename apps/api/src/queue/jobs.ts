@@ -43,6 +43,8 @@ function getQueue(): Queue {
 
 /** Enqueue work. jobId makes enqueueing idempotent (e.g. one classification per company at a time). */
 export async function enqueue(name: JobName, data: Record<string, unknown>, opts: JobsOptions = {}): Promise<void> {
+  // BullMQ reserves ":" in custom ids; fail loudly in every mode, not only with Redis.
+  if (opts.jobId?.includes(':')) throw new Error(`Invalid jobId "${opts.jobId}": ":" is not allowed`);
   if (useRedis()) {
     await getQueue().add(name, data, opts);
     return;
@@ -86,7 +88,7 @@ export async function jobCounts(): Promise<Record<string, number> | null> {
 
 export async function scheduleRepeatable(name: JobName, data: Record<string, unknown>, everyMs: number, key: string) {
   if (!useRedis()) return;
-  await getQueue().upsertJobScheduler(key, { every: everyMs }, { name, data, opts: DEFAULT_OPTS });
+  await getQueue().upsertJobScheduler(key.replace(/:/g, '-'), { every: everyMs }, { name, data, opts: DEFAULT_OPTS });
 }
 
 export async function closeJobs(): Promise<void> {

@@ -37,7 +37,7 @@ briefsRouter.post(
   }),
   async (req, res) => {
     const brief = await createBriefRecord(req.body.scope, req.user!.id, req.body.provider);
-    await enqueue('generate-brief', { briefId: String(brief._id) }, { jobId: `brief:${brief._id}` });
+    await enqueue('generate-brief', { briefId: String(brief._id) }, { jobId: `brief-${brief._id}` });
     res.status(202).json({ brief });
   },
 );

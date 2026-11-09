@@ -1,0 +1,129 @@
+# Strata — full local stack.
+#   cp .env.example .env   # optional: add LLM keys
+#   docker compose up --build
+# Web: http://localhost:3000  ·  API: http://localhost:4000/api/health
+# Redpanda Console (optional): docker compose --profile tools up
+
+name: strata
+
+x-api-env: &api-env
+  NODE_ENV: production
+  LOG_LEVEL: ${LOG_LEVEL:-info}
+  MONGO_URL: mongodb://mongo:27017/strata
+  REDIS_URL: redis://redis:6379
+  EVENT_BUS: kafka
+  KAFKA_BROKERS: redpanda:9092
+  JWT_SECRET: ${JWT_SECRET:-local-compose-secret-change-me-0123456789}
+  CORS_ORIGINS: http://localhost:3000
+  COOKIE_SECURE: "false"
+  LLM_DEFAULT_PROVIDER: ${LLM_DEFAULT_PROVIDER:-heuristic}
+  OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+  GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+  SEC_USER_AGENT: ${SEC_USER_AGENT:-Strata local demo (set SEC_USER_AGENT)}
+  SEED_PASSWORD: ${SEED_PASSWORD:-strata-demo-2026}
+  SCHEDULE_INGESTION: ${SCHEDULE_INGESTION:-false}
+
+services:
+  mongo:
+    image: mongo:7
+    volumes: [mongo-data:/data/db]
+    ports: ["127.0.0.1:27017:27017"]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
+    volumes: [redis-data:/data]
+    ports: ["127.0.0.1:6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redpanda:
+    # Kafka-API compatible, single binary, no ZooKeeper: the event backbone.
+    image: redpandadata/redpanda:v24.2.7
+    command:
+      - redpanda
+      - start
+      - --mode=dev-container
+      - --smp=1
+      - --memory=512M
+      - --kafka-addr=internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr=internal://redpanda:9092,external://localhost:19092
+    ports: ["127.0.0.1:19092:19092"]
+    volumes: [redpanda-data:/var/lib/redpanda/data]
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -E 'Healthy:.+true' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  seed:
+    # One-shot: loads the committed public-data snapshot through the ingest pipeline.
+    # No-op if the database already has data.
+    build: { context: ., dockerfile: apps/api/Dockerfile }
+    image: strata-api:local
+    command: ["node", "dist/scripts/seed.js"]
+    environment:
+      <<: *api-env
+      EVENT_BUS: memory
+      REDIS_URL: ""
+    depends_on:
+      mongo: { condition: service_healthy }
+    restart: "no"
+
+  api:
+    image: strata-api:local
+    build: { context: ., dockerfile: apps/api/Dockerfile }
+    environment: *api-env
+    ports: ["127.0.0.1:4000:4000"]
+    depends_on:
+      mongo: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      redpanda: { condition: service_healthy }
+      seed: { condition: service_completed_successfully }
+    restart: unless-stopped
+
+  worker:
+    image: strata-api:local
+    command: ["node", "dist/worker.js"]
+    environment: *api-env
+    depends_on:
+      mongo: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      redpanda: { condition: service_healthy }
+      seed: { condition: service_completed_successfully }
+    healthcheck:
+      disable: true
+    restart: unless-stopped
+
+  web:
+    image: strata-web:local
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args: { API_URL: "http://api:4000" }
+    ports: ["127.0.0.1:3000:3000"]
+    depends_on:
+      api: { condition: service_healthy }
+    restart: unless-stopped
+
+  console:
+    image: redpandadata/console:v2.7.2
+    profiles: ["tools"]
+    environment:
+      KAFKA_BROKERS: redpanda:9092
+    ports: ["127.0.0.1:8080:8080"]
+    depends_on: [redpanda]
+
+volumes:
+  mongo-data:
+  redis-data:
+  redpanda-data:
