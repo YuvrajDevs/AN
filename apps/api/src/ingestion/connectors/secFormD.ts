@@ -54,7 +54,7 @@ export async function searchFormD(name: string, fetchImpl: typeof fetch = fetch)
 }
 
 const FUND_LIKE = /\b(fund|spv|l\.?p\.?|a series of|partners|capital|ventures|holdings|trust|reit)\b/i;
-const OK_SUFFIXES = ['technologies', 'technology', 'software', 'labs', 'ai', 'app', 'hq', 'io', 'health', 'legal', 'law', 'systems', 'platform'];
+const OK_SUFFIXES = ['technologies', 'technology', 'software', 'labs', 'ai', 'app', 'hq', 'io', 'legal', 'law', 'systems', 'platform'];
 
 /**
  * Record linkage: is this EDGAR entity the same company? Conservative by design — a false
@@ -80,6 +80,17 @@ export function matchEntity(
     if (stem.length >= 5 && stem === entity.replace(/ /g, '')) return 'domain_stem';
   }
   return null;
+}
+
+/**
+ * Date plausibility: a filing made long before the company joined YC, or by an entity
+ * incorporated long before, is almost always a different company with the same name.
+ */
+export function plausibleFiling(f: { filingDate: string; yearOfInc: number | null }, batchYear?: number | null): boolean {
+  if (!batchYear) return true;
+  if (Number(f.filingDate.slice(0, 4)) < batchYear - 4) return false;
+  if (f.yearOfInc && f.yearOfInc < batchYear - 6) return false;
+  return true;
 }
 
 const parser = new XMLParser({ ignoreAttributes: true, parseTagValue: false, trimValues: true });
@@ -125,6 +136,10 @@ export interface FormDTarget {
   website: string | null;
   /** Other names to search for (e.g. legal names seen elsewhere). */
   aliases?: string[];
+  /** Year the company joined YC (if known), for date plausibility checks. */
+  batchYear?: number | null;
+  /** CIKs an analyst rejected for this company. */
+  rejectedCiks?: string[];
 }
 
 export async function collectFormDForCompany(target: FormDTarget, fetchImpl: typeof fetch = fetch): Promise<FormDRecord[]> {
@@ -142,6 +157,8 @@ export async function collectFormDForCompany(target: FormDTarget, fetchImpl: typ
       const res = await secFetch(url, fetchImpl);
       if (!res.ok) continue;
       const parsed = parseFormDXml(await res.text());
+      if (target.rejectedCiks?.includes(parsed.cik)) continue;
+      if (!plausibleFiling({ filingDate: hit.fileDate, yearOfInc: parsed.yearOfInc }, target.batchYear)) continue;
       out.push({
         ...parsed,
         companySlug: target.slug,

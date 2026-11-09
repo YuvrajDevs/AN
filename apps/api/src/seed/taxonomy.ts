@@ -52,7 +52,7 @@ export const TAXONOMY: TaxonomySeedSector[] = [
         slug: 'legal-ai-firms',
         name: 'AI-native Law Firms',
         description:
-          'Licensed law firms or legal-services businesses that deliver legal work themselves, using their own technology as leverage (sell outcomes, not software).',
+          'Licensed law firms or legal-services businesses that deliver legal work themselves, using their own technology as leverage (sell outcomes, not software). Applies regardless of practice area: an AI-native immigration or PI firm belongs here.',
         keywords: ['law firm', 'law firms for', 'ai-native law firm', 'ai law firm', 'native law firm', 'flat-fee', 'counsel', 'legal backoffice', 'legal investment', 'litigation finance'],
       },
       {

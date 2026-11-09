@@ -1,0 +1,440 @@
+[
+ {
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)",
+  "sector": "legal-ai",
+  "decisions": [
+   {
+    "slug": "clerky",
+    "subsector": "legal-consumer"
+   },
+   {
+    "slug": "lawdingo",
+    "subsector": "legal-ops"
+   },
+   {
+    "slug": "wevorce",
+    "subsector": "legal-consumer"
+   },
+   {
+    "slug": "simplelegal",
+    "subsector": "legal-ops",
+    "note": "Legal spend and matter management for in-house teams: legal ops, not a horizontal assistant."
+   },
+   {
+    "slug": "casetext",
+    "subsector": "legal-litigation",
+    "notable": true
+   },
+   {
+    "slug": "fixed",
+    "subsector": "legal-consumer"
+   },
+   {
+    "slug": "ironclad",
+    "subsector": "legal-contracts",
+    "notable": true
+   },
+   {
+    "slug": "ross-intelligence",
+    "subsector": "legal-litigation"
+   },
+   {
+    "slug": "willing",
+    "subsector": "legal-consumer"
+   },
+   {
+    "slug": "jeugene",
+    "subsector": "legal-contracts",
+    "note": "Definitions checking inside drafted legal documents: contract drafting tooling."
+   },
+   {
+    "slug": "simplecitizen",
+    "subsector": "legal-immigration"
+   },
+   {
+    "slug": "legalist",
+    "subsector": null,
+    "note": "Litigation-finance investment firm: legal-adjacent finance, outside the Legal AI software/services scope."
+   },
+   {
+    "slug": "aclu",
+    "subsector": null,
+    "note": "Non-profit advocacy organisation; not a Legal AI company."
+   },
+   {
+    "slug": "lawyaw",
+    "subsector": "legal-ops"
+   },
+   {
+    "slug": "cognition-ip",
+    "subsector": "legal-ai-firms",
+    "note": "IP law firm: business model (law firm) takes precedence over practice area."
+   },
+   {
+    "slug": "atrium",
+    "subsector": "legal-ai-firms"
+   },
+   {
+    "slug": "regology",
+    "subsector": "legal-compliance"
+   },
+   {
+    "slug": "spire-law",
+    "subsector": "legal-ai-firms"
+   },
+   {
+    "slug": "caribou",
+    "subsector": null,
+    "note": "Autonomous tax firm: tax/accounting, not legal work."
+   },
+   {
+    "slug": "upsolve",
+    "subsector": "legal-consumer"
+   },
+   {
+    "slug": "keynua",
+    "subsector": "legal-contracts"
+   },
+   {
+    "slug": "axdraft",
+    "subsector": "legal-contracts"
+   },
+   {
+    "slug": "flo",
+    "subsector": "legal-ops"
+   },
+   {
+    "slug": "datasaur",
+    "subsector": null
+   },
+   {
+    "slug": "panadata",
+    "subsector": "legal-compliance"
+   },
+   {
+    "slug": "draftwise",
+    "subsector": "legal-contracts",
+    "notable": true
+   },
+   {
+    "slug": "version-story-compare",
+    "subsector": "legal-contracts"
+   },
+   {
+    "slug": "firstbase-io",
+    "subsector": "legal-consumer"
+   },
+   {
+    "slug": "darrow",
+    "subsector": "legal-litigation",
+    "notable": true
+   },
+   {
+    "slug": "solo",
+    "subsector": "legal-consumer"
+   },
+   {
+    "slug": "roger",
+    "subsector": "legal-contracts"
+   },
+   {
+    "slug": "marqvision",
+    "subsector": "legal-ip",
+    "notable": true
+   },
+   {
+    "slug": "kodex",
+    "subsector": "legal-compliance",
+    "notable": true
+   },
+   {
+    "slug": "pactima",
+    "subsector": "legal-contracts"
+   },
+   {
+    "slug": "trebol",
+    "subsector": null
+   },
+   {
+    "slug": "dioptra",
+    "subsector": "legal-contracts"
+   },
+   {
+    "slug": "lexter-ai",
+    "subsector": "legal-workspace"
+   },
+   {
+    "slug": "pigeon-2",
+    "subsector": null
+   },
+   {
+    "slug": "wolfia",
+    "subsector": null
+   },
+   {
+    "slug": "blee",
+    "subsector": "legal-compliance"
+   },
+   {
+    "slug": "cobbery",
+    "subsector": "legal-litigation"
+   },
+   {
+    "slug": "argovox",
+    "subsector": null,
+    "note": "Healthcare billing voice agents; tagged legal in the directory but out of scope."
+   },
+   {
+    "slug": "landeed",
+    "subsector": null
+   },
+   {
+    "slug": "struct",
+    "subsector": null
+   },
+   {
+    "slug": "datasuite",
+    "subsector": null
+   },
+   {
+    "slug": "hona",
+    "subsector": "legal-plaintiff",
+    "notable": true
+   },
+   {
+    "slug": "common-paper",
+    "subsector": "legal-contracts"
+   },
+   {
+    "slug": "edge",
+    "subsector": "legal-ip"
+   },
+   {
+    "slug": "solve-intelligence",
+    "subsector": "legal-ip",
+    "notable": true
+   },
+   {
+    "slug": "docsum",
+    "subsector": "legal-contracts"
+   },
+   {
+    "slug": "pincites",
+    "subsector": "legal-contracts"
+   },
+   {
+    "slug": "inlet-2",
+    "subsector": "legal-ops"
+   },
+   {
+    "slug": "cembla",
+    "subsector": "legal-workspace"
+   },
+   {
+    "slug": "legora",
+    "subsector": "legal-workspace",
+    "notable": true
+   },
+   {
+    "slug": "pointone",
+    "subsector": "legal-ops",
+    "note": "Automated time entry for law firms: legal ops (timekeeping/billing)."
+   },
+   {
+    "slug": "abel",
+    "subsector": "legal-litigation"
+   },
+   {
+    "slug": "tower",
+    "subsector": "legal-contracts"
+   },
+   {
+    "slug": "codes-health",
+    "subsector": "legal-plaintiff"
+   },
+   {
+    "slug": "overstand-labs",
+    "subsector": "legal-litigation",
+    "note": "Large-scale data review used for investigations/e-discovery; low-certainty call."
+   },
+   {
+    "slug": "mage-legal",
+    "subsector": "legal-contracts"
+   },
+   {
+    "slug": "parley",
+    "subsector": "legal-workspace"
+   },
+   {
+    "slug": "riskangle",
+    "subsector": "legal-plaintiff"
+   },
+   {
+    "slug": "ai-2",
+    "subsector": "legal-litigation"
+   },
+   {
+    "slug": "rescript",
+    "subsector": "legal-compliance"
+   },
+   {
+    "slug": "draft-the-record",
+    "subsector": "legal-litigation"
+   },
+   {
+    "slug": "elayne",
+    "subsector": "legal-consumer"
+   },
+   {
+    "slug": "beglaubigtde",
+    "subsector": "legal-consumer"
+   },
+   {
+    "slug": "pearson-labs",
+    "subsector": "legal-contracts"
+   },
+   {
+    "slug": "closure",
+    "subsector": null,
+    "note": "Sells to law enforcement (criminal investigations), not to legal teams."
+   },
+   {
+    "slug": "caseflood-ai",
+    "subsector": "legal-plaintiff"
+   },
+   {
+    "slug": "gale",
+    "subsector": "legal-immigration"
+   },
+   {
+    "slug": "tire-swing",
+    "subsector": "legal-compliance"
+   },
+   {
+    "slug": "openintake",
+    "subsector": "legal-plaintiff"
+   },
+   {
+    "slug": "tamlabs",
+    "subsector": null
+   },
+   {
+    "slug": "crimson",
+    "subsector": "legal-litigation"
+   },
+   {
+    "slug": "vesence",
+    "subsector": null
+   },
+   {
+    "slug": "third-chair",
+    "subsector": "legal-ip"
+   },
+   {
+    "slug": "blueshoe",
+    "subsector": "legal-ai-firms"
+   },
+   {
+    "slug": "kalinda",
+    "subsector": "legal-litigation"
+   },
+   {
+    "slug": "mimos",
+    "subsector": "legal-plaintiff"
+   },
+   {
+    "slug": "vulcan-technologies",
+    "subsector": "legal-compliance",
+    "note": "Agents for government and public-policy work: regulatory/policy."
+   },
+   {
+    "slug": "complydo",
+    "subsector": "legal-compliance"
+   },
+   {
+    "slug": "lexi",
+    "subsector": "legal-workspace"
+   },
+   {
+    "slug": "patent-watch",
+    "subsector": "legal-ip"
+   },
+   {
+    "slug": "relaw",
+    "subsector": "legal-workspace"
+   },
+   {
+    "slug": "vector-legal",
+    "subsector": "legal-ai-firms"
+   },
+   {
+    "slug": "mayflower",
+    "subsector": "legal-immigration"
+   },
+   {
+    "slug": "legalos",
+    "subsector": "legal-ai-firms",
+    "note": "AI-native immigration law firm: business model takes precedence over practice area."
+   },
+   {
+    "slug": "autositu",
+    "subsector": null
+   },
+   {
+    "slug": "moritz",
+    "subsector": "legal-ai-firms"
+   },
+   {
+    "slug": "wingman-law",
+    "subsector": "legal-ai-firms",
+    "note": "AI-native personal-injury law firm: business model takes precedence over practice area."
+   },
+   {
+    "slug": "general-legal",
+    "subsector": "legal-ai-firms",
+    "notable": true
+   },
+   {
+    "slug": "fed10",
+    "subsector": "legal-compliance"
+   },
+   {
+    "slug": "regbase",
+    "subsector": "legal-compliance"
+   },
+   {
+    "slug": "andco",
+    "subsector": "legal-plaintiff"
+   },
+   {
+    "slug": "erinys",
+    "subsector": "legal-ops",
+    "note": "Back-office and client-acquisition platform for lawyers launching firms: practice management."
+   },
+   {
+    "slug": "perceptron-ml",
+    "subsector": "legal-workspace"
+   },
+   {
+    "slug": "tarifflo-inc",
+    "subsector": "legal-compliance"
+   },
+   {
+    "slug": "neomatter",
+    "subsector": "legal-workspace"
+   },
+   {
+    "slug": "adalat-ai",
+    "subsector": "legal-litigation"
+   },
+   {
+    "slug": "praxis",
+    "subsector": "legal-ops"
+   },
+   {
+    "slug": "elithia",
+    "subsector": "legal-plaintiff"
+   }
+  ]
+ }
+]
