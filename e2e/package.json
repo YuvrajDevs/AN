@@ -1,0 +1,11 @@
+{
+  "name": "@strata/e2e",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "playwright test --trace off"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}
