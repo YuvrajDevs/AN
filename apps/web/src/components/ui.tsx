@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import { ApiError } from '@/lib/api';
 import { pct } from '@/lib/format';
 
@@ -166,9 +166,22 @@ export function Stat({ label, value, hint }: { label: string; value: ReactNode; 
 }
 
 export function Logo({ src, name, size = 28 }: { src?: string | null; name: string; size?: number }) {
-  if (src) {
+  const [failed, setFailed] = useState(false);
+  if (src && !failed) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt="" width={size} height={size} loading="lazy" className="shrink-0 rounded-md border border-border bg-white object-contain" style={{ width: size, height: size }} />;
+    return (
+      <img
+        src={src}
+        alt=""
+        width={size}
+        height={size}
+        loading="lazy"
+        referrerPolicy="no-referrer"
+        onError={() => setFailed(true)}
+        className="shrink-0 rounded-md border border-border bg-white object-contain"
+        style={{ width: size, height: size }}
+      />
+    );
   }
   return (
     <div className="flex shrink-0 items-center justify-center rounded-md bg-muted text-xs font-semibold text-subtle" style={{ width: size, height: size }} aria-hidden="true">
