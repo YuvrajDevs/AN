@@ -104,7 +104,7 @@ A Form D is filed by a legal entity (`Legora, Inc.`), not a brand (`Legora`). Th
 3. the filing is date-plausible: not filed more than four years before the company's YC batch, and the issuer was not incorporated more than six years before it;
 4. no analyst has rejected that CIK for that company (`data/seed/sec-form-d-rejections.json`).
 
-For the seed snapshot this kept 141 of 234 candidate filings; 37 rejections were made by hand with written reasons. Precision is preferred over recall: a wrong funding round is worse than a missing one.
+For the seed snapshot this kept 136 of 234 candidate filings; the rest were removed by the date rule or by 41 hand rejections, each with a written reason. Precision is preferred over recall: a wrong funding round is worse than a missing one.
 
 ### Amendments and idempotency
 

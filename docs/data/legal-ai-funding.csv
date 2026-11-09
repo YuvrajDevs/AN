@@ -1,0 +1,25 @@
+company,company_slug,date,round_type,amount_usd,offering_amount_usd,investors,extracted_by,confidence,source_urls
+Legora,legora,2026-10-20,reg_d_offering,220820026,550000000,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/2071663/000207166326000002/0002071663-26-000002-index.htm
+Kalinda,kalinda,2026-04-06,reg_d_offering,692000,1000000,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/2088907/000208890726000001/0002088907-26-000001-index.htm
+Legora,legora,2026-03-09,reg_d_offering,441525860,600080000,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/2071663/000207166326000001/0002071663-26-000001-index.htm
+Legora,legora,2025-10-28,reg_d_offering,150352281,150352281,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/2071663/000207166325000002/0002071663-25-000002-index.htm
+Kodex,kodex,2025-09-04,reg_d_offering,21199989,22000000,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1865069/000186506925000002/0001865069-25-000002-index.htm
+Legora,legora,2025-05-19,reg_d_offering,79849626,79999866,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/2071663/000207166325000001/0002071663-25-000001-index.htm
+Hona,hona,2024-04-12,reg_d_offering,11217493,11217493,,sec-form-d-parser,0.8,https://www.sec.gov/Archives/edgar/data/2021483/000202148324000001/0002021483-24-000001-index.htm
+Kodex,kodex,2022-10-19,reg_d_offering,10000000,10000000,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1865069/000186506922000001/0001865069-22-000001-index.htm
+Dioptra,dioptra,2022-03-03,reg_d_offering,460000,2000000,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1936498/000193649822000001/0001936498-22-000001-index.htm
+Casetext,casetext,2021-12-23,reg_d_offering,25000003,25000003,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1632585/000163258522000001/0001632585-22-000001-index.htm
+Regology,regology,2021-06-04,reg_d_offering,7726652,8426648,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1867337/000186733721000001/0001867337-21-000001-index.htm
+Kodex,kodex,2021-05-16,reg_d_offering,300000,350000,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1865069/000186506921000001/0001865069-21-000001-index.htm
+Casetext,casetext,2020-02-28,reg_d_offering,8229956,10000000,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1632585/000163258520000001/0001632585-20-000001-index.htm
+SimpleCitizen,simplecitizen,2019-05-23,reg_d_offering,5506797,5506797,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1661242/000166124219000004/0001661242-19-000004-index.htm
+Casetext,casetext,2019-03-29,reg_d_offering,10314620,11655435,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1632585/000163258519000001/0001632585-19-000001-index.htm
+Keynua,keynua,2019-03-14,reg_d_offering,1605000,1605000,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1774966/000177496619000001/0001774966-19-000001-index.htm
+Ironclad,ironclad,2018-09-18,reg_d_offering,22750000,22750000,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1755112/000175511219000001/0001755112-19-000001-index.htm
+SimpleLegal,simplelegal,2017-05-01,reg_d_offering,10094996,10100000,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1655814/000165581417000003/0001655814-17-000003-index.htm; https://www.sec.gov/Archives/edgar/data/1655814/000165581417000004/0001655814-17-000004-index.htm
+Wevorce,wevorce,2016-01-11,reg_d_offering,3149000,4000000,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1600278/000160027816000001/0001600278-16-000001-index.htm
+SimpleLegal,simplelegal,2015-10-02,reg_d_offering,1625028,2125028,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1655814/000165581415000001/0001655814-15-000001-index.htm
+SimpleCitizen,simplecitizen,2015-09-30,reg_d_offering,785376,794192,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1661242/000166124215000001/0001661242-15-000001-index.htm
+Wevorce,wevorce,2015-08-24,reg_d_offering,619771,619771,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1600278/000160027816000002/0001600278-16-000002-index.htm
+Casetext,casetext,2015-01-20,reg_d_offering,10482940,11335567,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1632585/000163258515000001/0001632585-15-000001-index.htm; https://www.sec.gov/Archives/edgar/data/1632585/000163258516000002/0001632585-16-000002-index.htm
+Wevorce,wevorce,2012-12-18,reg_d_offering,1696962,3000000,,sec-form-d-parser,0.95,https://www.sec.gov/Archives/edgar/data/1600278/000160027814000001/0001600278-14-000001-index.htm

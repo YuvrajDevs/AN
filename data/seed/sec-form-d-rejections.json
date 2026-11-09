@@ -220,5 +220,29 @@
   "cik": "1517419",
   "reason": "Nuvola Systems Corp (Lantana, FL, inc. 2009) is unrelated to Nuvola (YC W17).",
   "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "flo",
+  "cik": "1752100",
+  "reason": "Flo Health, Inc. is the period-tracking app, not Flo Recruit (YC S19, legal talent).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "flo",
+  "cik": "1765791",
+  "reason": "Flo Technologies, Inc. (Culver City) makes water-leak detection, not Flo Recruit (YC S19).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "prometheus",
+  "cik": "1661839",
+  "reason": "Prometheus Labs, Inc. (New York, inc. 2013) is not Prometheus Fuels (YC W19).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "magic-2",
+  "cik": "1959571",
+  "reason": "Magic AI, Inc. (San Francisco) is most likely the AI coding company Magic, not YC Magic (pay-by-bank); excluded.",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
  }
 ]

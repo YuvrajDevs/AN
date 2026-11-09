@@ -1,0 +1,103 @@
+name,slug,website,one_liner,status,sector,subsector,classification_state,confidence,yc_batch,country,team_size,total_disclosed_usd,round_count,last_round_date,profile_url
+&AI,ai-2,https://www.tryandai.com/,Collaborative workspace for patent litigators,active,legal-ai,legal-litigation,reviewed,1,S24,United States,7,0,1,2024-06-01,/companies/ai-2
+ACLU,aclu,https://www.aclu.org/,Defender of rights and liberties,active,legal-ai,,reviewed,1,W17,United States,501,0,1,2017-01-01,/companies/aclu
+AXDRAFT,axdraft,https://axdraft.com,"AXDRAFT helps corporations draft, negotiate and approve documents 10x…",acquired,legal-ai,legal-contracts,reviewed,1,W19,Ukraine,34,0,1,2019-01-01,/companies/axdraft
+Abel,abel,,Transforming document review for litigation teams,inactive,legal-ai,legal-litigation,reviewed,1,W24,United States,2,0,1,2024-01-01,/companies/abel
+Adalat AI,adalat-ai,https://adalat.ai/,"AI OS transforming courts, accelerating justice",active,legal-ai,legal-litigation,reviewed,1,F26,India,80,0,1,2026-09-01,/companies/adalat-ai
+Andco,andco,http://www.useandco.com,Agents that build personal injury cases,active,legal-ai,legal-plaintiff,reviewed,1,X26,United States,3,0,1,2026-04-01,/companies/andco
+Argovox,argovox,https://www.argovox.com/,Voice AI agents for patient billing and collections,inactive,legal-ai,,reviewed,1,S22,United States,3,0,1,2022-06-01,/companies/argovox
+Atrium,atrium,http://www.atrium.co,Modern law firm for startups powered by proprietary technology,inactive,legal-ai,legal-ai-firms,reviewed,1,W18,United States,180,0,1,2018-01-01,/companies/atrium
+AutoSitu,autositu,https://autositu.com/,The AI operating system for the built world,active,legal-ai,,reviewed,1,W26,,2,0,1,2026-01-01,/companies/autositu
+Beglaubigt.de,beglaubigtde,https://beglaubigt.de/en-us,The legal backoffice for every company. For founders and AI agents.,active,legal-ai,legal-consumer,reviewed,1,F24,Germany,30,0,1,2024-09-01,/companies/beglaubigtde
+Blee,blee,https://www.blee.com,"Smart, fast, and collaborative compliance reviews",active,legal-ai,legal-compliance,reviewed,1,S22,United States,15,0,1,2022-06-01,/companies/blee
+Blueshoe,blueshoe,https://blueshoe.com,The AI-Native Consumer + Plaintiff Law Firm,active,legal-ai,legal-ai-firms,reviewed,1,X25,United States,2,0,1,2025-04-01,/companies/blueshoe
+Caribou,caribou,https://usecaribou.com,The autonomous tax firm,active,legal-ai,,reviewed,1,W19,Portugal,10,0,1,2019-01-01,/companies/caribou
+Caseflood.ai,caseflood-ai,https://caseflood.ai,How elite law firms do intake,active,legal-ai,legal-plaintiff,reviewed,1,W25,United States,2,0,1,2025-01-01,/companies/caseflood-ai
+Casetext,casetext,http://casetext.com,We make the world's laws free and understandable.,acquired,legal-ai,legal-litigation,reviewed,1,S13,United States,50,54027519,5,2021-12-23,/companies/casetext
+Cembla,cembla,https://cembla.com,AI for legal & government,active,legal-ai,legal-workspace,reviewed,1,S23,United States,2,0,1,2023-06-01,/companies/cembla
+Clerky,clerky,https://www.clerky.com,Makes legal paperwork easy for startups and their attorneys.,acquired,legal-ai,legal-consumer,reviewed,1,S11,United States,35,0,1,2011-06-01,/companies/clerky
+Closure,closure,https://closure-intel.com/,We help law enforcement solve crime,active,legal-ai,,reviewed,1,W25,United States,11,0,1,2025-01-01,/companies/closure
+Cobbery,cobbery,https://cobbery.com,"For winning matters, when winning matters",active,legal-ai,legal-litigation,reviewed,1,S22,United States,4,0,1,2022-06-01,/companies/cobbery
+Codes Health,codes-health,https://www.codeshealth.com/,AI-native medical record retrieval,active,legal-ai,legal-plaintiff,reviewed,1,S24,United States,45,0,1,2024-06-01,/companies/codes-health
+Cognition IP,cognition-ip,https://www.cognitionip.com,Flat-fee patent & trademark counsel with top firm results,active,legal-ai,legal-ai-firms,reviewed,1,W18,United States,12,0,1,2018-01-01,/companies/cognition-ip
+Common Paper,common-paper,https://commonpaper.com/,The SAFE for commercial contracts,active,legal-ai,legal-contracts,reviewed,1,W23,United States,8,0,1,2023-01-01,/companies/common-paper
+ComplyDo,complydo,https://www.complydo.io/,Global Compliance for Enterprises,active,legal-ai,legal-compliance,reviewed,1,F25,Germany,17,0,1,2025-09-01,/companies/complydo
+Crimson,crimson,https://crimson.law,The AI Associate for Litigation Lawyers,active,legal-ai,legal-litigation,reviewed,1,X25,United Kingdom,7,0,1,2025-04-01,/companies/crimson
+Darrow,darrow,https://darrow.ai/,Bring Justice to Light,active,legal-ai,legal-litigation,reviewed,1,W21,Israel,95,0,1,2021-01-01,/companies/darrow
+DataSuite,datasuite,https://truthsuite.com,Dataset Management for AI Trainers,active,legal-ai,,reviewed,1,W23,United States,4,0,1,2023-01-01,/companies/datasuite
+Datasaur,datasaur,https://datasaur.ai,Datasaur builds private AI/agents for enterprise/government,active,legal-ai,,reviewed,1,W20,United States,60,0,1,2020-01-01,/companies/datasaur
+Dioptra,dioptra,https://dioptra.ai/,Automated contract review with AI,acquired,legal-ai,legal-contracts,reviewed,1,W22,United States,4,460000,2,2022-03-03,/companies/dioptra
+Docsum,docsum,https://www.docsum.ai/,AI contract repository,active,legal-ai,legal-contracts,reviewed,1,S23,United States,4,0,1,2023-06-01,/companies/docsum
+Draft The Record,draft-the-record,https://www.drafttherecord.com/,AI For Litigation,active,legal-ai,legal-litigation,reviewed,1,S24,United States,5,0,1,2024-06-01,/companies/draft-the-record
+Draftwise,draftwise,https://www.draftwise.com/,Contract and negotiation AI built for lawyers,active,legal-ai,legal-contracts,reviewed,1,S20,United States,50,0,1,2020-06-01,/companies/draftwise
+Edge,edge,https://withedge.com,The ultimate IP assistant.,active,legal-ai,legal-ip,reviewed,1,W23,United States,2,0,1,2023-01-01,/companies/edge
+Elayne,elayne,https://www.elayne.com/,"Estate settlement, from verified discovery to distribution",active,legal-ai,legal-consumer,reviewed,1,S24,United States,8,0,1,2024-06-01,/companies/elayne
+Elithia,elithia,https://elithia.com,Agents for the medical review behind every claim,active,legal-ai,legal-plaintiff,reviewed,1,F26,United States,1,0,1,2026-09-01,/companies/elithia
+Erinys,erinys,https://erinys.ai,We help lawyers start and scale AI-native law firms.,active,legal-ai,legal-ops,reviewed,1,S26,United States,3,0,1,2026-06-01,/companies/erinys
+Fed10,fed10,https://www.fed10.ai,AI Agents for Government Affairs,active,legal-ai,legal-compliance,reviewed,1,W26,United States,3,0,1,2026-01-01,/companies/fed10
+Firstbase.io,firstbase-io,https://firstbase.io/,The all-in-one startup operating system,active,legal-ai,legal-consumer,reviewed,1,W21,United States,50,0,1,2021-01-01,/companies/firstbase-io
+Fixed,fixed,,iPhone app to fight your parking tickets.,inactive,legal-ai,legal-consumer,reviewed,1,S14,United States,2,0,1,2014-06-01,/companies/fixed
+Flo,flo,https://joinflo.com,The talent platform for legal,active,legal-ai,legal-ops,reviewed,1,S19,United States,50,0,1,2019-06-01,/companies/flo
+Gale,gale,https://galevisa.com,Fast and Data-Driven Immigration Platform,active,legal-ai,legal-immigration,reviewed,1,W25,United States,3,0,1,2025-01-01,/companies/gale
+General Legal,general-legal,https://general.legal,Elite AI law firm for high growth companies,active,legal-ai,legal-ai-firms,reviewed,1,W26,,40,0,1,2026-01-01,/companies/general-legal
+Hona,hona,https://hona.com,Personal Injury Legal Work - Automated,active,legal-ai,legal-plaintiff,reviewed,1,W23,United States,32,11217493,2,2024-04-12,/companies/hona
+Inlet,inlet-2,https://inletai.com,AI timekeeping for legal professionals.,active,legal-ai,legal-ops,reviewed,1,S23,United States,2,0,1,2023-06-01,/companies/inlet-2
+Ironclad,ironclad,http://ironcladapp.com,AI-powered contract management,active,legal-ai,legal-contracts,reviewed,1,S15,United States,700,22750000,2,2018-09-18,/companies/ironclad
+Kalinda,kalinda,https://www.kalinda.ai/,Deep research for class action law firms,active,legal-ai,legal-litigation,reviewed,1,S25,United States,2,692000,2,2026-04-06,/companies/kalinda
+Keynua,keynua,https://www.keynua.com,E-signatures with identity verification for Latin America,active,legal-ai,legal-contracts,reviewed,1,W19,Peru,15,1605000,2,2019-03-14,/companies/keynua
+Kodex,kodex,https://www.kodexglobal.com,Easiest way for companies to process data requests from governments,active,legal-ai,legal-compliance,reviewed,1,S21,United States,30,31499989,4,2025-09-04,/companies/kodex
+Landeed,landeed,https://www.landeed.com/,"Landeed is India’s digital infrastructure for property intelligence,…",active,legal-ai,,reviewed,1,S22,India,35,0,1,2022-06-01,/companies/landeed
+Lawdingo,lawdingo,http://lawdingo.com,Lawdingo provides virtual paralegal services to law firms.,active,legal-ai,legal-ops,reviewed,1,W13,United States,,0,1,2013-01-01,/companies/lawdingo
+Lawyaw,lawyaw,http://www.lawyaw.com,Automating document-based workflows,acquired,legal-ai,legal-ops,reviewed,1,W18,United States,15,0,1,2018-01-01,/companies/lawyaw
+LegalOS,legalos,https://www.legalos.ai,The AI-Native Immigration Law Firm,active,legal-ai,legal-ai-firms,reviewed,1,W26,United States,3,0,1,2026-01-01,/companies/legalos
+Legalist,legalist,https://www.legalist.com,Legal investment firm,active,legal-ai,,reviewed,1,S16,United States,40,0,1,2016-06-01,/companies/legalist
+Legora,legora,https://www.legora.com/,The agentic operating system for legal work,active,legal-ai,legal-workspace,reviewed,1,W24,Sweden,900,892547793,5,2026-10-20,/companies/legora
+Lexi,lexi,https://getlexi.io/,AI Operating System for Legal Teams,active,legal-ai,legal-workspace,reviewed,1,F25,United States,15,0,1,2025-09-01,/companies/lexi
+Lexter.ai,lexter-ai,https://www.lexter.ai,LLM for Legal in Brazil,active,legal-ai,legal-workspace,reviewed,1,W22,Brazil,18,0,1,2022-01-01,/companies/lexter-ai
+Mage Legal,mage-legal,https://magelegal.com,Automatic AI Legal Diligence,active,legal-ai,legal-contracts,reviewed,1,S24,United States,2,0,1,2024-06-01,/companies/mage-legal
+MarqVision,marqvision,https://www.marqvision.com/,IP operating software for brands and content companies,active,legal-ai,legal-ip,reviewed,1,S21,United States,200,0,1,2021-06-01,/companies/marqvision
+Mayflower,mayflower,https://mayflowervisa.com,AI plug-in that automates HR immigration screening and compliance,active,legal-ai,legal-immigration,reviewed,1,F25,United States,2,0,1,2025-09-01,/companies/mayflower
+Mimos,mimos,https://www.trymimos.com/,The growth OS for plaintiff-side law firms,active,legal-ai,legal-plaintiff,reviewed,1,S25,United States,2,0,1,2025-06-01,/companies/mimos
+Moritz,moritz,http://moritzlegal.com/,Global AI-native law firm handling legal work with same-day turnaround,active,legal-ai,legal-ai-firms,reviewed,1,W26,Norway,10,0,1,2026-01-01,/companies/moritz
+Neomatter,neomatter,https://neomatter.com,AI that works for in-house legal teams,active,legal-ai,legal-workspace,reviewed,1,F26,United States,2,0,1,2026-09-01,/companies/neomatter
+OpenIntake,openintake,https://www.openintake.ai/,The AI Front Door For Law Firms,active,legal-ai,legal-plaintiff,reviewed,1,W25,United States,2,0,1,2025-01-01,/companies/openintake
+Overstand Labs,overstand-labs,https://overstandlabs.com,Navigate any set of data - no matter how large - in minutes.,active,legal-ai,legal-litigation,reviewed,1,W25,United States,4,0,1,2025-01-01,/companies/overstand-labs
+PANADATA,panadata,https://www.panadata.net,We run background checks on businesses using data from public records…,active,legal-ai,legal-compliance,reviewed,1,S20,Panama,4,0,1,2020-06-01,/companies/panadata
+Pactima,pactima,https://pactima.com/,Live video signing for real-time agreements,acquired,legal-ai,legal-contracts,reviewed,1,S21,Canada,3,0,1,2021-06-01,/companies/pactima
+Parley,parley,https://parley.so,Legal Agent that delivers finished work,active,legal-ai,legal-workspace,reviewed,1,S24,United States,3,0,1,2024-06-01,/companies/parley
+Patent Watch,patent-watch,https://www.patentwatch.ai/,AI for detecting patent infringements,active,legal-ai,legal-ip,reviewed,1,F25,United States,6,0,1,2025-09-01,/companies/patent-watch
+Pearson Labs,pearson-labs,http://www.pearsonlabs.ai,AI agents to automate corporate transactions,active,legal-ai,legal-contracts,reviewed,1,F24,United States,2,0,1,2024-09-01,/companies/pearson-labs
+Perceptron ML,perceptron-ml,https://perceptronml.com,We make law firms AI-native.,active,legal-ai,legal-workspace,reviewed,1,S26,United States,2,0,1,2026-06-01,/companies/perceptron-ml
+Pigeon,pigeon-2,https://www.usepigeon.io,Simplifying loans with your friends & family.,inactive,legal-ai,,reviewed,1,W22,United States,5,0,1,2022-01-01,/companies/pigeon-2
+Pincites,pincites,https://www.pincites.com/,Close deals faster with AI for contract negotiation,acquired,legal-ai,legal-contracts,reviewed,1,S23,United States,4,0,1,2023-06-01,/companies/pincites
+PointOne,pointone,https://pointone.com/,AI Time Platform for Law Firms,active,legal-ai,legal-ops,reviewed,1,W24,United States,35,0,1,2024-01-01,/companies/pointone
+Praxis,praxis,https://runpraxis.ai,AI agents that run law firm operations.,active,legal-ai,legal-ops,reviewed,1,F26,United States,2,0,1,2026-09-01,/companies/praxis
+ROGER,roger,https://www.thanksroger.com/,The Best Way to Sign Contracts Since Handshakes. Roger that.,active,legal-ai,legal-contracts,reviewed,1,W21,United States,4,0,1,2021-01-01,/companies/roger
+ROSS Intelligence,ross-intelligence,http://rossintelligence.com,ROSS is an AI-powered legal research platform that can read and…,inactive,legal-ai,legal-litigation,reviewed,1,S15,United States,30,0,1,2015-06-01,/companies/ross-intelligence
+Regbase,regbase,https://regbase.com,"Automating Corporate Compliance, Worldwide",active,legal-ai,legal-compliance,reviewed,1,X26,United States,3,0,1,2026-04-01,/companies/regbase
+Regology,regology,http://regology.com,AI Agents for Regulatory Compliance,acquired,legal-ai,legal-compliance,reviewed,1,S18,United States,60,7726652,2,2021-06-04,/companies/regology
+Relaw,relaw,https://www.relaw.ai,AI Legal OS,active,legal-ai,legal-workspace,reviewed,1,F25,United States,2,0,1,2025-09-01,/companies/relaw
+Rescript,rescript,https://rescript.ai/,AI for Legal & Public Policy Teams,active,legal-ai,legal-compliance,reviewed,1,S24,United States,2,0,1,2024-06-01,/companies/rescript
+RiskAngle,riskangle,https://www.riskangle.com/,AI medical summaries in minutes,inactive,legal-ai,legal-plaintiff,reviewed,1,S24,United States,2,0,1,2024-06-01,/companies/riskangle
+SimpleCitizen,simplecitizen,http://www.simplecitizen.com,"From signup to citizenship, only SimpleCitizen guides applicants…",acquired,legal-ai,legal-immigration,reviewed,1,S16,United States,23,6292173,3,2019-05-23,/companies/simplecitizen
+SimpleLegal,simplelegal,http://simplelegal.com,Legal Operations for corporate legal teams.,acquired,legal-ai,legal-ops,reviewed,1,S13,United States,60,11720024,3,2017-05-01,/companies/simplelegal
+Solo,solo,https://www.solosuit.com/,We help people resolve debt.,active,legal-ai,legal-consumer,reviewed,1,W21,United States,25,0,1,2021-01-01,/companies/solo
+Solve Intelligence,solve-intelligence,https://www.solveintelligence.com/,"AI patent drafting, prosecution, litigation and more for legal teams.",active,legal-ai,legal-ip,reviewed,1,S23,United Kingdom,70,0,1,2023-06-01,/companies/solve-intelligence
+Spire Law,spire-law,https://spirelawfirm.com/,Tech enabled business and employment litigation law firm.,active,legal-ai,legal-ai-firms,reviewed,1,W19,United States,10,0,1,2019-01-01,/companies/spire-law
+Struct,struct,https://struct.app,Multi-lingual AI Voice Agents,inactive,legal-ai,,reviewed,1,W23,,3,0,1,2023-01-01,/companies/struct
+TamLabs,tamlabs,https://tamlabs.ai,Agent teams for complex work,active,legal-ai,,reviewed,1,W25,United States,2,0,1,2025-01-01,/companies/tamlabs
+Tarifflo Inc.,tarifflo-inc,https://www.tarifflo.com,Supply chain compliance and cost savings,active,legal-ai,legal-compliance,reviewed,1,S26,United States,5,0,1,2026-06-01,/companies/tarifflo-inc
+Third Chair,third-chair,https://usethirdchair.com,AI-Native IP Enforcement,active,legal-ai,legal-ip,reviewed,1,X25,United States,19,0,1,2025-04-01,/companies/third-chair
+Tire Swing,tire-swing,https://gettireswing.com,AI Compliance for Affordable Housing,active,legal-ai,legal-compliance,reviewed,1,F26,United States,2,0,1,2026-09-01,/companies/tire-swing
+Tower,tower,https://withtower.com,M&A due diligence platform powered by AI,active,legal-ai,legal-contracts,reviewed,1,W24,Canada,3,0,1,2024-01-01,/companies/tower
+Trébol,trebol,https://gotrebol.com/,"Your back-office, on autopilot",active,legal-ai,,reviewed,1,W22,Colombia,14,0,1,2022-01-01,/companies/trebol
+Upsolve,upsolve,https://upsolve.org/learn/should-i-file-for-chapter-7-bankruptcy/,Helping low-income Americans overcome debt and rebuild credit at…,active,legal-ai,legal-consumer,reviewed,1,W19,United States,12,0,1,2019-01-01,/companies/upsolve
+Vector Legal,vector-legal,https://vectorlegal.com,A premier AI-native law firm & legal operating system for Startups.,active,legal-ai,legal-ai-firms,reviewed,1,W26,United States,9,0,1,2026-01-01,/companies/vector-legal
+Version Story Compare,version-story-compare,https://versionstory.com/,Git for Lawyers — now within Claude,active,legal-ai,legal-contracts,reviewed,1,W21,United States,30,0,1,2021-01-01,/companies/version-story-compare
+Vesence,vesence,https://vesence.com,The Agent-Native Computer,active,legal-ai,,reviewed,1,X25,United States,10,0,1,2025-04-01,/companies/vesence
+Vulcan Technologies,vulcan-technologies,https://vulcan.ai/,Secure frontier AI for government & adjacent knowledge work,active,legal-ai,legal-compliance,reviewed,1,S25,United States,17,0,1,2025-06-01,/companies/vulcan-technologies
+Wevorce,wevorce,http://wevorce.com,Changing divorce for good by making it a way less horrible experience…,active,legal-ai,legal-consumer,reviewed,1,W13,United States,11,5465733,4,2016-01-11,/companies/wevorce
+Willing,willing,https://www.willing.com/,The best way to make your legal will.,acquired,legal-ai,legal-consumer,reviewed,1,S15,United States,10,0,1,2015-06-01,/companies/willing
+Wingman Law,wingman-law,https://www.wingmanlaw.com,AI-native personal injury law firm,active,legal-ai,legal-ai-firms,reviewed,1,F26,United States,2,0,1,2026-09-01,/companies/wingman-law
+Wolfia,wolfia,https://wolfia.com,"We help security, legal and sales teams answer customer questions",active,legal-ai,,reviewed,1,S22,United States,5,0,1,2022-06-01,/companies/wolfia
+jEugene,jeugene,https://www.jeugene.com,jEugene highlights undefined terms and unused definitions in legal…,inactive,legal-ai,legal-contracts,reviewed,1,S15,United States,2,0,1,2015-06-01,/companies/jeugene

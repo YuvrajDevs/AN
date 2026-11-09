@@ -8,8 +8,9 @@
     },
     "secFormD": {
       "url": "https://efts.sec.gov/LATEST/search-index + https://www.sec.gov/Archives/edgar/data",
-      "records": 141,
-      "handRejected": 37
+      "records": 136,
+      "handRejected": 41,
+      "candidateMatches": 234
     }
   },
   "sectors": [

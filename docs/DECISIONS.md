@@ -37,7 +37,7 @@ Lightweight ADRs: what was decided, why, and what it costs. Newest last.
 
 ### 007 — Funding data from SEC Form D, with conservative record linkage
 **Decision.** The free, primary-source funding signal is the Form D (Regulation D notice). Entity-to-company linking requires an exact, suffix or domain-stem name match, excludes fund/SPV vehicles, checks dates against the YC batch, and honours analyst rejections.
-**Why.** The brief rules out scraping Crunchbase, PitchBook, Tracxn and LinkedIn. Form D is legally public, structured and timestamped. Precision beats recall: 37 of 234 candidate filings in the snapshot were same-name collisions that the date rule or a human caught.
+**Why.** The brief rules out scraping Crunchbase, PitchBook, Tracxn and LinkedIn. Form D is legally public, structured and timestamped. Precision beats recall: of 234 candidate filings in the snapshot, 98 were same-name collisions caught by the date rule or by one of 41 written hand rejections.
 **Cost.** Form D does not name the round or the investors, and many companies (especially outside the US) never file one. The UI labels these rounds "Reg D offering" and says so; it never guesses a "Series A".
 
 ### 008 — YC participation recorded with an undisclosed amount
