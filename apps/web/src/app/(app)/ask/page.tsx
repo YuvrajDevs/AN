@@ -115,7 +115,7 @@ export default function AskPage() {
       )}
 
       {!res && !busy && (
-        <Card>
+        <Card bodyClass="p-5">
           <p className="text-sm text-subtle">
             {status?.embedded
               ? `${status.embedded.toLocaleString()} passages indexed with ${status.model}: company profiles, SEC Form D filings and sector snapshots.`
@@ -128,7 +128,7 @@ export default function AskPage() {
       )}
 
       {busy && !res && (
-        <Card>
+        <Card bodyClass="p-5">
           <p className="flex items-center gap-2 text-sm text-subtle">
             <Spinner /> Searching the dataset and drafting a cited answer…
           </p>
@@ -138,6 +138,7 @@ export default function AskPage() {
       {res && (
         <div className={cx('grid gap-4 lg:grid-cols-[1.2fr_1fr]', busy && 'opacity-60')} aria-busy={busy} aria-live="polite">
           <Card
+            bodyClass="p-5"
             title="Answer"
             actions={
               <Badge tone={res.answerMode === 'generated' ? 'accent' : 'neutral'}>
