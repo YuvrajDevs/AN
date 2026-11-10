@@ -57,12 +57,12 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-ink/40 px-4 pt-[12vh] backdrop-blur-sm" onMouseDown={onClose}>
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-ink/40 px-4 pt-[12vh] backdrop-blur-sm animate-[fadeIn_180ms_ease-out]" onMouseDown={onClose}>
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Search"
-        className="w-full max-w-lg overflow-hidden rounded-3xl border border-border bg-surface shadow-2xl"
+        className="w-full max-w-lg animate-[fadeUp_240ms_cubic-bezier(0.22,1,0.36,1)] overflow-hidden rounded-3xl border border-border bg-surface shadow-2xl"
         onMouseDown={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
           if (e.key === 'Escape') onClose();

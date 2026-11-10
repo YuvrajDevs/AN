@@ -230,7 +230,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <main id="main" className="mx-auto w-full max-w-[1240px] pt-5 lg:pt-0">
-          {children}
+          <div key={pathname} className="page-enter">
+            {children}
+          </div>
         </main>
       </div>
       <CommandPalette open={palette} onClose={() => setPalette(false)} />

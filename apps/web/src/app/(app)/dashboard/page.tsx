@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { ArrowRight, ClipboardCheck, Lightbulb } from 'lucide-react';
 import { BarChart } from '@/components/charts';
+import { QuarterBreakdown } from '@/components/QuarterBreakdown';
 import { useSession } from '@/components/session';
 import { Card, ErrorState, Logo, Segmented, Skeleton, Stat, TONE_BG, buttonClass, cx, sectorTone } from '@/components/ui';
 import { useApi } from '@/lib/api';
@@ -82,11 +83,16 @@ export default function DashboardPage() {
   const { data, error, mutate } = useApi<Dashboard>('/dashboard');
   const recent = useApi<Recent>('/funding/recent');
   const [metric, setMetric] = useState<'usd' | 'rounds'>('usd');
+  // undefined = default (latest quarter with money), null = closed, string = a picked quarter.
+  const [picked, setPicked] = useState<string | null | undefined>(undefined);
 
   if (error) return <ErrorState error={error} retry={() => mutate()} />;
   const first = user?.name?.split(' ')[0];
   const maxSector = Math.max(1, ...(data?.bySector ?? []).map((s) => s.companies));
   const quarters = (data?.quarterly ?? []).slice(-12);
+  const fallback = [...quarters].reverse().find((q) => q.disclosedUsd > 0)?.period ?? null;
+  const period = picked === undefined ? fallback : picked;
+  const selectedIndex = period ? quarters.findIndex((q) => q.period === period) : -1;
 
   return (
     <>
@@ -131,8 +137,12 @@ export default function DashboardPage() {
       <div className="mt-3 grid gap-3 lg:grid-cols-3">
         <Card
           className="lg:col-span-2"
-          title="Disclosed funding by quarter"
-          bodyClass="px-4 pb-3 pt-4"
+          title={
+            <span>
+              Disclosed funding by quarter <span className="ml-1 font-normal text-subtle">· click a bar for its rounds</span>
+            </span>
+          }
+          bodyClass="px-4 pb-3 pt-3"
           actions={
             <Segmented
               label="Metric"
@@ -155,6 +165,9 @@ export default function DashboardPage() {
               ariaLabel="Disclosed funding by quarter"
               data={quarters.map((q) => ({ label: quarterLabel(q.period), value: metric === 'usd' ? q.disclosedUsd : q.rounds, secondary: q.rounds }))}
               format={(v) => (metric === 'usd' ? usd(v, '$0') : `${v} offerings`)}
+              secondaryLabel={(n) => `${n} ${n === 1 ? 'offering' : 'offerings'}`}
+              selected={selectedIndex >= 0 ? selectedIndex : null}
+              onSelect={(i) => setPicked(i === null ? null : quarters[i].period)}
             />
           )}
         </Card>
@@ -180,6 +193,12 @@ export default function DashboardPage() {
               ))}
         </Card>
       </div>
+
+      {period && (
+        <div className="mt-3 animate-[fadeUp_350ms_cubic-bezier(0.22,1,0.36,1)]" key={period}>
+          <QuarterBreakdown period={period} label={quarterLabel(period)} onClose={() => setPicked(null)} />
+        </div>
+      )}
 
       <div className="mt-3 grid gap-3 lg:grid-cols-3">
         <Card

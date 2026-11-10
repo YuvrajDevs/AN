@@ -53,10 +53,11 @@ Optional settings, in `.env` (copy `.env.example`):
 
 | | |
 |---|---|
-| ![Dashboard](docs/screenshots/dashboard.png) **Dashboard**: KPIs, quarterly funding, sectors, latest primary-source rounds | ![Company profile](docs/screenshots/company.png) **Company profile**: Form D funding timeline, sources, classification, watchlists |
+| ![Landing page](docs/screenshots/landing.png) **Landing page** with a one-click route into the demo | ![Sign in](docs/screenshots/login.png) **Sign in**: demo account pre-filled, analyst or viewer role |
+| ![Dashboard](docs/screenshots/dashboard.png) **Dashboard**: KPIs, quarterly funding, sectors, latest rounds and computed insights | ![Company profile](docs/screenshots/company.png) **Company profile**: Form D funding timeline, sources, classification, watchlists |
 | ![Review queue](docs/screenshots/review.png) **Review queue**: keyboard-driven human review of low-confidence labels | ![Analyst brief](docs/screenshots/brief.png) **Analyst brief**: every claim footnoted to a stored source |
-| ![Search](docs/screenshots/companies.png) **Search and filters**, URL-shareable, CSV export | ![Admin](docs/screenshots/admin.png) **Admin console**: service health, connector runs, roles |
-| ![Dark mode](docs/screenshots/landscape-dark.png) **Dark mode** | <img src="docs/screenshots/mobile.png" alt="Mobile" width="260"> **Responsive** |
+| ![Search](docs/screenshots/companies.png) **Search and filters**, URL-shareable, CSV export | ![Funding](docs/screenshots/funding.png) **Funding rounds**, each linked to its primary source |
+| ![Admin](docs/screenshots/admin.png) **Admin console**: service health, connector runs, roles | <img src="docs/screenshots/mobile.png" alt="Mobile" width="260"> **Responsive** |
 
 ## Features
 

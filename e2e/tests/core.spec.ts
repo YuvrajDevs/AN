@@ -26,6 +26,13 @@ test('dashboard shows seeded data', async ({ page }) => {
   await expect(page.getByRole('link', { name: /Legal AI/ }).first()).toBeVisible();
 });
 
+test('clicking a quarter shows the rounds that make it up', async ({ page }) => {
+  await login(page);
+  await page.getByRole('button', { name: /^Q\d '\d\d: \$/ }).first().click();
+  await expect(page.getByRole('heading', { name: /^What makes up Q\d '\d\d/ })).toBeVisible();
+  await expect(page.getByRole('columnheader', { name: 'Share of quarter' })).toBeVisible();
+});
+
 test('search, open a company profile and see its Form D funding timeline', async ({ page }) => {
   await login(page, '/companies');
   await page.getByRole('searchbox').fill('legora');
@@ -41,7 +48,7 @@ test('sector landscape renders a market map', async ({ page }) => {
   await login(page, '/sectors/legal-ai');
   await expect(page.getByRole('heading', { name: 'Legal AI landscape' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Contracts & CLM' })).toBeVisible();
-  await expect(page.getByRole('img', { name: 'Funding by year' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Funding by year' })).toBeVisible();
 });
 
 test('command palette navigates by keyboard', async ({ page }) => {
