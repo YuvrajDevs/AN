@@ -136,7 +136,7 @@ export default function AskPage() {
       )}
 
       {res && (
-        <div className={cx('grid gap-4 lg:grid-cols-[1.2fr_1fr]', busy && 'opacity-60')} aria-busy={busy} aria-live="polite">
+        <div className={cx('grid items-start gap-4 lg:grid-cols-[1.2fr_1fr]', busy && 'opacity-60')} aria-busy={busy} aria-live="polite">
           <Card
             bodyClass="p-5"
             title="Answer"
