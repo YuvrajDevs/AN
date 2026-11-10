@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { use, useState } from 'react';
 import { BarChart, HBar } from '@/components/charts';
-import { Badge, Card, ErrorState, Logo, PageHeader, Skeleton, Stat, cx } from '@/components/ui';
+import { Badge, Card, ErrorState, Logo, PageHeader, Segmented, Skeleton, Stat, TONE_BG, TONES, cx } from '@/components/ui';
 import { useApi } from '@/lib/api';
 import { date, ROUND_LABELS, usd } from '@/lib/format';
 
@@ -48,7 +48,6 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
     );
 
   const k = data.kpis;
-  const color = data.sector.color ?? 'rgb(var(--accent))';
   const maxCount = Math.max(1, ...data.marketMap.map((m) => m.count));
   const sortedMap = [...data.marketMap].sort((a, b) => b.count - a.count);
 
@@ -60,13 +59,13 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
         subtitle={data.sector.description}
         actions={
           <>
-            <a href={`/api/companies/export.csv?sector=${slug}`} download className="inline-flex h-9 items-center rounded-md border border-border bg-surface px-3.5 text-sm font-medium hover:bg-muted">
+            <a href={`/api/companies/export.csv?sector=${slug}`} download className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-sm font-medium hover:bg-muted">
               Export companies
             </a>
-            <a href={`/api/funding/export.csv?sector=${slug}`} download className="inline-flex h-9 items-center rounded-md border border-border bg-surface px-3.5 text-sm font-medium hover:bg-muted">
+            <a href={`/api/funding/export.csv?sector=${slug}`} download className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-sm font-medium hover:bg-muted">
               Export rounds
             </a>
-            <Link href={`/briefs?sector=${slug}`} className="inline-flex h-9 items-center rounded-md bg-accent px-3.5 text-sm font-medium text-accent-fg hover:bg-accent/90">
+            <Link href={`/briefs?sector=${slug}`} className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full bg-accent px-4 text-sm font-medium text-accent-fg hover:bg-accent/90">
               Analyst brief
             </Link>
           </>
@@ -74,36 +73,36 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
       />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat label="Companies" value={k.companies} hint={`${k.active} active · ${k.acquired} acquired · ${k.inactive} inactive`} />
-        <Stat label="Classified" value={`${k.classified}/${k.companies}`} hint={k.pendingReview ? <Link href="/review" className="text-accent hover:underline">{k.pendingReview} awaiting review →</Link> : 'Queue clear'} />
-        <Stat label="Disclosed funding (Form D)" value={usd(k.totalDisclosedUsd)} hint={`${k.withDisclosedFunding} companies with filings`} />
-        <Stat label="Median team size" value={k.medianTeam ? Math.round(k.medianTeam) : '—'} hint="Per YC directory" />
+        <Stat tone="yellow" label="Companies" value={k.companies} hint={`${k.active} active · ${k.acquired} acquired · ${k.inactive} inactive`} />
+        <Stat tone="pink" label="Classified" value={`${k.classified}/${k.companies}`} hint={k.pendingReview ? <Link href="/review" className="font-medium underline-offset-2 hover:underline">{k.pendingReview} awaiting review →</Link> : 'Queue clear'} />
+        <Stat tone="sage" label="Disclosed funding (Form D)" value={usd(k.totalDisclosedUsd)} hint={`${k.withDisclosedFunding} companies with filings`} />
+        <Stat tone="sky" label="Median team size" value={k.medianTeam ? Math.round(k.medianTeam) : '—'} hint="Per YC directory" />
       </div>
 
-      <h2 className="mb-3 mt-8 text-sm font-semibold">Market map</h2>
+      <h2 className="mb-3 mt-8 text-lg font-semibold tracking-tight">Market map</h2>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {sortedMap.map((m) => (
-          <section key={m.slug} className="card flex flex-col p-3" aria-labelledby={`mm-${m.slug}`}>
+        {sortedMap.map((m, idx) => (
+          <section key={m.slug} className={cx('pastel flex flex-col p-4', TONE_BG[TONES[idx % TONES.length]])} aria-labelledby={`mm-${m.slug}`}>
             <div className="mb-1 flex items-baseline justify-between gap-2">
               <h3 id={`mm-${m.slug}`} className="font-semibold">
                 <Link href={`/companies?sector=${slug}&subsector=${m.slug}`} className="hover:underline">
                   {m.name}
                 </Link>
               </h3>
-              <span className="tabular text-xs text-subtle">
+              <span className="tabular shrink-0 text-xs text-ink/70">
                 {m.count} · {usd(m.disclosedUsd, '$0')}
               </span>
             </div>
-            <HBar value={m.count} max={maxCount} color={color} />
+            <HBar value={m.count} max={maxCount} color="rgb(var(--ink))" />
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {m.companies.length === 0 && <span className="text-xs text-subtle">No companies classified here yet.</span>}
+              {m.companies.length === 0 && <span className="text-xs text-ink/70">No companies classified here yet.</span>}
               {m.companies.map((c) => (
                 <Link
                   key={c.slug}
                   href={`/companies/${c.slug}`}
                   title={`${c.name}${c.ycBatch ? ` (${c.ycBatch})` : ''}${c.totalRaisedUsd ? ` · ${usd(c.totalRaisedUsd)}` : ''}`}
                   className={cx(
-                    'flex items-center gap-1.5 rounded-md border border-border bg-bg px-1.5 py-1 text-xs hover:border-accent/50',
+                    'flex items-center gap-1.5 rounded-full bg-paper/75 py-1 pl-1 pr-2.5 text-xs font-medium hover:bg-paper',
                     c.status !== 'active' && 'opacity-60',
                   )}
                 >
@@ -112,7 +111,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
                 </Link>
               ))}
               {m.count > m.companies.length && (
-                <Link href={`/companies?sector=${slug}&subsector=${m.slug}`} className="self-center text-xs text-accent hover:underline">
+                <Link href={`/companies?sector=${slug}&subsector=${m.slug}`} className="self-center rounded-full bg-ink px-2.5 py-1 text-xs font-medium text-white hover:bg-ink/85">
                   +{m.count - m.companies.length} more
                 </Link>
               )}
@@ -131,13 +130,15 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
           title="Form D funding by year of first sale"
           bodyClass="p-4"
           actions={
-            <div role="group" aria-label="Metric" className="flex rounded-md border border-border p-0.5 text-xs">
-              {(['usd', 'rounds'] as const).map((m) => (
-                <button key={m} aria-pressed={metric === m} onClick={() => setMetric(m)} className={cx('rounded px-2 py-0.5', metric === m ? 'bg-muted font-medium' : 'text-subtle')}>
-                  {m === 'usd' ? '$ sold' : 'Offerings'}
-                </button>
-              ))}
-            </div>
+            <Segmented
+              label="Metric"
+              value={metric}
+              onChange={setMetric}
+              options={[
+                { value: 'usd', label: '$ sold' },
+                { value: 'rounds', label: 'Offerings' },
+              ]}
+            />
           }
         >
           {data.fundingByYear.length === 0 ? (
@@ -145,14 +146,13 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
           ) : (
             <BarChart
               ariaLabel="Funding by year"
-              color={color}
-              data={data.fundingByYear.map((f) => ({ label: String(f.year), value: metric === 'usd' ? f.disclosedUsd : f.rounds, secondary: f.rounds }))}
+                            data={data.fundingByYear.map((f) => ({ label: String(f.year), value: metric === 'usd' ? f.disclosedUsd : f.rounds, secondary: f.rounds }))}
               format={(v) => (metric === 'usd' ? usd(v, '$0') : `${v} offerings`)}
             />
           )}
         </Card>
         <Card title="New companies by YC batch year" bodyClass="p-4">
-          <BarChart ariaLabel="Companies by YC batch year" color={color} data={data.cohorts.map((c) => ({ label: String(c.year).slice(2), value: c.companies }))} format={(v) => `${v} companies`} />
+          <BarChart ariaLabel="Companies by YC batch year" data={data.cohorts.map((c) => ({ label: String(c.year).slice(2), value: c.companies }))} format={(v) => `${v} companies`} />
         </Card>
       </div>
 

@@ -96,11 +96,11 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
               </Button>
             )}
             {c.website && (
-              <a href={c.website} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex h-9 items-center rounded-md border border-border bg-surface px-3.5 text-sm font-medium hover:bg-muted">
+              <a href={c.website} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-sm font-medium hover:bg-muted">
                 Website ↗
               </a>
             )}
-            <Link href={`/briefs?company=${c.slug}`} className="inline-flex h-9 items-center rounded-md bg-accent px-3.5 text-sm font-medium text-accent-fg hover:bg-accent/90">
+            <Link href={`/briefs?company=${c.slug}`} className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full bg-accent px-4 text-sm font-medium text-accent-fg hover:bg-accent/90">
               Analyst brief
             </Link>
           </>

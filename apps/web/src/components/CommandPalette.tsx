@@ -7,7 +7,7 @@ import type { CompanyListItem } from '@/lib/types';
 import { Kbd, Logo, Spinner, cx } from './ui';
 
 const PAGES = [
-  { label: 'Dashboard', href: '/' },
+  { label: 'Dashboard', href: '/dashboard' },
   { label: 'Companies', href: '/companies' },
   { label: 'Funding rounds', href: '/funding' },
   { label: 'Sectors & taxonomy', href: '/sectors' },
@@ -57,12 +57,12 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/30 px-4 pt-[12vh]" onMouseDown={onClose}>
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-ink/40 px-4 pt-[12vh] backdrop-blur-sm" onMouseDown={onClose}>
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Search"
-        className="w-full max-w-lg overflow-hidden rounded-xl border border-border bg-surface shadow-2xl"
+        className="w-full max-w-lg overflow-hidden rounded-3xl border border-border bg-surface shadow-2xl"
         onMouseDown={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
           if (e.key === 'Escape') onClose();
@@ -104,7 +104,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
               aria-selected={i === active}
               onMouseEnter={() => setActive(i)}
               onClick={() => go(r.href)}
-              className={cx('flex cursor-pointer items-center gap-3 rounded-md px-3 py-2', i === active && 'bg-muted')}
+              className={cx('flex cursor-pointer items-center gap-3 rounded-2xl px-3 py-2', i === active && 'bg-pink/60')}
             >
               {r.hint === 'Page' ? <span className="w-6 text-center text-subtle">→</span> : <Logo src={r.logo} name={r.label} size={24} />}
               <span className="min-w-0 flex-1">

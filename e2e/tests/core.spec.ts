@@ -10,9 +10,18 @@ test('redirects signed-out users to login and rejects bad passwords', async ({ p
   await expect(page.getByRole('alert').filter({ hasText: 'Invalid email or password' })).toBeVisible();
 });
 
+test('landing page leads to a prefilled sign-in', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: /Open the live demo/ }).first().click();
+  await expect(page).toHaveURL(/\/login/);
+  await expect(page.getByLabel('Email')).toHaveValue('analyst@strata.local');
+  await page.getByRole('button', { name: 'Sign in' }).click();
+  await expect(page).toHaveURL(/\/dashboard/);
+});
+
 test('dashboard shows seeded data', async ({ page }) => {
   await login(page);
-  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^Good (morning|afternoon|evening)/ })).toBeVisible();
   await expect(page.getByText('Companies tracked')).toBeVisible();
   await expect(page.getByRole('link', { name: /Legal AI/ }).first()).toBeVisible();
 });

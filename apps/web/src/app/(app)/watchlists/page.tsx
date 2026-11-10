@@ -67,7 +67,7 @@ function WatchlistForm({ taxonomy, onDone, initial }: { taxonomy: TaxonomyNode[]
                 key={s.slug}
                 aria-pressed={on}
                 onClick={() => setSectors(on ? sectors.filter((x) => x !== s.slug) : [...sectors, s.slug])}
-                className={`rounded-full border px-2.5 py-1 text-xs ${on ? 'border-accent bg-accent/10 text-accent' : 'border-border text-subtle hover:text-fg'} ${s.root ? 'font-semibold' : ''}`}
+                className={`rounded-full border px-2.5 py-1 text-xs ${on ? 'border-transparent bg-pink font-medium text-ink' : 'border-border text-subtle hover:text-fg'} ${s.root ? 'font-semibold' : ''}`}
               >
                 {s.name}
               </button>
@@ -192,7 +192,7 @@ export default function WatchlistsPage() {
                 <ul className="flex flex-wrap gap-1.5">
                   {w.companyIds.map((c) => (
                     <li key={c._id}>
-                      <Link href={`/companies/${c.slug}`} className="flex items-center gap-1.5 rounded-md border border-border px-1.5 py-1 text-xs hover:border-accent/50">
+                      <Link href={`/companies/${c.slug}`} className="flex items-center gap-1.5 rounded-md border border-border px-1.5 py-1 text-xs hover:border-ink/30">
                         <Logo src={c.logoUrl} name={c.name} size={16} />
                         {c.name}
                       </Link>

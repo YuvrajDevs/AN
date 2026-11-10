@@ -65,7 +65,7 @@ export default function AlertsPage() {
         ) : (
           <ul className="divide-y divide-border">
             {data.items.map((a) => (
-              <li key={a._id} className={cx('flex items-center gap-3 px-4 py-3', !a.read && 'bg-accent/5')}>
+              <li key={a._id} className={cx('flex items-center gap-3 px-4 py-3', !a.read && 'bg-yellow/30')}>
                 <span className={cx('h-2 w-2 shrink-0 rounded-full', a.read ? 'bg-transparent' : 'bg-accent')} aria-label={a.read ? undefined : 'Unread'} />
                 {a.companyId && <Logo src={a.companyId.logoUrl} name={a.companyId.name} />}
                 <div className="min-w-0 flex-1">

@@ -81,7 +81,7 @@ export default function BriefPage({ params }: { params: Promise<{ id: string }> 
                           onMouseLeave={() => setFocus(null)}
                           onFocus={() => setFocus(sid)}
                           onBlur={() => setFocus(null)}
-                          className="ml-0.5 rounded bg-accent/10 px-1 align-super text-[10px] font-semibold text-accent hover:bg-accent/20"
+                          className="ml-0.5 rounded bg-pink px-1 align-super text-[10px] font-semibold text-ink hover:bg-pink/70"
                           aria-label={`Source ${order.get(sid)}`}
                         >
                           {order.get(sid)}
@@ -108,7 +108,7 @@ export default function BriefPage({ params }: { params: Promise<{ id: string }> 
           <Card title={`Sources (${sources.length})`} className="h-fit lg:sticky lg:top-6">
             <ol className="divide-y divide-border">
               {sources.map((s) => (
-                <li key={s._id} id={`src-${s._id}`} className={`px-4 py-3 text-xs transition-colors ${focus === s._id ? 'bg-accent/10' : ''}`}>
+                <li key={s._id} id={`src-${s._id}`} className={`px-4 py-3 text-xs transition-colors ${focus === s._id ? 'bg-pink/50' : ''}`}>
                   <div className="mb-1 flex items-center gap-2">
                     <span className="font-semibold text-accent">[{order.get(s._id)}]</span>
                     <Badge>{SOURCE_LABELS[s.kind] ?? s.kind}</Badge>

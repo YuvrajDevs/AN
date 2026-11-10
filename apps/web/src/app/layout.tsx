@@ -1,16 +1,19 @@
 import type { Metadata, Viewport } from 'next';
+import { Instrument_Sans } from 'next/font/google';
 import './globals.css';
 
+const sans = Instrument_Sans({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+
 export const metadata: Metadata = {
-  title: { default: 'Strata', template: '%s · Strata' },
-  description: 'Startup and sector intelligence: company profiles, funding rounds, LLM classification and analyst briefs.',
+  title: { default: 'Strata · Startup & sector intelligence', template: '%s · Strata' },
+  description: 'Startup and sector intelligence from public data: SEC Form D funding, LLM sector classification with human review, and analyst briefs where every claim cites a source.',
 };
 
-export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: [{ color: '#f8f9fb' }] };
+export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: [{ color: '#f6f1e7' }] };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={sans.variable}>
       <body className="min-h-screen font-sans text-sm">{children}</body>
     </html>
   );

@@ -31,7 +31,7 @@ function NodeEditor({ node, onDone, parentSlug }: { node?: TaxonomyNode; parentS
   }
 
   return (
-    <form onSubmit={save} className="space-y-3 rounded-md border border-accent/30 bg-accent/5 p-3" onKeyDown={(e) => e.key === 'Escape' && onDone()}>
+    <form onSubmit={save} className="space-y-3 rounded-md border border-ink/30 bg-yellow/30 p-3" onKeyDown={(e) => e.key === 'Escape' && onDone()}>
       <div>
         <label className="label" htmlFor={`n-${node?.slug ?? 'new'}`}>
           Name
@@ -130,7 +130,7 @@ export default function SectorsPage() {
                 }
                 actions={
                   <div className="flex gap-2">
-                    <Link href={`/sectors/${s.slug}`} className="inline-flex h-8 items-center rounded-md bg-accent px-2.5 text-xs font-medium text-accent-fg hover:bg-accent/90">
+                    <Link href={`/sectors/${s.slug}`} className="inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-full bg-accent px-3 text-xs font-medium text-accent-fg hover:bg-accent/90">
                       Landscape →
                     </Link>
                     {canEdit && (

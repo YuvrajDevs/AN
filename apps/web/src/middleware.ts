@@ -1,7 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
-/** Redirect signed-out visitors to /login. The API still authorises every request itself. */
+/**
+ * The landing page (/) and /login are public. Everything else redirects signed-out
+ * visitors to /login. The API still authorises every request itself.
+ */
 export function middleware(req: NextRequest) {
+  if (req.nextUrl.pathname === '/') return NextResponse.next();
   const hasSession = req.cookies.has('strata_session');
   if (!hasSession) {
     const url = req.nextUrl.clone();
@@ -13,5 +17,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!login|api|_next|favicon.ico|robots.txt).*)'],
+  matcher: ['/((?!login|api|_next|favicon.ico|icon.svg|robots.txt).*)'],
 };

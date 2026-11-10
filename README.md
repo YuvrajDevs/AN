@@ -7,6 +7,8 @@
 
 **Startup and sector intelligence from public data.** Strata tracks startups in chosen sectors, records their funding rounds from primary sources (SEC filings), classifies companies into an editable sector taxonomy with LLMs (with a confidence score and a human review queue), and produces sector landscapes and analyst briefs in which every claim cites a stored source.
 
+**Live demo:** [strata-weld-sigma.vercel.app](https://strata-weld-sigma.vercel.app) (one-click demo sign-in; free hosting, so the first load can take up to a minute).
+
 > **Name.** *Strata* is the proposed product name: a landscape is read in layers, from sector to subsector to company to round to source. The repository is `AN`.
 
 ![Legal AI landscape: market map by subsector, KPIs and funding](docs/screenshots/landscape.png)
@@ -14,7 +16,7 @@
 | | |
 |---|---|
 | **Backend** | Node.js 22 · Express 5 · TypeScript (strict) · Mongoose 8 on MongoDB 7 (aggregation pipelines) · zod |
-| **Frontend** | Next.js 15 (App Router) · React 19 · SWR · Tailwind · light and dark themes |
+| **Frontend** | Next.js 15 (App Router) · React 19 · SWR · Tailwind · warm pastel design system |
 | **Infra** | Redpanda (Kafka API) event backbone · Redis (cache, rate limits, BullMQ jobs) · Docker Compose |
 | **AI** | OpenAI, Anthropic and Gemini behind one provider interface, plus an offline heuristic baseline and a 162-company eval set |
 | **Data** | YC public directory · SEC EDGAR Form D · company RSS/press feeds · GitHub. No Crunchbase, PitchBook, Tracxn or LinkedIn scraping. |
@@ -32,7 +34,7 @@ Requirements: Docker with Compose v2. No API keys needed.
 docker compose up --build
 ```
 
-Open **http://localhost:3000** and sign in:
+Open **http://localhost:3000** (landing page) and press **Sign in**; the analyst demo account is pre-filled:
 
 | Role | Email | Password | Can |
 |---|---|---|---|

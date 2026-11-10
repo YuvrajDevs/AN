@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { login } from './helpers';
 
-const PAGES = ['/', '/companies', '/companies/legora', '/funding', '/sectors', '/sectors/legal-ai', '/review', '/watchlists', '/alerts', '/briefs'];
+const PAGES = ['/', '/dashboard', '/companies', '/companies/legora', '/funding', '/sectors', '/sectors/legal-ai', '/review', '/watchlists', '/alerts', '/briefs'];
 
 test('mobile layout has a menu that navigates', async ({ page }) => {
   await login(page);

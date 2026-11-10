@@ -17,7 +17,7 @@ export function BarChart({
   data,
   format = (v) => String(v),
   height = 180,
-  color = 'rgb(var(--accent))',
+  color = 'rgb(var(--fg))',
   ariaLabel,
 }: {
   data: BarDatum[];
@@ -34,7 +34,7 @@ export function BarChart({
       <div className="relative" style={{ height }}>
         <svg viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" className="h-full w-full overflow-visible" role="img" aria-label={ariaLabel}>
           {[0.25, 0.5, 0.75, 1].map((t) => (
-            <line key={t} x1="0" x2="100" y1={height - t * (height - 4)} y2={height - t * (height - 4)} stroke="rgb(var(--border))" strokeWidth="0.3" vectorEffect="non-scaling-stroke" />
+            <line key={t} x1="0" x2="100" y1={height - t * (height - 4)} y2={height - t * (height - 4)} stroke="currentColor" strokeOpacity="0.12" strokeWidth="0.3" vectorEffect="non-scaling-stroke" />
           ))}
           {data.map((d, i) => {
             const h = (d.value / max) * (height - 4);
@@ -45,7 +45,7 @@ export function BarChart({
                 y={height - h}
                 width={barW * 0.7}
                 height={Math.max(h, d.value > 0 ? 1 : 0)}
-                rx="0.6"
+                rx="1.2"
                 fill={color}
                 opacity={active === null || active === i ? 1 : 0.45}
                 tabIndex={0}
@@ -61,15 +61,15 @@ export function BarChart({
         </svg>
         {active !== null && data[active] && (
           <div
-            className="pointer-events-none absolute -top-2 z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md border border-border bg-surface px-2 py-1 text-xs shadow-sm"
+            className="pointer-events-none absolute -top-2 z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-full bg-ink px-2.5 py-1 text-xs text-white shadow-sm"
             style={{ left: `${(active + 0.5) * barW}%` }}
           >
             <span className="font-medium">{data[active].label}</span> · <span className="tabular">{format(data[active].value)}</span>
-            {data[active].secondary !== undefined && <span className="text-subtle"> · {data[active].secondary} rounds</span>}
+            {data[active].secondary !== undefined && <span className="text-white/70"> · {data[active].secondary} rounds</span>}
           </div>
         )}
       </div>
-      <div className="mt-1 flex text-[10px] text-subtle" aria-hidden="true">
+      <div className="mt-1.5 flex text-[10px] opacity-70" aria-hidden="true">
         {data.map((d, i) => (
           <div key={d.label} className="truncate text-center" style={{ width: `${barW}%` }}>
             {data.length > 12 && i % 2 === 1 ? '' : d.label}
@@ -91,9 +91,9 @@ export function BarChart({
   );
 }
 
-export function HBar({ value, max, color = 'rgb(var(--accent))' }: { value: number; max: number; color?: string }) {
+export function HBar({ value, max, color = 'rgb(var(--fg))' }: { value: number; max: number; color?: string }) {
   return (
-    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted" aria-hidden="true">
+    <div className="h-2 w-full overflow-hidden rounded-full bg-ink/10" aria-hidden="true">
       <div className="h-full rounded-full" style={{ width: `${max ? Math.max(2, (value / max) * 100) : 0}%`, background: color }} />
     </div>
   );

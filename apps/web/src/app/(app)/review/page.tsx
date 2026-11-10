@@ -109,7 +109,7 @@ export default function ReviewPage() {
             <ul aria-label="Pending items">
               {items.map((it, i) => (
                 <li key={it._id}>
-                  <button onClick={() => setIndex(i)} aria-current={i === index ? 'true' : undefined} className={cx('flex w-full items-center gap-2 border-b border-border px-3 py-2 text-left', i === index ? 'bg-accent/10' : 'hover:bg-muted')}>
+                  <button onClick={() => setIndex(i)} aria-current={i === index ? 'true' : undefined} className={cx('flex w-full items-center gap-2 border-b border-border px-3 py-2 text-left', i === index ? 'bg-pink/50' : 'hover:bg-muted')}>
                     <Logo src={it.company.logoUrl} name={it.company.name} size={22} />
                     <span className="min-w-0 flex-1 truncate text-sm">{it.company.name}</span>
                     <span className="tabular text-xs text-subtle">{pct(it.confidence)}</span>
@@ -174,7 +174,7 @@ export default function ReviewPage() {
                       onClick={() => decide('override', o.slug)}
                       className={cx(
                         'flex items-start gap-2 rounded-md border px-3 py-2 text-left text-sm disabled:opacity-50',
-                        o.slug === current.subsectorSlug ? 'border-accent/50 bg-accent/5' : 'border-border hover:bg-muted',
+                        o.slug === current.subsectorSlug ? 'border-ink/30 bg-yellow/30' : 'border-border hover:bg-muted',
                       )}
                     >
                       <Kbd>{i + 1}</Kbd>

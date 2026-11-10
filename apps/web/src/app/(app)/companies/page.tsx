@@ -99,13 +99,13 @@ function CompaniesView() {
         title="Companies"
         subtitle={data ? `${data.total.toLocaleString()} companies match` : 'Search and filter every tracked company'}
         actions={
-          <a href={exportHref} className="inline-flex h-9 items-center rounded-md border border-border bg-surface px-3.5 text-sm font-medium hover:bg-muted" download>
+          <a href={exportHref} className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-sm font-medium hover:bg-muted" download>
             Export CSV
           </a>
         }
       />
-      <div className="card mb-4 grid gap-3 p-3 sm:grid-cols-2 lg:grid-cols-6">
-        <div className="sm:col-span-2">
+      <div className="card mb-4 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6">
+        <div className="sm:col-span-2 lg:col-span-4 2xl:col-span-2">
           <label htmlFor="q" className="label">
             Search <Kbd>f</Kbd>
           </label>
@@ -161,7 +161,7 @@ function CompaniesView() {
             ))}
           </select>
         </div>
-        <div className="flex flex-wrap items-center gap-2 sm:col-span-2 lg:col-span-6">
+        <div className="flex flex-wrap items-center gap-2 sm:col-span-2 lg:col-span-4 2xl:col-span-6">
           {[
             { k: 'hasFunding', v: 'true', l: 'Has Form D funding' },
             { k: 'state', v: 'pending_review', l: 'Needs review' },
@@ -173,7 +173,7 @@ function CompaniesView() {
                 key={chip.l}
                 aria-pressed={on}
                 onClick={() => set({ [chip.k]: on ? undefined : chip.v })}
-                className={`rounded-full border px-2.5 py-1 text-xs ${on ? 'border-accent bg-accent/10 text-accent' : 'border-border text-subtle hover:text-fg'}`}
+                className={`rounded-full border px-2.5 py-1 text-xs ${on ? 'border-transparent bg-pink font-medium text-ink' : 'border-border text-subtle hover:text-fg'}`}
               >
                 {chip.l}
               </button>
@@ -230,7 +230,7 @@ function CompaniesView() {
               </thead>
               <tbody className={`divide-y divide-border ${isLoading ? 'opacity-60' : ''}`}>
                 {data?.items.map((c, i) => (
-                  <tr key={c._id} className={`hover:bg-muted/60 ${i === cursor ? 'bg-accent/5 outline outline-1 -outline-offset-1 outline-accent/40' : ''}`}>
+                  <tr key={c._id} className={`hover:bg-muted/60 ${i === cursor ? 'bg-yellow/30 outline outline-1 -outline-offset-1 outline-ink/30' : ''}`}>
                     <td className="td">
                       <Link href={`/companies/${c.slug}`} className="flex items-center gap-3">
                         <Logo src={c.logoUrl} name={c.name} />

@@ -9,24 +9,35 @@ export function cx(...c: (string | false | null | undefined)[]) {
   return c.filter(Boolean).join(' ');
 }
 
+export type Tone = 'yellow' | 'pink' | 'sage' | 'sky';
+export const TONES: Tone[] = ['yellow', 'pink', 'sage', 'sky'];
+export const TONE_BG: Record<Tone, string> = { yellow: 'bg-yellow', pink: 'bg-pink', sage: 'bg-sage', sky: 'bg-sky' };
+
+/** Stable pastel for a sector, from its seed colour (indigo → pink, emerald → sage, amber → yellow). */
+export function sectorTone(color?: string | null, index = 0): Tone {
+  const c = (color ?? '').toLowerCase();
+  if (c === '#4f46e5') return 'pink';
+  if (c === '#059669') return 'sage';
+  if (c === '#d97706') return 'yellow';
+  return TONES[index % TONES.length];
+}
+
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
+const BTN_BASE = 'inline-flex shrink-0 items-center whitespace-nowrap justify-center gap-1.5 rounded-full font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50';
+const BTN_VARIANT: Record<Variant, string> = {
+  primary: 'bg-accent text-accent-fg hover:bg-accent/85',
+  secondary: 'border border-border bg-surface text-fg hover:bg-muted',
+  ghost: 'text-subtle hover:bg-muted hover:text-fg',
+  danger: 'border border-danger/30 bg-surface text-danger hover:bg-danger/10',
+};
+export function buttonClass(variant: Variant = 'secondary', size: 'sm' | 'md' = 'md', className?: string) {
+  return cx(BTN_BASE, size === 'sm' ? 'h-8 px-3 text-xs' : 'h-10 px-4 text-sm', BTN_VARIANT[variant], className);
+}
+
 export const Button = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; size?: 'sm' | 'md'; loading?: boolean }>(
   function Button({ variant = 'secondary', size = 'md', loading, className, children, disabled, ...props }, ref) {
     return (
-      <button
-        ref={ref}
-        disabled={disabled || loading}
-        className={cx(
-          'inline-flex items-center justify-center gap-1.5 rounded-md font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50',
-          size === 'sm' ? 'h-8 px-2.5 text-xs' : 'h-9 px-3.5 text-sm',
-          variant === 'primary' && 'bg-accent text-accent-fg hover:bg-accent/90',
-          variant === 'secondary' && 'border border-border bg-surface text-fg hover:bg-muted',
-          variant === 'ghost' && 'text-subtle hover:bg-muted hover:text-fg',
-          variant === 'danger' && 'border border-danger/30 bg-surface text-danger hover:bg-danger/10',
-          className,
-        )}
-        {...props}
-      >
+      <button ref={ref} disabled={disabled || loading} className={buttonClass(variant, size, className)} {...props}>
         {loading && <Spinner className="h-3.5 w-3.5" />}
         {children}
       </button>
@@ -43,16 +54,17 @@ export function Spinner({ className = 'h-4 w-4' }: { className?: string }) {
   );
 }
 
-export function Badge({ children, tone = 'neutral', className }: { children: ReactNode; tone?: 'neutral' | 'accent' | 'success' | 'warning' | 'danger'; className?: string }) {
+export function Badge({ children, tone = 'neutral', className }: { children: ReactNode; tone?: 'neutral' | 'accent' | 'success' | 'warning' | 'danger' | Tone; className?: string }) {
   return (
     <span
       className={cx(
-        'inline-flex items-center gap-1 whitespace-nowrap rounded px-1.5 py-0.5 text-[11px] font-medium',
+        'inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-medium',
         tone === 'neutral' && 'bg-muted text-subtle',
-        tone === 'accent' && 'bg-accent/10 text-accent',
-        tone === 'success' && 'bg-success/10 text-success',
-        tone === 'warning' && 'bg-warning/10 text-warning',
+        tone === 'accent' && 'bg-sky text-ink',
+        tone === 'success' && 'bg-success/15 text-success',
+        tone === 'warning' && 'bg-warning/15 text-warning',
         tone === 'danger' && 'bg-danger/10 text-danger',
+        (tone === 'yellow' || tone === 'pink' || tone === 'sage' || tone === 'sky') && `${TONE_BG[tone]} text-ink`,
         className,
       )}
     >
@@ -62,11 +74,11 @@ export function Badge({ children, tone = 'neutral', className }: { children: Rea
 }
 
 export function Kbd({ children }: { children: ReactNode }) {
-  return <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] text-subtle">{children}</kbd>;
+  return <kbd className="rounded-md border border-border px-1.5 py-0.5 font-mono text-[10px] opacity-70">{children}</kbd>;
 }
 
 export function ConfidenceBadge({ value, state }: { value: number | null; state?: string }) {
-  if (state === 'reviewed') return <Badge tone="success">✓ Reviewed</Badge>;
+  if (state === 'reviewed') return <Badge tone="sage">✓ Reviewed</Badge>;
   if (value === null || value === undefined) return <Badge>Unclassified</Badge>;
   const tone = value >= 0.75 ? 'success' : value >= 0.5 ? 'warning' : 'danger';
   return (
@@ -77,7 +89,7 @@ export function ConfidenceBadge({ value, state }: { value: number | null; state?
 }
 
 export function StatusBadge({ status }: { status: string }) {
-  const tone = status === 'active' ? 'success' : status === 'acquired' ? 'accent' : status === 'public' ? 'accent' : 'neutral';
+  const tone = status === 'active' ? 'sage' : status === 'acquired' ? 'sky' : status === 'public' ? 'yellow' : 'neutral';
   return <Badge tone={tone}>{status}</Badge>;
 }
 
@@ -87,7 +99,7 @@ export function Skeleton({ className }: { className?: string }) {
 
 export function TableSkeleton({ rows = 8, cols = 5 }: { rows?: number; cols?: number }) {
   return (
-    <div className="space-y-2 p-3" role="status" aria-label="Loading">
+    <div className="space-y-2 p-4" role="status" aria-label="Loading">
       {Array.from({ length: rows }).map((_, r) => (
         <div key={r} className="flex gap-3">
           {Array.from({ length: cols }).map((_, c) => (
@@ -102,7 +114,7 @@ export function TableSkeleton({ rows = 8, cols = 5 }: { rows?: number; cols?: nu
 export function EmptyState({ title, body, action, icon = '◇' }: { title: string; body?: ReactNode; action?: ReactNode; icon?: string }) {
   return (
     <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted text-lg text-subtle" aria-hidden="true">
+      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-yellow text-lg text-ink" aria-hidden="true">
         {icon}
       </div>
       <h3 className="text-sm font-semibold">{title}</h3>
@@ -117,7 +129,7 @@ export function ErrorState({ error, retry }: { error: unknown; retry?: () => voi
   const status = error instanceof ApiError ? error.status : null;
   return (
     <div role="alert" className="flex flex-col items-center justify-center px-6 py-12 text-center">
-      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-danger/10 text-danger" aria-hidden="true">
+      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-pink font-semibold text-ink" aria-hidden="true">
         !
       </div>
       <h3 className="text-sm font-semibold">{status === 404 ? 'Not found' : status === 429 ? 'Slow down' : 'Something went wrong'}</h3>
@@ -133,34 +145,36 @@ export function ErrorState({ error, retry }: { error: unknown; retry?: () => voi
 
 export function PageHeader({ title, subtitle, actions, crumbs }: { title: ReactNode; subtitle?: ReactNode; actions?: ReactNode; crumbs?: { href: string; label: string }[] }) {
   return (
-    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
         {crumbs && (
-          <nav aria-label="Breadcrumb" className="mb-1 flex items-center gap-1 text-xs text-subtle">
+          <nav aria-label="Breadcrumb" className="mb-2 flex flex-wrap items-center gap-1 text-xs text-subtle">
             {crumbs.map((c, i) => (
               <span key={c.href} className="flex items-center gap-1">
                 {i > 0 && <span aria-hidden="true">/</span>}
-                <Link href={c.href} className="hover:text-fg">
+                <Link href={c.href} className="rounded-full px-1 hover:text-fg">
                   {c.label}
                 </Link>
               </span>
             ))}
           </nav>
         )}
-        <h1 className="truncate text-xl font-semibold tracking-tight">{title}</h1>
-        {subtitle && <p className="mt-1 text-sm text-subtle">{subtitle}</p>}
+        <h1 className="truncate text-[28px] font-semibold leading-tight tracking-tight sm:text-[32px]">{title}</h1>
+        {subtitle && <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-subtle">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
   );
 }
 
-export function Stat({ label, value, hint }: { label: string; value: ReactNode; hint?: ReactNode }) {
+/** KPI tile. With a tone it becomes a pastel card, as on the dashboard. */
+export function Stat({ label, value, hint, tone, children }: { label: string; value: ReactNode; hint?: ReactNode; tone?: Tone; children?: ReactNode }) {
   return (
-    <div className="card p-4">
-      <div className="text-xs font-medium text-subtle">{label}</div>
-      <div className="tabular mt-1 text-2xl font-semibold tracking-tight">{value}</div>
-      {hint && <div className="mt-1 text-xs text-subtle">{hint}</div>}
+    <div className={cx('flex flex-col p-5', tone ? cx('pastel', TONE_BG[tone]) : 'card')}>
+      <div className="text-[13px] font-medium">{label}</div>
+      <div className="tabular mt-2 text-[28px] font-semibold leading-none tracking-tight">{value}</div>
+      {hint && <div className="mt-2 text-xs text-subtle">{hint}</div>}
+      {children}
     </div>
   );
 }
@@ -179,13 +193,13 @@ export function Logo({ src, name, size = 28 }: { src?: string | null; name: stri
         loading="lazy"
         referrerPolicy="no-referrer"
         onError={() => setFailed(true)}
-        className="shrink-0 rounded-md border border-border bg-white object-contain"
+        className="shrink-0 rounded-full border border-border bg-white object-contain"
         style={{ width: size, height: size }}
       />
     );
   }
   return (
-    <div className="flex shrink-0 items-center justify-center rounded-md bg-muted text-xs font-semibold text-subtle" style={{ width: size, height: size }} aria-hidden="true">
+    <div className="flex shrink-0 items-center justify-center rounded-full bg-yellow text-xs font-semibold text-ink" style={{ width: size, height: size }} aria-hidden="true">
       {name.slice(0, 1).toUpperCase()}
     </div>
   );
@@ -193,14 +207,32 @@ export function Logo({ src, name, size = 28 }: { src?: string | null; name: stri
 
 export function Card({ title, actions, children, className, bodyClass }: { title?: ReactNode; actions?: ReactNode; children: ReactNode; className?: string; bodyClass?: string }) {
   return (
-    <section className={cx('card', className)}>
+    <section className={cx('card overflow-hidden', className)}>
       {(title || actions) && (
-        <header className="flex items-center justify-between gap-2 border-b border-border px-4 py-3">
-          <h2 className="text-sm font-semibold">{title}</h2>
+        <header className="flex items-center justify-between gap-2 px-5 pb-2 pt-4">
+          <h2 className="text-[15px] font-semibold tracking-tight">{title}</h2>
           {actions}
         </header>
       )}
       <div className={bodyClass}>{children}</div>
     </section>
+  );
+}
+
+/** Pill segmented control (Today / Week / Month style). */
+export function Segmented<T extends string>({ value, options, onChange, label }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void; label: string }) {
+  return (
+    <div role="group" aria-label={label} className="flex rounded-full bg-muted p-0.5 text-xs">
+      {options.map((o) => (
+        <button
+          key={o.value}
+          aria-pressed={value === o.value}
+          onClick={() => onChange(o.value)}
+          className={cx('rounded-full px-3 py-1 font-medium', value === o.value ? 'bg-fg text-bg' : 'text-subtle hover:text-fg')}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
   );
 }
