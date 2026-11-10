@@ -19,7 +19,7 @@ services:
       - key: INLINE_WORKER
         value: "true"
       - key: TRUST_PROXY_HOPS
-        value: "2" # Vercel proxy + Render load balancer
+        value: "4" # Vercel + Cloudflare + Render edge + Render internal proxy
       - key: COOKIE_SECURE
         value: "true"
       - key: ALLOW_SIGNUP

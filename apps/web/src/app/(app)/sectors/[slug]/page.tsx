@@ -104,7 +104,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
                   title={`${c.name}${c.ycBatch ? ` (${c.ycBatch})` : ''}${c.totalRaisedUsd ? ` · ${usd(c.totalRaisedUsd)}` : ''}`}
                   className={cx(
                     'flex items-center gap-1.5 rounded-full bg-muted py-0.5 pl-0.5 pr-2 text-xs hover:bg-pink/60',
-                    c.status !== 'active' && 'opacity-60',
+                    c.status !== 'active' && 'text-subtle [&_img]:opacity-50 [&_img]:grayscale',
                   )}
                 >
                   <Logo src={c.logoUrl} name={c.name} size={16} />

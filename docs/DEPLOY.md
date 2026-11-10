@@ -57,7 +57,8 @@ Sign in with `viewer@strata.local` / `strata-demo-2026` (or the analyst and admi
 
 ## Notes
 
-- **Proxy hops.** Requests reach the API through Vercel and Render's load balancer, so `TRUST_PROXY_HOPS=2` makes rate limits key on the visitor's address instead of Vercel's.
+- **Proxy hops.** A request reaches the API through Vercel, Cloudflare and two Render proxies (`X-Forwarded-For: client, vercel, cloudflare, render-internal`), so `TRUST_PROXY_HOPS=4` makes rate limits key on the visitor's address. Too low a value keys on a random edge address; too high lets clients spoof `X-Forwarded-For`. Check the header in the request logs if the hosting path changes.
+- **Cold starts and restarts.** The sign-in form retries for up to 90 seconds while the API wakes, and the landing page pings `/api/health` on load so the API is usually awake by the time a visitor clicks Sign in.
 - **Sign-up is off** in the hosted demo (`ALLOW_SIGNUP=false`); visitors use the seeded accounts.
 - **Live connectors.** Running the SEC connector from the admin console needs `SEC_USER_AGENT` set to a real contact; leave it unset to keep the demo on the snapshot.
 - **Cold starts.** Put a note on any link you share: the first load after idle takes up to a minute while Render wakes the API.

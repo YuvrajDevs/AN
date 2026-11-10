@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
+import { CompanyPicker } from '@/components/CompanyPicker';
 import { useCan } from '@/components/session';
 import { Badge, Button, EmptyState, ErrorState, PageHeader, TableSkeleton } from '@/components/ui';
 import { api, ApiError, useApi } from '@/lib/api';
@@ -66,7 +67,7 @@ function BriefsView() {
           </div>
           <div className="min-w-[14rem] flex-1">
             <label className="label" htmlFor="b-slug">
-              {scopeType === 'sector' ? 'Sector' : 'Company slug'}
+              {scopeType === 'sector' ? 'Sector' : 'Company'}
             </label>
             {scopeType === 'sector' ? (
               <select id="b-slug" className="input" value={slug} onChange={(e) => setSlug(e.target.value)} required>
@@ -78,7 +79,7 @@ function BriefsView() {
                 ))}
               </select>
             ) : (
-              <input id="b-slug" className="input" value={slug} onChange={(e) => setSlug(e.target.value.toLowerCase())} placeholder="e.g. legora" required pattern="[a-z0-9][a-z0-9-]*" />
+              <CompanyPicker id="b-slug" value={slug} onChange={setSlug} />
             )}
           </div>
           <div>

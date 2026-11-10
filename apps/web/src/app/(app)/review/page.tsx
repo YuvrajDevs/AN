@@ -58,7 +58,10 @@ export default function ReviewPage() {
       if (['INPUT', 'SELECT', 'TEXTAREA'].includes(t.tagName) || e.metaKey || e.ctrlKey) return;
       if (e.key === 'j') setIndex((i) => Math.min(i + 1, items.length - 1));
       else if (e.key === 'k') setIndex((i) => Math.max(i - 1, 0));
-      else if (e.key === 'a' && current?.subsectorSlug) decide('accept');
+      else if (e.key === 'a' && current) {
+        if (current.subsectorSlug) decide('accept');
+        else decide('override', null);
+      }
       else if (e.key === '0') decide('override', null);
       else if (/^[1-9]$/.test(e.key)) {
         const opt = options[Number(e.key) - 1];
@@ -133,7 +136,7 @@ export default function ReviewPage() {
                 </div>
                 {current.company.ycBatch && <Badge>{current.company.ycBatch}</Badge>}
               </div>
-              <p className="mt-4 max-h-40 overflow-y-auto whitespace-pre-line text-sm leading-relaxed">{current.company.description || 'No description.'}</p>
+              <p tabIndex={0} aria-label="Company description" className="mt-4 max-h-40 overflow-y-auto whitespace-pre-line rounded-lg text-sm leading-relaxed">{current.company.description || 'No description.'}</p>
               {current.company.tags.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-1">
                   {current.company.tags.map((t) => (
@@ -161,8 +164,9 @@ export default function ReviewPage() {
 
               <div className="mt-5">
                 <div className="mb-2 flex items-center gap-2">
-                  <Button variant="primary" disabled={!current.subsectorSlug || !canDecide} loading={busy} onClick={() => decide('accept')}>
-                    Accept <Kbd>a</Kbd>
+                  {/* "No subsector fits" is a proposal too: accepting it confirms the company is out of scope. */}
+                  <Button variant="primary" disabled={!canDecide} loading={busy} onClick={() => (current.subsectorSlug ? void decide('accept') : void decide('override', null))}>
+                    {current.subsectorSlug ? 'Accept' : 'Accept: out of scope'} <Kbd>a</Kbd>
                   </Button>
                   <span className="text-xs text-subtle">or choose the right subsector:</span>
                 </div>
@@ -194,7 +198,7 @@ export default function ReviewPage() {
         </div>
       )}
       {toast && (
-        <div role="status" className="fixed bottom-4 right-4 z-40 rounded-md border border-border bg-surface px-4 py-2 text-sm shadow-lg">
+        <div role="status" className="fixed bottom-4 right-4 z-40 animate-[fadeUp_240ms_cubic-bezier(0.22,1,0.36,1)] rounded-full bg-ink px-4 py-2 text-sm text-white shadow-lg">
           {toast}
         </div>
       )}

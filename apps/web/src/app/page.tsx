@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { WarmApi } from '@/components/WarmApi';
 import { ArrowRight, Check, Database, FileText, Github, Layers, Search, ShieldCheck, Sparkles } from 'lucide-react';
 
 const REPO = 'https://github.com/YuvrajDevs/AN';
@@ -119,6 +120,7 @@ const STACK = ['Node.js', 'Express', 'TypeScript', 'MongoDB', 'Kafka', 'Redis', 
 export default function Landing() {
   return (
     <div className="mx-auto max-w-[1120px] px-4 sm:px-6">
+      <WarmApi />
       <header className="flex h-16 items-center justify-between">
         <Mark />
         <nav aria-label="Landing" className="flex items-center gap-1">

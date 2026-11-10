@@ -74,7 +74,7 @@ export function Badge({ children, tone = 'neutral', className }: { children: Rea
 }
 
 export function Kbd({ children }: { children: ReactNode }) {
-  return <kbd className="rounded-md border border-border px-1.5 py-0.5 font-mono text-[10px] opacity-70">{children}</kbd>;
+  return <kbd className="rounded-md border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] text-subtle">{children}</kbd>;
 }
 
 export function ConfidenceBadge({ value, state }: { value: number | null; state?: string }) {

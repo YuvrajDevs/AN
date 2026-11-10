@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
-import { api, ApiError } from '@/lib/api';
+import { api, ApiError, isTransient } from '@/lib/api';
 import { Wordmark } from '@/components/AppShell';
 import { Button, cx } from '@/components/ui';
 
@@ -27,7 +27,10 @@ function LoginForm() {
   const [slow, setSlow] = useState(false);
   const submitRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => submitRef.current?.focus(), []);
+  useEffect(() => {
+    submitRef.current?.focus();
+    fetch('/api/health', { cache: 'no-store' }).catch(() => undefined);
+  }, []);
 
   function pick(r: Role) {
     setRole(r);
@@ -43,13 +46,24 @@ function LoginForm() {
     // The free API host sleeps when idle; say so instead of looking stuck.
     const t = setTimeout(() => setSlow(true), 4000);
     try {
-      await api('/auth/login', { method: 'POST', json: { email, password } });
+      // Retry through a cold start or restart of the free API host (up to ~90 s); never retry 4xx.
+      const deadline = Date.now() + 90_000;
+      for (;;) {
+        try {
+          await api('/auth/login', { method: 'POST', json: { email, password } });
+          break;
+        } catch (err) {
+          if (!isTransient(err) || Date.now() > deadline) throw err;
+          setSlow(true);
+          await new Promise((r) => setTimeout(r, 3000));
+        }
+      }
       const next = params.get('next');
       // Only allow same-site relative redirects (no open redirect).
       router.replace(next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard');
       router.refresh();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Could not reach the server');
+      setError(err instanceof ApiError && err.status < 500 ? err.message : 'The server did not respond. Please try again in a moment.');
       setLoading(false);
     } finally {
       clearTimeout(t);
