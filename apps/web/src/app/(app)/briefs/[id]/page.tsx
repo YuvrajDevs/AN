@@ -64,8 +64,8 @@ export default function BriefPage({ params }: { params: Promise<{ id: string }> 
           <EmptyState icon="!" title="Brief failed" body={b.error ?? 'Unknown error'} />
         </div>
       ) : (
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-          <article className="card space-y-6 p-6">
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_340px]">
+          <article className="card space-y-3 p-6">
             {b.sections.map((s) => (
               <section key={s.heading}>
                 <h2 className="mb-2 text-base font-semibold">{s.heading}</h2>

@@ -114,7 +114,7 @@ export default function SectorsPage() {
           <NodeEditor onDone={done} parentSlug={null} />
         </div>
       )}
-      <div className="space-y-6">
+      <div className="space-y-3">
         {!data
           ? Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-64" />)
           : data.taxonomy.map((s) => (

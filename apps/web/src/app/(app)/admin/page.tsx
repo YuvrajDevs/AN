@@ -258,7 +258,7 @@ export default function AdminPage() {
         )}
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,380px)_1fr]">
+      <div className="mt-6 grid gap-3 lg:grid-cols-[minmax(0,380px)_1fr]">
         <Card title="Run a connector">
           <RunForm onQueued={() => runs.mutate()} />
         </Card>

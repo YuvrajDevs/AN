@@ -30,11 +30,11 @@ export default {
       },
       // Softer geometry everywhere: existing rounded-md / rounded-lg usages pick this up.
       borderRadius: {
-        md: '10px',
-        lg: '16px',
-        xl: '20px',
-        '2xl': '24px',
-        '3xl': '28px',
+        md: '8px',
+        lg: '12px',
+        xl: '14px',
+        '2xl': '16px',
+        '3xl': '18px',
       },
     },
   },

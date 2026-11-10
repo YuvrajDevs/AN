@@ -12,7 +12,7 @@ test('redirects signed-out users to login and rejects bad passwords', async ({ p
 
 test('landing page leads to a prefilled sign-in', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('link', { name: /Open the live demo/ }).first().click();
+  await page.getByRole('link', { name: /Try the live demo/ }).first().click();
   await expect(page).toHaveURL(/\/login/);
   await expect(page.getByLabel('Email')).toHaveValue('analyst@strata.local');
   await page.getByRole('button', { name: 'Sign in' }).click();

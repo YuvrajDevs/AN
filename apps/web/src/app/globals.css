@@ -18,10 +18,10 @@
   /* Fixed regardless of theme */
   --ink: 22 21 19;
   --paper: 255 252 246;
-  --pink: 244 186 216;
-  --yellow: 244 213 112;
-  --sage: 178 192 124;
-  --sky: 182 201 238;
+  --pink: 242 196 221;
+  --yellow: 244 220 140;
+  --sage: 193 205 150;
+  --sky: 196 211 240;
   color-scheme: light;
 }
 
@@ -47,26 +47,26 @@ body {
 
 @layer components {
   .input {
-    @apply h-10 w-full rounded-full border border-border bg-surface px-4 text-sm text-fg placeholder:text-subtle focus:border-fg focus:outline-none focus:ring-2 focus:ring-fg/10;
+    @apply h-9 w-full rounded-full border border-border bg-surface px-3.5 text-[13px] text-fg placeholder:text-subtle focus:border-fg focus:outline-none focus:ring-2 focus:ring-fg/10;
   }
   textarea.input {
-    @apply h-auto rounded-2xl py-2.5;
+    @apply h-auto rounded-xl py-2;
   }
   .label {
-    @apply mb-1.5 block text-xs font-medium text-subtle;
+    @apply mb-1 block text-xs font-medium text-subtle;
   }
   .card {
-    @apply rounded-3xl border border-border/70 bg-surface;
+    @apply rounded-2xl border border-border/70 bg-surface;
   }
   .th {
-    @apply whitespace-nowrap px-3 py-2.5 text-left text-[11px] font-medium text-subtle;
+    @apply whitespace-nowrap px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wide text-subtle;
   }
   .td {
-    @apply px-3 py-2.5 align-middle text-sm;
+    @apply px-3 py-2 align-middle text-[13px];
   }
   /* Pastel panels keep ink text in both themes. */
   .pastel {
-    @apply rounded-3xl text-ink;
+    @apply rounded-2xl text-ink;
   }
   .pastel .text-subtle {
     color: rgb(var(--ink) / 0.72);
@@ -89,7 +89,7 @@ body {
   position: relative;
   overflow: hidden;
   background: rgb(var(--muted));
-  border-radius: 20px;
+  border-radius: 12px;
 }
 .skeleton::after {
   content: '';

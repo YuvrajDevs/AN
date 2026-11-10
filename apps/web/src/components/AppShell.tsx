@@ -53,8 +53,8 @@ function isTyping(e: KeyboardEvent) {
 
 export function Wordmark({ className }: { className?: string }) {
   return (
-    <span className={cx('flex items-center gap-2 text-[22px] font-semibold tracking-tight', className)}>
-      <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden="true">
+    <span className={cx('flex items-center gap-2 text-lg font-semibold tracking-tight', className)}>
+      <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
         <rect x="3" y="4" width="18" height="4" rx="2" fill="rgb(var(--pink))" />
         <rect x="3" y="10" width="13" height="4" rx="2" fill="rgb(var(--yellow))" />
         <rect x="3" y="16" width="8" height="4" rx="2" fill="rgb(var(--sky))" />
@@ -118,7 +118,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const group = (title: string, items: NavItem[]) => (
     <div>
-      <div className="mb-2 px-3 text-[11px] font-medium text-white/55">{title}</div>
+      <div className="mb-1.5 px-3 text-[10.5px] font-medium uppercase tracking-wider text-white/45">{title}</div>
       <ul className="space-y-0.5">
         {items.map((n) => {
           const on = active(n.href);
@@ -129,12 +129,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 href={n.href}
                 aria-current={on ? 'page' : undefined}
                 className={cx(
-                  'group relative flex items-center gap-3 rounded-xl px-3 py-2 text-[13.5px] transition-colors',
-                  on ? 'text-pink' : 'text-white/85 hover:bg-white/10 hover:text-white',
+                  'group relative flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-[13px] transition-colors',
+                  on ? 'bg-white/[0.08] text-pink' : 'text-white/80 hover:bg-white/[0.06] hover:text-white',
                 )}
               >
-                {on && <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-pink" aria-hidden="true" />}
-                <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                {on && <span className="absolute left-0 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-full bg-pink" aria-hidden="true" />}
+                <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
                 <span className="flex-1">{n.label}</span>
                 {count(n.href) > 0 && (
                   <span className={cx('rounded-full px-1.5 text-[10px] font-semibold text-ink', n.href === '/review' ? 'bg-yellow' : 'bg-pink')}>{count(n.href)}</span>
@@ -148,7 +148,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   );
 
   const nav = (
-    <nav aria-label="Main" className="flex flex-col gap-6">
+    <nav aria-label="Main" className="flex flex-col gap-5">
       {group('General', GENERAL)}
       {group('Tools', tools)}
     </nav>
@@ -162,26 +162,26 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     .toUpperCase();
 
   return (
-    <div className="min-h-screen p-0 lg:grid lg:grid-cols-[236px_1fr] lg:gap-6 lg:p-3">
+    <div className="min-h-screen p-0 lg:grid lg:grid-cols-[216px_1fr] lg:gap-5 lg:p-2.5">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-full focus:bg-surface focus:px-3 focus:py-2">
         Skip to content
       </a>
 
-      <aside className="sticky top-3 hidden h-[calc(100vh-24px)] flex-col rounded-3xl bg-ink px-3 pb-4 pt-6 text-white lg:flex">
-        <Link href="/dashboard" className="mb-8 flex justify-center text-white">
+      <aside className="sticky top-2.5 hidden h-[calc(100vh-20px)] flex-col rounded-2xl bg-ink px-2.5 pb-3 pt-5 text-white lg:flex">
+        <Link href="/dashboard" className="mb-6 flex px-3 text-white">
           <Wordmark />
         </Link>
         {nav}
         <div className="mt-auto space-y-1 pt-4">
-          <div className="flex items-center gap-2.5 rounded-2xl bg-white/[0.07] px-3 py-2.5">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-yellow text-[11px] font-semibold text-ink">{initials}</span>
+          <div className="flex items-center gap-2.5 rounded-xl bg-white/[0.06] px-2.5 py-2">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-yellow text-[10px] font-semibold text-ink">{initials}</span>
             <span className="min-w-0 text-xs">
               <span className="block truncate font-medium">{user?.name ?? '…'}</span>
               <span className="block truncate capitalize text-white/60">{user?.role}</span>
             </span>
           </div>
-          <button onClick={logout} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-[13.5px] text-white/85 hover:bg-white/10 hover:text-white">
-            <LogOut className="h-[18px] w-[18px]" strokeWidth={1.75} aria-hidden="true" />
+          <button onClick={logout} className="flex w-full items-center gap-2.5 rounded-lg px-3 py-1.5 text-[13px] text-white/80 hover:bg-white/[0.06] hover:text-white">
+            <LogOut className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
             Log out
           </button>
         </div>
@@ -206,32 +206,30 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      <div className="min-w-0 px-4 pb-10 sm:px-6 lg:px-2 lg:pr-4">
-        <div className="mb-6 hidden items-center gap-3 pt-3 lg:flex">
+      <div className="min-w-0 px-4 pb-10 sm:px-6 lg:px-1 lg:pr-3">
+        <div className="mb-5 hidden items-center gap-2 pt-1 lg:flex">
           <button
             onClick={() => setPalette(true)}
-            className="flex h-11 min-w-0 max-w-xl flex-1 items-center gap-3 rounded-full border border-border bg-surface pl-1.5 pr-4 text-left text-sm text-subtle hover:border-fg/40"
+            className="flex h-9 min-w-0 max-w-md flex-1 items-center gap-2.5 rounded-full border border-border bg-surface pl-3 pr-2 text-left text-[13px] text-subtle hover:border-fg/40"
           >
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-pink text-ink" aria-hidden="true">
-              <Search className="h-4 w-4" strokeWidth={2} />
-            </span>
+            <Search className="h-4 w-4 shrink-0" strokeWidth={2} aria-hidden="true" />
             <span className="flex-1 truncate">Search companies, sectors, briefs…</span>
             <Kbd>⌘K</Kbd>
           </button>
           <div className="ml-auto flex items-center gap-2">
-            <Link href="/alerts" aria-label={`Alerts${unread?.unread ? `, ${unread.unread} unread` : ''}`} className="relative flex h-10 w-10 items-center justify-center rounded-full bg-ink text-white hover:bg-ink/85">
-              <Bell className="h-[18px] w-[18px]" strokeWidth={1.75} aria-hidden="true" />
-              {!!unread?.unread && <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-bg bg-pink" aria-hidden="true" />}
+            <Link href="/alerts" aria-label={`Alerts${unread?.unread ? `, ${unread.unread} unread` : ''}`} className="relative flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface text-fg hover:bg-muted">
+              <Bell className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+              {!!unread?.unread && <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-danger" aria-hidden="true" />}
             </Link>
-            <Link href="/watchlists" aria-label="Watchlists" className="flex h-10 w-10 items-center justify-center rounded-full bg-ink text-white hover:bg-ink/85">
-              <Bookmark className="h-[18px] w-[18px]" strokeWidth={1.75} aria-hidden="true" />
+            <Link href="/watchlists" aria-label="Watchlists" className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface text-fg hover:bg-muted">
+              <Bookmark className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
             </Link>
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow text-xs font-semibold text-ink" title={user ? `${user.name} · ${user.role}` : undefined}>
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-yellow text-xs font-semibold text-ink" title={user ? `${user.name} · ${user.role}` : undefined}>
               {initials}
             </span>
           </div>
         </div>
-        <main id="main" className="mx-auto w-full max-w-[1280px] pt-6 lg:pt-0">
+        <main id="main" className="mx-auto w-full max-w-[1240px] pt-5 lg:pt-0">
           {children}
         </main>
       </div>

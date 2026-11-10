@@ -1,11 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowRight, ClipboardCheck, Lightbulb } from 'lucide-react';
 import { BarChart } from '@/components/charts';
 import { useSession } from '@/components/session';
-import { Badge, ErrorState, Logo, Skeleton, TONE_BG, buttonClass, cx, sectorTone } from '@/components/ui';
-import { Blob } from '@/components/decor';
+import { Card, ErrorState, Logo, Segmented, Skeleton, Stat, TONE_BG, buttonClass, cx, sectorTone } from '@/components/ui';
 import { useApi } from '@/lib/api';
 import { date, ROUND_LABELS, usd } from '@/lib/format';
 
@@ -23,211 +23,234 @@ function greeting() {
   return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
 }
 
+const quarterLabel = (p: string) => `${p.slice(5)} '${p.slice(2, 4)}`;
+const share = (part: number, whole: number) => (whole ? Math.round((part / whole) * 100) : 0);
+
+/** Plain-language observations computed from the same aggregates the charts use. */
+function insights(d: Dashboard) {
+  const out: { text: React.ReactNode; href?: string }[] = [];
+  const bySpend = [...d.bySector].sort((a, b) => b.disclosedUsd - a.disclosedUsd);
+  const top = bySpend[0];
+  if (top && d.totals.disclosedUsd) {
+    out.push({
+      text: (
+        <>
+          <b className="font-semibold">{top.name}</b> holds {share(top.disclosedUsd, d.totals.disclosedUsd)}% of disclosed capital ({usd(top.disclosedUsd)}) with {share(top.companies, d.totals.companies)}% of companies.
+        </>
+      ),
+      href: `/sectors/${top.slug}`,
+    });
+  }
+  const peak = [...d.quarterly].sort((a, b) => b.disclosedUsd - a.disclosedUsd)[0];
+  if (peak?.disclosedUsd) {
+    out.push({
+      text: (
+        <>
+          Busiest quarter: <b className="font-semibold">{quarterLabel(peak.period)}</b>, {usd(peak.disclosedUsd)} sold across {peak.rounds} {peak.rounds === 1 ? 'offering' : 'offerings'}.
+        </>
+      ),
+      href: '/funding',
+    });
+  }
+  const recent = d.quarterly.slice(-4).reduce((s, q) => s + q.disclosedUsd, 0);
+  const prior = d.quarterly.slice(-8, -4).reduce((s, q) => s + q.disclosedUsd, 0);
+  if (prior > 0) {
+    const delta = Math.round(((recent - prior) / prior) * 100);
+    out.push({
+      text: (
+        <>
+          Last four quarters: {usd(recent)}, <b className="font-semibold">{delta >= 0 ? `up ${delta}%` : `down ${Math.abs(delta)}%`}</b> on the four before.
+        </>
+      ),
+    });
+  }
+  if (d.totals.pendingReview) {
+    out.push({
+      text: (
+        <>
+          <b className="font-semibold">{share(d.totals.pendingReview, d.totals.companies)}%</b> of companies have a label below 0.75 confidence and wait for an analyst.
+        </>
+      ),
+      href: '/review',
+    });
+  }
+  return out;
+}
+
 export default function DashboardPage() {
   const { user } = useSession();
-  const { data, error, mutate, isLoading } = useApi<Dashboard>('/dashboard');
+  const { data, error, mutate } = useApi<Dashboard>('/dashboard');
   const recent = useApi<Recent>('/funding/recent');
+  const [metric, setMetric] = useState<'usd' | 'rounds'>('usd');
 
   if (error) return <ErrorState error={error} retry={() => mutate()} />;
   const first = user?.name?.split(' ')[0];
   const maxSector = Math.max(1, ...(data?.bySector ?? []).map((s) => s.companies));
-  const lastQuarters = (data?.quarterly ?? []).slice(-10);
+  const quarters = (data?.quarterly ?? []).slice(-12);
 
   return (
     <>
-      <div className="mb-6">
-        <h1 className="text-[30px] font-semibold leading-tight tracking-tight sm:text-[38px]">
-          {greeting()}
-          {first ? `, ${first}` : ''}
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-subtle">
-          {data ? (
-            <>
-              Strata is tracking {data.totals.companies.toLocaleString()} startups across {data.bySector.length} sectors, with {data.totals.rounds} funding rounds taken from SEC filings.{' '}
-              {data.totals.pendingReview > 0 ? `${data.totals.pendingReview} classifications are waiting for review.` : 'The review queue is clear.'}
-            </>
-          ) : (
-            'Loading your workspace…'
-          )}
-        </p>
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {greeting()}
+            {first ? `, ${first}` : ''}
+          </h1>
+          <p className="mt-1 text-[13px] text-subtle">
+            {data ? `${data.totals.companies} startups across ${data.bySector.length} sectors, funding from SEC Form D filings.` : 'Loading your workspace…'}
+          </p>
+        </div>
+        <Link href="/review" className={buttonClass('primary')}>
+          <ClipboardCheck className="h-4 w-4" aria-hidden="true" /> Review queue
+          {!!data?.totals.pendingReview && <span className="rounded-full bg-yellow px-1.5 text-[11px] font-semibold text-ink">{data.totals.pendingReview}</span>}
+        </Link>
       </div>
 
-      {isLoading || !data ? (
-        <div className="grid gap-4 lg:grid-cols-5">
-          <Skeleton className="h-[230px] lg:col-span-2" />
-          <Skeleton className="h-[230px] lg:col-span-3" />
-          <Skeleton className="h-[150px] lg:col-span-3" />
-          <Skeleton className="h-[150px] lg:col-span-2" />
-        </div>
-      ) : (
-        <div className="grid gap-4 lg:grid-cols-5">
-          {/* Companies by sector */}
-          <section className="pastel relative overflow-hidden bg-yellow p-5 lg:col-span-2" aria-labelledby="k-companies">
-            <Blob shape="plus" className="-right-6 -top-6 h-32 w-32" />
-            <h2 id="k-companies" className="text-[15px] font-semibold">
-              Companies tracked
-            </h2>
-            <div className="tabular mt-2 text-[28px] font-semibold leading-none tracking-tight">{data.totals.companies.toLocaleString()}</div>
-            <ul className="relative mt-5 space-y-3">
-              {data.bySector.map((s) => (
-                <li key={s.slug}>
-                  <Link href={`/sectors/${s.slug}`} className="group block">
-                    <span className="mb-1 flex items-baseline justify-between gap-2 text-xs">
-                      <span className="truncate font-medium group-hover:underline">{s.name}</span>
-                      <span className="tabular font-semibold">{s.companies}</span>
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {!data ? (
+          Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-[84px]" />)
+        ) : (
+          <>
+            <Stat tone="yellow" label="Companies tracked" value={data.totals.companies.toLocaleString()} hint={`${data.bySector.length} sectors · YC directory`} />
+            <Stat tone="pink" label="Disclosed capital" value={usd(data.totals.disclosedUsd)} hint="Form D amount sold" />
+            <Stat tone="sky" label="Funding rounds" value={data.totals.rounds} hint="Primary-source filings" />
+            <Stat
+              tone="sage"
+              label="Awaiting review"
+              value={data.totals.pendingReview}
+              hint={
+                <Link href="/review" className="font-medium underline-offset-2 hover:underline">
+                  Open queue →
+                </Link>
+              }
+            />
+          </>
+        )}
+      </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-3">
+        <Card
+          className="lg:col-span-2"
+          title="Disclosed funding by quarter"
+          bodyClass="px-4 pb-3 pt-4"
+          actions={
+            <Segmented
+              label="Metric"
+              value={metric}
+              onChange={setMetric}
+              options={[
+                { value: 'usd', label: '$ sold' },
+                { value: 'rounds', label: 'Offerings' },
+              ]}
+            />
+          }
+        >
+          {!data ? (
+            <Skeleton className="h-[160px]" />
+          ) : quarters.length === 0 ? (
+            <p className="py-12 text-center text-sm text-subtle">No dated rounds yet.</p>
+          ) : (
+            <BarChart
+              height={150}
+              ariaLabel="Disclosed funding by quarter"
+              data={quarters.map((q) => ({ label: quarterLabel(q.period), value: metric === 'usd' ? q.disclosedUsd : q.rounds, secondary: q.rounds }))}
+              format={(v) => (metric === 'usd' ? usd(v, '$0') : `${v} offerings`)}
+            />
+          )}
+        </Card>
+
+        <Card title="Sectors" bodyClass="divide-y divide-border/60">
+          {!data
+            ? Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="m-4 h-9" />)
+            : data.bySector.map((s, i) => (
+                <Link key={s.slug} href={`/sectors/${s.slug}`} className="group block px-4 py-3 hover:bg-muted/50">
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span className={cx('h-2.5 w-2.5 shrink-0 rounded-full', TONE_BG[sectorTone(s.color, i)])} aria-hidden="true" />
+                      <span className="truncate text-[13px] font-medium group-hover:underline">{s.name}</span>
                     </span>
-                    <span className="block h-2.5 rounded-full bg-ink/10">
-                      <span className="block h-full rounded-full bg-ink" style={{ width: `${Math.max(4, (s.companies / maxSector) * 100)}%` }} />
+                    <span className="tabular shrink-0 text-xs text-subtle">
+                      {s.companies} · {usd(s.disclosedUsd, '$0')}
                     </span>
-                  </Link>
-                </li>
+                  </span>
+                  <span className="mt-2 block h-1.5 rounded-full bg-muted">
+                    <span className="block h-full rounded-full bg-fg" style={{ width: `${Math.max(3, (s.companies / maxSector) * 100)}%` }} />
+                  </span>
+                </Link>
               ))}
-            </ul>
-            <div className="tabular mt-4 text-[11px] text-subtle">From the YC public directory · tap a sector for its landscape</div>
-          </section>
+        </Card>
+      </div>
 
-          {/* Funding by quarter */}
-          <section className="pastel relative overflow-hidden bg-pink p-5 lg:col-span-3" aria-labelledby="k-funding">
-            <Blob shape="circle" className="-right-10 -top-10 h-40 w-40" />
-            <div className="flex items-start justify-between gap-3">
-              <h2 id="k-funding" className="text-[15px] font-semibold">
-                Disclosed funding
-              </h2>
-              <Link href="/funding" className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-ink text-white" aria-label="All funding rounds">
-                <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </div>
-            <div className="mt-3 flex gap-6">
-              <div>
-                <div className="tabular text-lg font-semibold leading-none">{usd(data.totals.disclosedUsd)}</div>
-                <div className="mt-1 text-[11px] text-subtle">Form D amount sold</div>
-              </div>
-              <div>
-                <div className="tabular text-lg font-semibold leading-none">{data.totals.rounds}</div>
-                <div className="mt-1 text-[11px] text-subtle">Funding rounds</div>
-              </div>
-            </div>
-            <div className="mt-4">
-              {lastQuarters.length === 0 ? (
-                <p className="py-10 text-center text-sm text-subtle">No dated rounds yet.</p>
-              ) : (
-                <BarChart
-                  height={96}
-                  ariaLabel="Disclosed funding by quarter"
-                  color="rgb(var(--ink))"
-                  data={lastQuarters.map((q) => ({ label: `${q.period.slice(5)} '${q.period.slice(2, 4)}`, value: q.disclosedUsd, secondary: q.rounds }))}
-                  format={(v) => usd(v, '$0')}
-                />
-              )}
-            </div>
-          </section>
-
-          {/* Sectors */}
-          <section className="pastel relative overflow-hidden bg-sage p-5 lg:col-span-3" aria-labelledby="k-sectors">
-            <Blob shape="tri" className="-bottom-8 right-6 h-32 w-32" />
-            <h2 id="k-sectors" className="text-[15px] font-semibold">
-              By sector
-            </h2>
-            <ul className="relative z-10 mt-3 grid gap-2 sm:grid-cols-3">
-              {data.bySector.map((s) => (
-                <li key={s.slug}>
-                  <Link href={`/sectors/${s.slug}`} className="block rounded-2xl bg-paper/70 px-3.5 py-3 hover:bg-paper">
-                    <span className="block text-[13px] font-semibold leading-snug">{s.name}</span>
-                    <span className="tabular mt-0.5 block text-[11px] text-subtle">
-                      {s.companies} companies · {usd(s.disclosedUsd, '$0')}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          {/* Review queue */}
-          <section className="pastel relative flex flex-col overflow-hidden bg-sky p-5 lg:col-span-2" aria-labelledby="k-review">
-            <Blob shape="star" className="-bottom-8 -right-6 h-36 w-36" />
-            <h2 id="k-review" className="text-[15px] font-semibold">
-              Review queue
-            </h2>
-            <div className="mt-3 flex items-baseline gap-2">
-              <span className="tabular text-[28px] font-semibold leading-none">{data.totals.pendingReview}</span>
-              <span className="text-[11px] text-subtle">low-confidence labels waiting</span>
-            </div>
-            <Link href="/review" className={cx(buttonClass('primary', 'sm'), 'relative z-10 mt-4 w-fit !bg-ink !text-white hover:!bg-ink/85')}>
-              Open review queue <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </Link>
-          </section>
-        </div>
-      )}
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-5">
-        <section className="lg:col-span-3" aria-labelledby="latest">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 id="latest" className="text-lg font-semibold tracking-tight">
-              Latest funding
-            </h2>
+      <div className="mt-3 grid gap-3 lg:grid-cols-3">
+        <Card
+          className="lg:col-span-2"
+          title="Latest funding"
+          actions={
             <Link href="/funding" className="text-xs font-medium text-subtle hover:text-fg">
-              Show all →
+              All rounds →
             </Link>
-          </div>
+          }
+        >
           {recent.error ? (
             <ErrorState error={recent.error} retry={() => recent.mutate()} />
           ) : !recent.data ? (
-            <div className="space-y-2">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-14" />
+            <div className="space-y-2 p-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-8" />
               ))}
             </div>
           ) : (
-            <ul className="space-y-2">
+            <ul className="divide-y divide-border/60">
               {recent.data.items.slice(0, 7).map((r) => (
                 <li key={r._id}>
-                  <Link href={`/companies/${r.company.slug}`} className="flex items-center gap-3 rounded-2xl bg-muted px-3 py-2.5 transition-colors hover:bg-pink/50">
-                    <Logo src={r.company.logoUrl} name={r.company.name} size={34} />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate font-semibold">{r.company.name}</span>
-                      <span className="block truncate text-[11px] text-subtle">
-                        {ROUND_LABELS[r.roundType] ?? r.roundType} · {date(r.date)}
-                      </span>
-                    </span>
-                    <span className="tabular rounded-full bg-surface px-3 py-1 text-xs font-semibold">{usd(r.amountUsd, 'undisclosed')}</span>
+                  <Link href={`/companies/${r.company.slug}`} className="flex items-center gap-3 px-4 py-2 hover:bg-muted/50">
+                    <Logo src={r.company.logoUrl} name={r.company.name} size={26} />
+                    <span className="min-w-0 flex-1 truncate text-[13px] font-medium">{r.company.name}</span>
+                    <span className="hidden text-xs text-subtle sm:block">{ROUND_LABELS[r.roundType] ?? r.roundType}</span>
+                    <span className="tabular w-24 text-right text-xs text-subtle">{date(r.date)}</span>
+                    <span className="tabular w-20 text-right text-[13px] font-semibold">{usd(r.amountUsd, '—')}</span>
                   </Link>
                 </li>
               ))}
             </ul>
           )}
-        </section>
+        </Card>
 
-        <section className="lg:col-span-2" aria-labelledby="where">
-          <h2 id="where" className="mb-3 text-lg font-semibold tracking-tight">
-            Where to start
-          </h2>
-          <div className="space-y-2">
-            {[
-              { href: '/sectors/legal-ai', title: 'Legal AI landscape', body: 'Market map by subsector, funding by year, notable companies.', tone: 'pink' as const },
-              { href: '/companies', title: 'Search companies', body: 'Filter by sector, status, review state and funding. Export to CSV.', tone: 'yellow' as const },
-              { href: '/briefs', title: 'Analyst briefs', body: 'Generated briefs where every claim cites a stored source.', tone: 'sky' as const },
-              { href: '/review', title: 'Review classifications', body: 'Accept or override labels from the keyboard: j / k, a, 1–9.', tone: 'sage' as const },
-            ].map((x) => (
-              <Link key={x.href} href={x.href} className="flex items-center gap-3 rounded-2xl border border-border/70 bg-surface px-3 py-3 hover:border-fg/30">
-                <span className={cx('h-10 w-1.5 shrink-0 rounded-full', TONE_BG[x.tone])} aria-hidden="true" />
-                <span className="min-w-0 flex-1">
-                  <span className="block font-semibold">{x.title}</span>
-                  <span className="block text-[12px] leading-snug text-subtle">{x.body}</span>
-                </span>
-                <ArrowRight className="h-4 w-4 shrink-0 text-subtle" aria-hidden="true" />
-              </Link>
-            ))}
-          </div>
-          {data && (
-            <div className="mt-4 flex flex-wrap gap-1.5">
-              {data.bySector.map((s, i) => (
-                <Badge key={s.slug} tone={sectorTone(s.color, i)}>
-                  {s.name}
-                </Badge>
+        <Card
+          title={
+            <span className="flex items-center gap-1.5">
+              <Lightbulb className="h-3.5 w-3.5" aria-hidden="true" /> Insights
+            </span>
+          }
+          bodyClass="p-2"
+        >
+          {!data ? (
+            <div className="space-y-2 p-2">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-10" />
               ))}
             </div>
+          ) : (
+            <ul className="space-y-1">
+              {insights(data).map((x, i) => {
+                const body = <span className="text-[13px] leading-snug">{x.text}</span>;
+                return (
+                  <li key={i}>
+                    {x.href ? (
+                      <Link href={x.href} className="group flex items-start gap-2 rounded-xl px-2.5 py-2 hover:bg-muted/60">
+                        {body}
+                        <ArrowRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-subtle opacity-0 transition-opacity group-hover:opacity-100" aria-hidden="true" />
+                      </Link>
+                    ) : (
+                      <div className="px-2.5 py-2">{body}</div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
           )}
-        </section>
+          <p className="px-2.5 pb-1 pt-2 text-[11px] text-subtle">Computed from stored filings; refreshed when data changes.</p>
+        </Card>
       </div>
     </>
   );

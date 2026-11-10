@@ -107,8 +107,8 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
         }
       />
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
+      <div className="grid gap-3 lg:grid-cols-3">
+        <div className="space-y-3 lg:col-span-2">
           <Card title="About" bodyClass="p-4">
             <p className="whitespace-pre-line break-words text-sm leading-relaxed">{c.description || c.oneLiner || 'No description available.'}</p>
             <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-4">
@@ -205,7 +205,7 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
           </Card>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-3">
           <Card title="Classification" bodyClass="p-4 space-y-3">
             <div>
               <div className="text-xs text-subtle">{sector ? names.get(sector) : 'Sector'}</div>

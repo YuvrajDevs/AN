@@ -79,30 +79,31 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
         <Stat tone="sky" label="Median team size" value={k.medianTeam ? Math.round(k.medianTeam) : '—'} hint="Per YC directory" />
       </div>
 
-      <h2 className="mb-3 mt-8 text-lg font-semibold tracking-tight">Market map</h2>
+      <h2 className="mb-2.5 mt-6 text-base font-semibold tracking-tight">Market map</h2>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {sortedMap.map((m, idx) => (
-          <section key={m.slug} className={cx('pastel flex flex-col p-4', TONE_BG[TONES[idx % TONES.length]])} aria-labelledby={`mm-${m.slug}`}>
+          <section key={m.slug} className="card flex flex-col p-3.5" aria-labelledby={`mm-${m.slug}`}>
             <div className="mb-1 flex items-baseline justify-between gap-2">
-              <h3 id={`mm-${m.slug}`} className="font-semibold">
+              <h3 id={`mm-${m.slug}`} className="flex min-w-0 items-center gap-2 text-[13px] font-semibold">
+                <span className={cx('h-2.5 w-2.5 shrink-0 rounded-full', TONE_BG[TONES[idx % TONES.length]])} aria-hidden="true" />
                 <Link href={`/companies?sector=${slug}&subsector=${m.slug}`} className="hover:underline">
                   {m.name}
                 </Link>
               </h3>
-              <span className="tabular shrink-0 text-xs text-ink/70">
+              <span className="tabular shrink-0 text-xs text-subtle">
                 {m.count} · {usd(m.disclosedUsd, '$0')}
               </span>
             </div>
-            <HBar value={m.count} max={maxCount} color="rgb(var(--ink))" />
+            <span className="mt-1.5 block"><HBar value={m.count} max={maxCount} /></span>
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {m.companies.length === 0 && <span className="text-xs text-ink/70">No companies classified here yet.</span>}
+              {m.companies.length === 0 && <span className="text-xs text-subtle">No companies classified here yet.</span>}
               {m.companies.map((c) => (
                 <Link
                   key={c.slug}
                   href={`/companies/${c.slug}`}
                   title={`${c.name}${c.ycBatch ? ` (${c.ycBatch})` : ''}${c.totalRaisedUsd ? ` · ${usd(c.totalRaisedUsd)}` : ''}`}
                   className={cx(
-                    'flex items-center gap-1.5 rounded-full bg-paper/75 py-1 pl-1 pr-2.5 text-xs font-medium hover:bg-paper',
+                    'flex items-center gap-1.5 rounded-full bg-muted py-0.5 pl-0.5 pr-2 text-xs hover:bg-pink/60',
                     c.status !== 'active' && 'opacity-60',
                   )}
                 >
@@ -111,7 +112,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
                 </Link>
               ))}
               {m.count > m.companies.length && (
-                <Link href={`/companies?sector=${slug}&subsector=${m.slug}`} className="self-center rounded-full bg-ink px-2.5 py-1 text-xs font-medium text-white hover:bg-ink/85">
+                <Link href={`/companies?sector=${slug}&subsector=${m.slug}`} className="self-center rounded-full px-2 py-0.5 text-xs font-medium text-subtle hover:text-fg">
                   +{m.count - m.companies.length} more
                 </Link>
               )}
@@ -125,7 +126,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
         </p>
       )}
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid gap-3 lg:grid-cols-2">
         <Card
           title="Form D funding by year of first sale"
           bodyClass="p-4"
@@ -156,7 +157,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
         </Card>
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+      <div className="mt-3 grid gap-3 lg:grid-cols-2">
         <Card title="Notable companies">
           <ul className="divide-y divide-border">
             {data.notable.map((c) => (

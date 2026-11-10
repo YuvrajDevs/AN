@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from 'next';
-import { Instrument_Sans } from 'next/font/google';
+import { Outfit } from 'next/font/google';
 import './globals.css';
 
-const sans = Instrument_Sans({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+const sans = Outfit({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
 
 export const metadata: Metadata = {
   title: { default: 'Strata · Startup & sector intelligence', template: '%s · Strata' },

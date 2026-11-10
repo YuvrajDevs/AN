@@ -72,7 +72,7 @@ export function BarChart({
       <div className="mt-1.5 flex text-[10px] opacity-70" aria-hidden="true">
         {data.map((d, i) => (
           <div key={d.label} className="truncate text-center" style={{ width: `${barW}%` }}>
-            {data.length > 12 && i % 2 === 1 ? '' : d.label}
+            {data.length > 8 && i % 2 === 1 ? '' : d.label}
           </div>
         ))}
       </div>
@@ -93,7 +93,7 @@ export function BarChart({
 
 export function HBar({ value, max, color = 'rgb(var(--fg))' }: { value: number; max: number; color?: string }) {
   return (
-    <div className="h-2 w-full overflow-hidden rounded-full bg-ink/10" aria-hidden="true">
+    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted" aria-hidden="true">
       <div className="h-full rounded-full" style={{ width: `${max ? Math.max(2, (value / max) * 100) : 0}%`, background: color }} />
     </div>
   );
