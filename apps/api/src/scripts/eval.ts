@@ -14,7 +14,7 @@
  * and the review-queue trade-off: share of companies auto-accepted at the confidence
  * threshold and the accuracy of those auto-accepted labels.
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { classifyCompany } from '../ai/classify';
 import { getProvider } from '../ai/registry';
@@ -83,20 +83,53 @@ async function main() {
   const providerName = arg('provider') ?? 'heuristic';
   const split = arg('split');
   const out = arg('out');
+  // Free-tier LLM APIs limit requests per minute; pace calls (ms between requests).
+  const delay = Number(arg('delay') ?? (providerName === 'heuristic' ? 0 : 7000));
+  // Resumable: each prediction is cached per provider+model, so a rate-limited run can be continued.
+  const cachePath = path.join(__dirname, '../../eval', `.cache-${providerName}.json`);
+  const cache: Record<string, { predicted: string | null; confidence: number; model: string }> =
+    providerName !== 'heuristic' && existsSync(cachePath) ? JSON.parse(readFileSync(cachePath, 'utf8')) : {};
+  const models = new Set<string>();
   const provider = getProvider(providerName);
   const threshold = config.REVIEW_CONFIDENCE_THRESHOLD;
 
   const examples = loadExamples().filter((e) => !split || e.split === split);
   const rows: EvalRow[] = [];
-  for (const e of examples) {
+  const failed: { id: string; error: string }[] = [];
+  for (const [n, e] of examples.entries()) {
+    if (n > 0 && delay) await new Promise((res) => setTimeout(res, delay));
     const sector = TAXONOMY.find((s) => s.slug === e.sector)!;
     const nodes = sector.children.map((c) => ({ slug: c.slug, name: c.name, description: c.description, keywords: c.keywords ?? [] }));
+    const hit = cache[e.id];
+    if (hit) {
+      rows.push({ id: e.id, split: e.split, sector: e.sector, expected: e.expected, predicted: hit.predicted, confidence: hit.confidence });
+      models.add(hit.model);
+      continue;
+    }
     try {
-      const r = await classifyCompany(provider, e, nodes);
+      let r: Awaited<ReturnType<typeof classifyCompany>> | undefined;
+      // Per-minute quotas: wait and retry the same company rather than dropping it.
+      for (let attempt = 0; ; attempt++) {
+        try {
+          r = await classifyCompany(provider, e, nodes);
+          break;
+        } catch (err) {
+          if (attempt >= 4 || !/HTTP 429|quota/i.test((err as Error).message)) throw err;
+          process.stderr.write(`\n  rate limited at ${e.id}; waiting 65s`);
+          await new Promise((res) => setTimeout(res, 65_000));
+        }
+      }
       rows.push({ id: e.id, split: e.split, sector: e.sector, expected: e.expected, predicted: r.subsectorSlug, confidence: r.confidence });
+      models.add(provider.model);
+      if (providerName !== 'heuristic') {
+        cache[e.id] = { predicted: r.subsectorSlug, confidence: r.confidence, model: provider.model };
+        writeFileSync(cachePath, JSON.stringify(cache, null, 1));
+      }
+      if (provider.name !== 'heuristic') process.stderr.write(`\r  ${n + 1}/${examples.length}`);
     } catch (err) {
-      console.error(`  ${e.id}: ${(err as Error).message}`);
-      rows.push({ id: e.id, split: e.split, sector: e.sector, expected: e.expected, predicted: null, confidence: 0 });
+      // A failed call is not a prediction: scoring it as "out of scope" would inflate accuracy.
+      failed.push({ id: e.id, error: (err as Error).message.slice(0, 120) });
+      console.error(`\n  ${e.id}: ${(err as Error).message.slice(0, 160)}`);
     }
   }
 
@@ -107,10 +140,11 @@ async function main() {
   ].filter(([, r]) => (r as EvalRow[]).length > 0) as [string, EvalRow[]][];
 
   const lines = [
-    `## ${provider.name} (${provider.model}) — ${new Date().toISOString().slice(0, 10)}`,
+    `## ${provider.name} (${[...models].join(', ') || provider.model}) — ${new Date().toISOString().slice(0, 10)}`,
     '',
     `Review threshold: ${threshold}`,
     '',
+    ...(failed.length ? [`Excluded ${failed.length} of ${examples.length} companies where the provider call failed (not counted as predictions).`, ''] : []),
     '| Split | n | Accuracy | Macro-F1 | Auto-accepted | Accuracy of auto-accepted |',
     '|---|---:|---:|---:|---:|---:|',
     ...groups.map(([name, r]) => {

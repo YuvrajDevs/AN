@@ -20,7 +20,29 @@ Add `--out docs/eval-results-<provider>.md` to save a run. CI runs the heuristic
 
 ## Status of LLM runs
 
-The environment this build was made in had no OpenAI, Anthropic or Gemini API keys, so **only the offline baseline below has been run**. The LLM providers are implemented, unit-tested against a mock with schema validation, and selectable per request; their scores should be added here by running the commands above. No LLM numbers are claimed until they are measured.
+**Gemini (gemini-3.6-flash), partial run, 2026-11-10.** The Gemini free tier allows 20 requests per model per day, so the first run stopped after **41 of 162** companies, all from the dev split (Legal AI). Failed calls are excluded rather than scored. The held-out split, which is the honest estimate, has not been measured yet. The eval is resumable (`apps/api/eval/.cache-gemini.json`), so it can be finished across days with `npm run eval -w apps/api -- --provider gemini --split heldout`.
+
+| Split | n | Accuracy | Macro-F1 | Auto-accepted | Accuracy of auto-accepted |
+|---|---:|---:|---:|---:|---:|
+| dev (Legal AI), first 41 companies | 41 | 87.8% | 0.917 | 85.4% | 94.3% |
+
+For comparison, the heuristic on the full dev split scores 75.5% accuracy, but its keyword lists were written while reading these companies, so its dev score is optimistic. Read the Gemini dev number as "strong on Legal AI", not as a held-out result.
+
+<details><summary>Gemini errors (5 of 41)</summary>
+
+| Company | Expected | Predicted | Confidence |
+|---|---|---|---:|
+| lawdingo | legal-ops | legal-consumer | 0.65 |
+| caribou | (out of scope) | legal-ai-firms | 0.85 |
+| version-story-compare | legal-contracts | legal-workspace | 0.75 |
+| trebol | (out of scope) | legal-compliance | 0.55 |
+| pigeon-2 | (out of scope) | legal-consumer | 0.70 |
+
+Three of the five errors are companies an analyst marked out of scope that the model placed inside the taxonomy: the main failure mode is over-inclusion, which the review queue catches when confidence is below 0.75.
+
+</details>
+
+OpenAI and Anthropic are implemented and unit-tested against a mock but have not been evaluated (no keys).
 
 ## Results: heuristic baseline
 

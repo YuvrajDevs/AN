@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { draftBrief, validateClaims, type EvidenceSource, type FactCandidate } from '../ai/brief';
-import { getProvider } from '../ai/registry';
+import { getProvider, withFallback } from '../ai/registry';
 import { logger } from '../logger';
 import { notFound } from '../lib/errors';
 import { formatUsd } from '../lib/text';
@@ -148,8 +148,10 @@ export async function generateBrief(briefId: string): Promise<void> {
   await brief.save();
   try {
     const { label, title, pack, facts } = brief.scope!.type === 'sector' ? await buildSectorPack(brief.scope!.slug) : await buildCompanyPack(brief.scope!.slug);
-    const provider = getProvider(brief.provider);
-    const draft = await draftBrief(provider, label, pack, facts);
+    const { result: draft, provider } = await withFallback(getProvider(brief.provider), (p) => draftBrief(p, label, pack, facts));
+    // Record who actually wrote it (the heuristic, if the LLM was unavailable).
+    brief.provider = provider.name;
+    brief.set("model", provider.model);
     const { sections, rejected } = validateClaims(draft, pack);
     brief.title = title;
     brief.sections = sections.map((s) => ({ heading: s.heading, claims: s.claims.map((c) => ({ text: c.text, sourceIds: c.sourceIds.map((id) => new Types.ObjectId(id)) })) })) as any;

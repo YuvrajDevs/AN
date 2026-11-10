@@ -2,7 +2,7 @@ import { availableLlmProviders, config } from '../config';
 import { badRequest } from '../lib/errors';
 import { AnthropicProvider, GeminiProvider, OpenAIProvider } from './providers/llm';
 import { HeuristicProvider } from './providers/heuristic';
-import type { LlmProvider, ProviderName } from './types';
+import { LlmError, type LlmProvider, type ProviderName } from './types';
 
 const cache = new Map<string, LlmProvider>();
 let override: LlmProvider | null = null;
@@ -30,6 +30,21 @@ export function getProvider(name?: string | null): LlmProvider {
     cache.set(wanted, p);
   }
   return cache.get(wanted)!;
+}
+
+/**
+ * Run an LLM task, and if the model provider fails (quota, outage) fall back to the offline
+ * heuristic so the product keeps working. The caller records whichever provider answered,
+ * so a fallback result is always labelled as heuristic, never passed off as the LLM.
+ */
+export async function withFallback<T>(provider: LlmProvider, task: (p: LlmProvider) => Promise<T>, allow = true): Promise<{ result: T; provider: LlmProvider }> {
+  try {
+    return { result: await task(provider), provider };
+  } catch (err) {
+    if (!allow || provider.name === 'heuristic' || override || !(err instanceof LlmError)) throw err;
+    const heuristic = new HeuristicProvider();
+    return { result: await task(heuristic), provider: heuristic };
+  }
 }
 
 export function providerInfo() {

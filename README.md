@@ -144,7 +144,8 @@ e2e/           Playwright tests (flows, accessibility, responsive)
 ## Limitations
 
 - Funding coverage depends on Form D, which does not name rounds or investors and is not filed by every company. Strata labels these "Reg D offering" and never infers a round name.
-- LLM providers are implemented and tested against mocks, but the build environment had no API keys, so only the offline baseline has been evaluated; see [eval-results.md](docs/eval-results.md).
+- Gemini has been evaluated on 41 of the 162 labelled companies (87.8% accuracy on Legal AI) before the free tier's 20-requests-per-day limit stopped the run; the held-out split is still to be measured. OpenAI and Anthropic are implemented but not evaluated. See [eval-results.md](docs/eval-results.md).
+- The hosted demo uses Gemini's free tier. When its daily quota runs out, classification and briefs fall back to the offline heuristic and are labelled as such.
 - Sessions are stateless JWTs (8 h) with no server-side revocation yet.
 
 ## License

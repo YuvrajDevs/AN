@@ -51,3 +51,21 @@ describe('Gemini model fallback', () => {
     await expect(new GeminiProvider('k', 'm', '').generateJson(req)).resolves.toEqual({ ok: true });
   });
 });
+
+describe('LLM outage fallback', () => {
+  it('answers with the heuristic, labelled as such, when the LLM provider fails', async () => {
+    const { withFallback } = await import('../../src/ai/registry');
+    const { LlmError } = await import('../../src/ai/types');
+    const down = { name: 'gemini' as const, model: 'm', generateJson: async () => { throw new LlmError('gemini HTTP 429: quota', 'gemini', true); } };
+    const { result, provider } = await withFallback(down, async (p) => (p.name === 'gemini' ? p.generateJson(req) : 'heuristic answer'));
+    expect(result).toBe('heuristic answer');
+    expect(provider.name).toBe('heuristic');
+  });
+
+  it('does not fall back when the caller asked for that provider explicitly', async () => {
+    const { withFallback } = await import('../../src/ai/registry');
+    const { LlmError } = await import('../../src/ai/types');
+    const down = { name: 'gemini' as const, model: 'm', generateJson: async () => { throw new LlmError('down', 'gemini', true); } };
+    await expect(withFallback(down, (p) => p.generateJson(req), false)).rejects.toThrow('down');
+  });
+});

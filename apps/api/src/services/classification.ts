@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { classifyCompany } from '../ai/classify';
-import { getProvider } from '../ai/registry';
+import { getProvider, withFallback } from '../ai/registry';
 import { config } from '../config';
 import { CacheNs, invalidate } from '../lib/cache';
 import { badRequest, conflict, notFound } from '../lib/errors';
@@ -22,11 +22,11 @@ export async function classifyCompanyById(companyId: string, opts: { provider?: 
   const nodes = await classifierNodes(sectorSlug);
   if (nodes.length === 0) throw badRequest(`Sector "${sectorSlug}" has no subsectors to classify into`);
 
-  const provider = getProvider(opts.provider);
-  const result = await classifyCompany(
-    provider,
-    { name: company.name, oneLiner: company.oneLiner, description: company.description, tags: company.tags, website: company.website },
-    nodes,
+  // An explicitly chosen provider must answer itself; the default path falls back to the heuristic.
+  const { result, provider } = await withFallback(
+    getProvider(opts.provider),
+    (p) => classifyCompany(p, { name: company.name, oneLiner: company.oneLiner, description: company.description, tags: company.tags, website: company.website }, nodes),
+    !opts.provider,
   );
   const autoAccept = result.subsectorSlug !== null && result.confidence >= config.REVIEW_CONFIDENCE_THRESHOLD;
 
