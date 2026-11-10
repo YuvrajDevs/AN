@@ -1,0 +1,38 @@
+# Render Blueprint for the free hosted demo of the Strata API.
+# One process runs the API, the ingestion consumers and the job worker
+# (EVENT_BUS=memory, INLINE_WORKER=true), so no Kafka or Redis is needed.
+# MongoDB lives on a free MongoDB Atlas M0 cluster. See docs/DEPLOY.md.
+services:
+  - type: web
+    name: strata-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: EVENT_BUS
+        value: memory
+      - key: INLINE_WORKER
+        value: "true"
+      - key: TRUST_PROXY_HOPS
+        value: "2" # Vercel proxy + Render load balancer
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: ALLOW_SIGNUP
+        value: "false" # demo uses the seeded accounts
+      - key: LLM_DEFAULT_PROVIDER
+        value: heuristic
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGO_URL
+        sync: false # Atlas connection string, entered in the Render dashboard
+      - key: CORS_ORIGINS
+        sync: false # the Vercel URL of the web app, e.g. https://strata-xyz.vercel.app
+      - key: GEMINI_API_KEY
+        sync: false # optional: free Gemini key enables LLM classification and briefs
+      - key: SEED_PASSWORD
+        value: strata-demo-2026

@@ -22,7 +22,7 @@ import { ingestRouter, metaRouter, usersRouter } from './routes/admin';
 export function createApp() {
   const app = express();
   app.disable('x-powered-by');
-  app.set('trust proxy', 1); // behind the Next.js proxy / one load balancer: use X-Forwarded-For once
+  app.set('trust proxy', config.TRUST_PROXY_HOPS); // hops whose X-Forwarded-For we trust (see TRUST_PROXY_HOPS)
 
   app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"] } } }));
   app.use(

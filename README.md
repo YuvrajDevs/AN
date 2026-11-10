@@ -20,7 +20,7 @@
 | **Data** | YC public directory · SEC EDGAR Form D · company RSS/press feeds · GitHub. No Crunchbase, PitchBook, Tracxn or LinkedIn scraping. |
 | **Quality** | 97 unit/API tests · 32 Playwright end-to-end tests (including axe accessibility scans in light and dark mode) · CI runs the full Docker stack |
 
-**Read next:** [Architecture](docs/ARCHITECTURE.md) · [API reference](docs/API.md) · [Decisions log](docs/DECISIONS.md) · [Legal AI landscape (sample analysis)](docs/landscape-legal-ai.md) · [Eval results](docs/eval-results.md)
+**Read next:** [Architecture](docs/ARCHITECTURE.md) · [API reference](docs/API.md) · [Decisions log](docs/DECISIONS.md) · [Legal AI landscape (sample analysis)](docs/landscape-legal-ai.md) · [Eval results](docs/eval-results.md) · [Free hosted demo](docs/DEPLOY.md)
 
 ---
 

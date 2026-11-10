@@ -17,6 +17,8 @@ const schema = z.object({
   KAFKA_CLIENT_ID: z.string().default('strata'),
   /** Run ingestion consumers + job workers inside the API process (hosted demo mode). */
   INLINE_WORKER: bool.default(false),
+  /** Proxy hops in front of the API whose X-Forwarded-For is trusted (1 = Next.js proxy; 2 = Vercel + a hosting load balancer). */
+  TRUST_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(1),
   JWT_SECRET: z.string().min(16).default('dev-only-secret-change-me-please'),
   JWT_TTL_SECONDS: z.coerce.number().int().positive().default(60 * 60 * 8),
   CORS_ORIGINS: z.string().default('http://localhost:3000'),
