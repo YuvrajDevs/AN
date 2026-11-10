@@ -18,6 +18,7 @@ import { sectorsRouter } from './routes/sectors';
 import { reviewRouter } from './routes/review';
 import { alertsRouter, watchlistsRouter } from './routes/watchlists';
 import { briefsRouter } from './routes/briefs';
+import { askRouter } from './routes/ask';
 import { ingestRouter, metaRouter, usersRouter } from './routes/admin';
 
 export function createApp() {
@@ -60,6 +61,7 @@ export function createApp() {
   api.use('/watchlists', requireAuth, watchlistsRouter);
   api.use('/alerts', requireAuth, alertsRouter);
   api.use('/briefs', requireAuth, briefsRouter);
+  api.use('/ask', requireAuth, askRouter);
   api.use('/ingest', requireAuth, ingestRouter);
   api.use('/users', requireAuth, usersRouter);
   app.use('/api', api);

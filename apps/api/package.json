@@ -16,7 +16,9 @@
     "test:watch": "vitest",
     "seed": "tsx src/scripts/seed.ts",
     "snapshot": "tsx src/scripts/snapshot.ts",
-    "eval": "tsx src/scripts/eval.ts"
+    "eval": "tsx src/scripts/eval.ts",
+    "index": "tsx src/scripts/index.ts",
+    "eval:rag": "tsx src/scripts/evalRag.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.6.0",

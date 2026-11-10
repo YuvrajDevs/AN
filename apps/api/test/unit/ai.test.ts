@@ -129,3 +129,26 @@ describe('eval scoring', () => {
     expect(s.autoAcceptAccuracy).toBe(0.5);
   });
 });
+
+describe('citation number check', () => {
+  it('matches dates as dates, not as loose digits', async () => {
+    const { validateClaims } = await import('../../src/ai/brief');
+    const pack = [{ ref: 'S1', sourceId: 'a', title: 'Filing', excerpt: 'First sale on 2026-03-09: $4.4M sold of a $10.0M offering.' }];
+    const v = validateClaims(
+      [
+        {
+          heading: 'A',
+          claims: [
+            { text: 'First sale on March 9, 2026, with $4.4M sold.', citations: ['S1'] },
+            { text: 'The offering opened in 2026.', citations: ['S1'] },
+            { text: 'It is worth $3B.', citations: ['S1'] },
+            { text: 'First sale on March 10, 2026.', citations: ['S1'] },
+          ],
+        },
+      ],
+      pack,
+    );
+    expect(v.sections[0].claims.map((c) => c.text)).toEqual(['First sale on March 9, 2026, with $4.4M sold.', 'The offering opened in 2026.']);
+    expect(v.rejected.map((r) => r.reason)).toEqual(['numbers not found in cited sources: 3', 'numbers not found in cited sources: 2026-3-10']);
+  });
+});

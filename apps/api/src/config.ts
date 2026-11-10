@@ -42,6 +42,11 @@ const schema = z.object({
   /** Reasoning effort for Gemini 3.x models. Classification and briefs need little; 'low' keeps latency down. Empty = model default. */
   GEMINI_THINKING_LEVEL: z.enum(['', 'minimal', 'low', 'medium', 'high']).default('low'),
   LLM_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
+  /** Embedding model for Ask (RAG) retrieval, and the stored vector size. */
+  GEMINI_EMBEDDING_MODEL: z.string().default('gemini-embedding-2'),
+  EMBEDDING_DIMS: z.coerce.number().int().min(64).max(3072).default(768),
+  /** Atlas Vector Search index on the chunks collection. Empty disables it (local cosine only). */
+  VECTOR_INDEX_NAME: z.string().default('chunk_vectors'),
   /** Classifications below this confidence go to the human review queue. */
   REVIEW_CONFIDENCE_THRESHOLD: z.coerce.number().min(0).max(1).default(0.75),
   SEC_USER_AGENT: z.string().default(''),

@@ -142,6 +142,36 @@ companySchema.index({ 'externalIds.yc': 1 }, { sparse: true });
 export type CompanyDoc = HydratedDocument<InferSchemaType<typeof companySchema>>;
 export const Company = model('Company', companySchema);
 
+/* ------------------------------------------------------ retrieval chunks */
+
+export const CHUNK_KINDS = ['company', 'round', 'dataset'] as const;
+
+/** One retrievable passage for Ask (RAG): a company profile, a funding round or a dataset summary. */
+const chunkSchema = new Schema(
+  {
+    kind: { type: String, enum: CHUNK_KINDS, required: true },
+    /** Id of the record this passage describes (company, round or source). */
+    refId: { type: Schema.Types.ObjectId, required: true },
+    companyId: { type: Schema.Types.ObjectId, ref: 'Company', default: null, index: true },
+    companySlug: { type: String, default: null },
+    /** Stored sources that back this passage; answers cite these. */
+    sourceIds: { type: [Schema.Types.ObjectId], ref: 'Source', default: [] },
+    title: { type: String, required: true, maxlength: 300 },
+    text: { type: String, required: true, maxlength: 6000 },
+    url: { type: String, default: null },
+    sectorSlug: { type: String, default: null },
+    /** Hash of title+text: unchanged passages are never re-embedded. */
+    hash: { type: String, required: true },
+    embedding: { type: [Number], default: [], select: false },
+    embeddingModel: { type: String, default: null },
+  },
+  { timestamps: true },
+);
+chunkSchema.index({ kind: 1, refId: 1 }, { unique: true });
+chunkSchema.index({ title: 'text', text: 'text' }, { weights: { title: 5, text: 1 }, name: 'chunk_text' });
+export type ChunkDoc = HydratedDocument<InferSchemaType<typeof chunkSchema>>;
+export const Chunk = model('Chunk', chunkSchema);
+
 /* --------------------------------------------------------- funding rounds */
 
 export const ROUND_TYPES = [

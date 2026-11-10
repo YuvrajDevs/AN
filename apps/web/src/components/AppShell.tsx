@@ -15,6 +15,7 @@ import {
   Menu,
   Search,
   Settings2,
+  Sparkles,
   TrendingUp,
   X,
   type LucideIcon,
@@ -38,6 +39,7 @@ const GENERAL: NavItem[] = [
   { href: '/sectors', label: 'Sectors', key: 's', icon: Layers },
 ];
 const TOOLS: NavItem[] = [
+  { href: '/ask', label: 'Ask', key: 'q', icon: Sparkles },
   { href: '/review', label: 'Review queue', key: 'r', icon: ClipboardCheck },
   { href: '/briefs', label: 'Briefs', key: 'b', icon: FileText },
   { href: '/watchlists', label: 'Watchlists', key: 'w', icon: Bookmark },

@@ -5,7 +5,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 
-**Startup and sector intelligence from public data.** Strata tracks startups in chosen sectors, records their funding rounds from primary sources (SEC filings), classifies companies into an editable sector taxonomy with LLMs (with a confidence score and a human review queue), and produces sector landscapes and analyst briefs in which every claim cites a stored source.
+**Startup and sector intelligence from public data.** Strata tracks startups in chosen sectors, records their funding rounds from primary sources (SEC filings), classifies companies into an editable sector taxonomy with LLMs (with a confidence score and a human review queue), produces sector landscapes and analyst briefs in which every claim cites a stored source, and answers plain-English questions over the dataset with retrieval-augmented generation (RAG).
 
 **Live demo:** [strata-weld-sigma.vercel.app](https://strata-weld-sigma.vercel.app) (one-click demo sign-in; free hosting, so the first load can take up to a minute).
 
@@ -18,9 +18,9 @@
 | **Backend** | Node.js 22 · Express 5 · TypeScript (strict) · Mongoose 8 on MongoDB 7 (aggregation pipelines) · zod |
 | **Frontend** | Next.js 15 (App Router) · React 19 · SWR · Tailwind · warm pastel design system |
 | **Infra** | Redpanda (Kafka API) event backbone · Redis (cache, rate limits, BullMQ jobs) · Docker Compose |
-| **AI** | OpenAI, Anthropic and Gemini behind one provider interface (Gemini live in the demo, with model fallback and an offline heuristic fallback) · 162-company hand-labelled eval set |
+| **AI** | OpenAI, Anthropic and Gemini behind one provider interface (Gemini live in the demo, with model fallback and an offline heuristic fallback) · RAG over the dataset with Gemini embeddings and MongoDB Atlas Vector Search · 162-company hand-labelled classification eval set |
 | **Data** | YC public directory · SEC EDGAR Form D · company RSS/press feeds · GitHub. No Crunchbase, PitchBook, Tracxn or LinkedIn scraping. |
-| **Quality** | 103 unit/API tests · 37 Playwright end-to-end tests (flows, axe accessibility scans, mobile) · CI runs the full Docker stack; the suite also passes against the live demo |
+| **Quality** | 110 unit/API tests · 37 Playwright end-to-end tests (flows, axe accessibility scans, mobile) · CI runs the full Docker stack; the suite also passes against the live demo |
 
 **Read next:** [Architecture](docs/ARCHITECTURE.md) · [API reference](docs/API.md) · [Decisions log](docs/DECISIONS.md) · [Legal AI landscape (sample analysis)](docs/landscape-legal-ai.md) · [Eval results](docs/eval-results.md) · [Free hosted demo](docs/DEPLOY.md)
 
@@ -71,11 +71,12 @@ Optional settings, in `.env` (copy `.env.example`):
 | **Sector landscape**: market map, Form D funding by year, YC cohort trend, notable companies, latest rounds | `/sectors/[slug]` |
 | **Search and filters**: full-text and prefix search; sector, subsector, status, review state, funding; URL-shareable | `/companies`, ⌘K palette |
 | **Watchlists and alerts** for new rounds, by company or subsector, with a minimum size and optional SSRF-safe webhooks | `/watchlists`, `/alerts` |
+| **Ask Strata (RAG)**: questions answered from the dataset with hybrid retrieval (Gemini embeddings + Atlas Vector Search, keyword and name match, fused by reciprocal rank fusion); every sentence cites its passages and unsupported numbers are dropped | `/ask` |
 | **Analyst briefs**: LLM-drafted; claims without a valid citation, or with numbers not found in the cited source, are dropped | `/briefs` |
 | **CSV export** of companies and rounds (streamed, formula-injection safe) | Companies, funding and landscape pages |
 | **Admin console**: MongoDB/Redis/event-bus/job-queue status, run connectors, ingestion history with partial-failure detail, user roles | `/admin` |
 
-Keyboard: `⌘K` / `Ctrl+K` or `/` search, `g` then `d c f s r w a b` to jump between pages (`g x` for admin), `j`/`k` and `Enter` in tables.
+Keyboard: `⌘K` / `Ctrl+K` or `/` search, `g` then `d c f s q r w a b` to jump between pages (`g x` for admin), `j`/`k` and `Enter` in tables.
 
 ## How it works
 
@@ -93,6 +94,21 @@ flowchart LR
 - **The queue layer is swappable.** The same code runs on Kafka, Redis Streams or in memory (`EVENT_BUS`), so a hosted demo can run on free tiers without Kafka (`EVENT_BUS=redis INLINE_WORKER=true`, one process).
 - **Analytics are MongoDB aggregation pipelines** (`$facet`, `$group`, `$lookup`), cached in Redis with generational invalidation.
 - **Security** covers httpOnly-cookie JWT sessions, role checks, zod validation on every route, Redis-backed rate limits (including per-user LLM budgets), a CSP, and an SSRF-safe fetch client (DNS pinning, private-range blocking, per-hop redirect checks).
+
+### Ask Strata: retrieval-augmented answers
+
+- **Index.** One passage per company profile, per SEC Form D offering and per sector snapshot (about 600), embedded with Gemini `gemini-embedding-2` (768 dimensions, `RETRIEVAL_DOCUMENT`). Passages are content-hashed, so re-indexing only embeds what changed; a run that hits the free-tier rate limit waits and resumes. `npm run index`, or `POST /api/ask/reindex` as an admin.
+- **Retrieve (hybrid).** Dense search uses **MongoDB Atlas Vector Search** (falls back to in-process cosine where Atlas Search is not available), plus Mongo full-text search and exact company-name matching. The three rankings are merged with **reciprocal rank fusion**, and each passage shows which retrievers found it.
+- **Answer.** Gemini sees only the retrieved passages as numbered sources and must answer in cited claims, or say the dataset has no answer. The same validator as analyst briefs drops any claim that cites nothing, cites an unknown passage, or states a number not in its cited passages. If the model is unavailable the endpoint still answers with the closest passages, labelled as extractive.
+- **Measured.** `npm run eval:rag` scores retrieval on hand-written paraphrase questions (Hit@1, Hit@5, MRR) for semantic-only, keyword-only and hybrid search. On 25 questions (21 paraphrases that avoid the company's own words, 4 about named companies' filings), against the live dataset:
+
+  | Retriever | Hit@1 | Hit@5 | MRR |
+  |---|---|---|---|
+  | Keyword only (Mongo text search) | 20% | 52% | 0.32 |
+  | Semantic only (Gemini embeddings) | 76% | **100%** | 0.84 |
+  | Hybrid (weighted fusion, the default) | 72–76% | **100%** | 0.82–0.85 |
+
+  Keyword search alone misses most paraphrases, so fusion weights it at 0.05 against 1.0 for semantic search (equal weights cut hybrid MRR to 0.69). Its value is exact rare terms and names, which these paraphrases deliberately avoid. The hybrid range covers runs on Atlas's approximate index and on exact in-process cosine. With `--answers`, five questions go through Gemini: 11 claims kept, every one cited, and the out-of-scope question ("What is Apple's stock price?") correctly refused.
 
 The full design (ingestion and record linkage, caching, data model, scaling, failure handling, security) is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), and the reasoning behind each choice is in [docs/DECISIONS.md](docs/DECISIONS.md).
 

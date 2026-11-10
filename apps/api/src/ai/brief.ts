@@ -125,9 +125,40 @@ export function factsToSections(facts: FactCandidate[]): DraftSection[] {
 }
 
 const NUMBER_RE = /\d[\d,]*(?:\.\d+)?/g;
+const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+const MON = '(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)';
+const ISO_RE = /\b(\d{4})-(\d{2})-(\d{2})\b/g;
+const MDY_RE = new RegExp(`\\b${MON}\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?,?\\s+(\\d{4})\\b`, 'gi');
+const DMY_RE = new RegExp(`\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+${MON}\\.?,?\\s+(\\d{4})\\b`, 'gi');
 
-function numbersIn(s: string): string[] {
-  return (s.match(NUMBER_RE) ?? []).map((n) => n.replace(/,/g, '').replace(/\.0+$/, ''));
+const monthNo = (m: string) => MONTHS.findIndex((x) => x.startsWith(m.toLowerCase().slice(0, 3))) + 1;
+const key = (y: string | number, m: number, d: string | number) => `${y}-${m}-${Number(d)}`;
+
+/**
+ * Split text into dates and other numbers. Dates are compared as whole dates, so "March 9,
+ * 2026" matches "2026-03-09" while a stray "9" or "2" elsewhere cannot borrow a date's parts.
+ * A date's year still counts as a number ("in 2026").
+ */
+function factsIn(s: string): { dates: Set<string>; numbers: Set<string> } {
+  const dates = new Set<string>();
+  const years: string[] = [];
+  let rest = s.replace(ISO_RE, (_, y, m, d) => {
+    dates.add(key(y, Number(m), d));
+    years.push(y);
+    return ' ';
+  });
+  rest = rest.replace(MDY_RE, (_, mon, d, y) => {
+    dates.add(key(y, monthNo(mon), d));
+    years.push(y);
+    return ' ';
+  });
+  rest = rest.replace(DMY_RE, (_, d, mon, y) => {
+    dates.add(key(y, monthNo(mon), d));
+    years.push(y);
+    return ' ';
+  });
+  const numbers = new Set([...(rest.match(NUMBER_RE) ?? []), ...years].map((n) => n.replace(/,/g, '').replace(/\.0+$/, '')));
+  return { dates, numbers };
 }
 
 export interface ValidatedSection {
@@ -158,8 +189,12 @@ export function validateClaims(
       }
       // Strip any inline "[S1]" markers the model added; citations are rendered from sourceIds.
       const text = claim.text.replace(/\s*\[S\d+(?:\s*,\s*S\d+)*\]/gi, '').trim();
-      const evidenceNumbers = new Set(cited.flatMap((c) => numbersIn(`${c!.title} ${c!.excerpt}`)));
-      const unsupported = numbersIn(text).filter((n) => !evidenceNumbers.has(n));
+      const evidence = cited.map((c) => factsIn(`${c!.title} ${c!.excerpt}`));
+      const stated = factsIn(text);
+      const unsupported = [
+        ...[...stated.numbers].filter((n) => !evidence.some((e) => e.numbers.has(n))),
+        ...[...stated.dates].filter((d) => !evidence.some((e) => e.dates.has(d))),
+      ];
       if (unsupported.length) {
         rejected.push({ text: claim.text, reason: `numbers not found in cited sources: ${unsupported.join(', ')}` });
         continue;
