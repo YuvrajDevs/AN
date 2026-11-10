@@ -18,9 +18,9 @@
 | **Backend** | Node.js 22 · Express 5 · TypeScript (strict) · Mongoose 8 on MongoDB 7 (aggregation pipelines) · zod |
 | **Frontend** | Next.js 15 (App Router) · React 19 · SWR · Tailwind · warm pastel design system |
 | **Infra** | Redpanda (Kafka API) event backbone · Redis (cache, rate limits, BullMQ jobs) · Docker Compose |
-| **AI** | OpenAI, Anthropic and Gemini behind one provider interface, plus an offline heuristic baseline and a 162-company eval set |
+| **AI** | OpenAI, Anthropic and Gemini behind one provider interface (Gemini live in the demo, with model fallback and an offline heuristic fallback) · 162-company hand-labelled eval set |
 | **Data** | YC public directory · SEC EDGAR Form D · company RSS/press feeds · GitHub. No Crunchbase, PitchBook, Tracxn or LinkedIn scraping. |
-| **Quality** | 97 unit/API tests · 32 Playwright end-to-end tests (including axe accessibility scans in light and dark mode) · CI runs the full Docker stack |
+| **Quality** | 103 unit/API tests · 37 Playwright end-to-end tests (flows, axe accessibility scans, mobile) · CI runs the full Docker stack; the suite also passes against the live demo |
 
 **Read next:** [Architecture](docs/ARCHITECTURE.md) · [API reference](docs/API.md) · [Decisions log](docs/DECISIONS.md) · [Legal AI landscape (sample analysis)](docs/landscape-legal-ai.md) · [Eval results](docs/eval-results.md) · [Free hosted demo](docs/DEPLOY.md)
 
