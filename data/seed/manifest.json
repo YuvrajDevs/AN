@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-11-09T15:13:56.020Z",
+  "sources": {
+    "yc": {
+      "url": "https://yc-oss.github.io/api/companies/all.json",
+      "note": "Community JSON mirror of the public YC company directory",
+      "records": 465
+    },
+    "secFormD": {
+      "url": "https://efts.sec.gov/LATEST/search-index + https://www.sec.gov/Archives/edgar/data",
+      "records": 136,
+      "handRejected": 41,
+      "candidateMatches": 234
+    }
+  },
+  "sectors": [
+    {
+      "slug": "legal-ai",
+      "sourceTags": [
+        "LegalTech",
+        "Legal"
+      ],
+      "companies": 102
+    },
+    {
+      "slug": "climate-tech",
+      "sourceTags": [
+        "Climate"
+      ],
+      "companies": 159
+    },
+    {
+      "slug": "payments-infra",
+      "sourceTags": [
+        "Payments"
+      ],
+      "companies": 205
+    }
+  ]
+}

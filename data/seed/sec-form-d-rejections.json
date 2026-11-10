@@ -1,0 +1,248 @@
+[
+ {
+  "companySlug": "aspire",
+  "cik": "1618437",
+  "reason": "Aspire, LLC (Phoenix, AZ, inc. 2013) is not the Singapore fintech Aspire (YC W18).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "arcus",
+  "cik": "1798337",
+  "reason": "Arcus, Inc. (Yardley, PA) does not match YC Arcus (Mexico City / NYC payments API).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "bluedot",
+  "cik": "1658681",
+  "reason": "BlueDot LLC (Bellevue, WA, 2015) predates YC Bluedot (W23) and is a different business.",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "blee",
+  "cik": "1814569",
+  "reason": "BLEE LLC (Nashville, TN, inc. 2016) is unrelated to Blee (YC S22, NYC compliance reviews).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "cypher",
+  "cik": "1547476",
+  "reason": "CYPHER, LLC (South Jordan, UT, 2012) is unrelated to Cypher (YC W22).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "handle",
+  "cik": "1527452",
+  "reason": "Handle, Inc. filings (2012-13) predate Handle (YC W19).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "infinia",
+  "cik": "1405384",
+  "reason": "Infinia Corp (Ogden, UT) filings 2009-13 are a different company from Infinia (YC W23, Uruguay).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "onetext",
+  "cik": "1466063",
+  "reason": "ONETEXT, INC. (inc. 2007) is unrelated to OneText (YC W23).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "pigeon-2",
+  "cik": "1713803",
+  "reason": "Pigeon LLC (Los Angeles, 2016) is unrelated to Pigeon (YC W22, Miami).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "wren",
+  "cik": "1311344",
+  "reason": "WREN, INC. (Sandy, UT, 2009 filing) is unrelated to Wren (YC S19 carbon offsets).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "struct",
+  "cik": "2138576",
+  "reason": "Struct, Inc. (Juneau, AK, inc. 2025) cannot be confirmed as Struct (YC W23); excluded.",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "hive-health",
+  "cik": "2133179",
+  "reason": "Hive Health, LLC (Naples, FL) is not the Philippine health-benefits fintech.",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "toku",
+  "cik": "1975820",
+  "reason": "Toku, Inc. (Auckland, NZ) does not match Toku (YC S21, Santiago, Chile).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "inbalance",
+  "cik": "1855525",
+  "reason": "INBALANCE INC. (Lexington, MA) cannot be confirmed as inBalance (YC W21); excluded.",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "flo",
+  "cik": "1987454",
+  "reason": "Flo Technology Inc (Las Vegas, inc. 2023) is not Flo Recruit (YC S19, Austin).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "magic-2",
+  "cik": "1720519",
+  "reason": "Magic AI Corp (Seattle, inc. 2017) does not match Magic (YC S22).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "praxis",
+  "cik": "1888904",
+  "reason": "Praxis Labs, Inc. (Brooklyn, inc. 2019) is not Praxis (YC F26).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "solo",
+  "cik": "1878762",
+  "reason": "Solo Technologies, Inc. (Seattle) is not Solo/SoloSuit (YC W21, Salt Lake City).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "grin",
+  "cik": "1790698",
+  "reason": "Grin Technologies Inc. (Sacramento) cannot be confirmed as Grin (YC S18, Mexico City scooters).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "truss",
+  "cik": "1988965",
+  "reason": "Truss Software, Inc. (Atlanta, inc. 2022) cannot be confirmed as Truss (YC S21, San Francisco).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "nala",
+  "cik": "1831050",
+  "reason": "NALA Systems, Inc. (Chapel Hill, NC) cannot be confirmed as NALA (YC W19); excluded.",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "bright",
+  "cik": "1828900",
+  "reason": "Bright Software, Inc. (Gaithersburg, MD) is not Bright (YC W15, Mexican residential solar).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "buildstream",
+  "cik": "1812192",
+  "reason": "BuildStream Technologies Inc. (Walnut Creek, CA) cannot be confirmed as BuildStream (YC S19, London).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "voltic",
+  "cik": "2065890",
+  "reason": "Voltic Shipping Corp. (PA) matched only on website stem; not confirmed.",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "prometheus",
+  "cik": "1813493",
+  "reason": "Prometheus Technologies Inc. is not Prometheus Fuels (YC W19).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "regent",
+  "cik": "319200",
+  "reason": "REGENT TECHNOLOGIES INC (Dallas, 2017 filing) is not REGENT (YC W21 seagliders).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "hyper",
+  "cik": "1648717",
+  "reason": "Hyper Labs, Inc. (New York) cannot be confirmed as Hyper (YC S21).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "flux",
+  "cik": "1540684",
+  "reason": "Flux Technologies, Corp. (Beverly Hills, 2013) is not Flux (YC S19, Mexico).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "flux-2",
+  "cik": "1540684",
+  "reason": "Flux Technologies, Corp. (Beverly Hills, 2013) is not Flux (YC W21, Nigeria).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "wave",
+  "cik": "919013",
+  "reason": "WAVE SYSTEMS CORP (Lee, MA) is unrelated to Wave (Senegal mobile money).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "balance",
+  "cik": "1505559",
+  "reason": "Balance Health Corp is unrelated to Balance (YC S20 B2B payments).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "hedgehog-2",
+  "cik": "1830965",
+  "reason": "HedgeHog Health Inc. is unrelated to Hedgehog (YC S22).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "ohm",
+  "cik": "2029614",
+  "reason": "Ohm Health, Inc. is unrelated to Ohm (YC S15 energy).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "plume",
+  "cik": "1843354",
+  "reason": "Plume Health, Inc. is unrelated to Plume (YC S24, Paris).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "spark",
+  "cik": "1882072",
+  "reason": "Spark Health Inc. is unrelated to Spark (YC W24).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "reach",
+  "cik": "1500088",
+  "reason": "REACH Health, Inc. is unrelated to Reach Labs (YC S15 wireless power).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "nuvola",
+  "cik": "1517419",
+  "reason": "Nuvola Systems Corp (Lantana, FL, inc. 2009) is unrelated to Nuvola (YC W17).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "flo",
+  "cik": "1752100",
+  "reason": "Flo Health, Inc. is the period-tracking app, not Flo Recruit (YC S19, legal talent).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "flo",
+  "cik": "1765791",
+  "reason": "Flo Technologies, Inc. (Culver City) makes water-leak detection, not Flo Recruit (YC S19).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "prometheus",
+  "cik": "1661839",
+  "reason": "Prometheus Labs, Inc. (New York, inc. 2013) is not Prometheus Fuels (YC W19).",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ },
+ {
+  "companySlug": "magic-2",
+  "cik": "1959571",
+  "reason": "Magic AI, Inc. (San Francisco) is most likely the AI coding company Magic, not YC Magic (pay-by-bank); excluded.",
+  "reviewer": "Strata analyst (hand-checked, Nov 2026)"
+ }
+]
