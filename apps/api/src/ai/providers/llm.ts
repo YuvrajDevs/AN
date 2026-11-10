@@ -96,14 +96,16 @@ export class GeminiProvider implements LlmProvider {
         generationConfig: {
           responseMimeType: 'application/json',
           responseJsonSchema: req.jsonSchema,
-          maxOutputTokens: req.maxTokens ?? 4000,
+          // Thinking tokens count against this budget, so leave headroom above the answer size.
+          maxOutputTokens: (req.maxTokens ?? 4000) + 4000,
           temperature: 0,
+          ...(config.GEMINI_THINKING_LEVEL ? { thinkingConfig: { thinkingLevel: config.GEMINI_THINKING_LEVEL } } : {}),
         },
       },
     );
     const candidate = data?.candidates?.[0];
     if (!candidate || candidate.finishReason === 'SAFETY') throw new LlmError('gemini returned no usable candidate', this.name);
-    const text = (candidate.content?.parts ?? []).map((p: { text?: string }) => p.text ?? '').join('');
+    const text = (candidate.content?.parts ?? []).filter((p: { thought?: boolean }) => !p.thought).map((p: { text?: string }) => p.text ?? '').join('');
     return validated(this, req, parseJsonText(this.name, text));
   }
 }

@@ -32,6 +32,10 @@ export async function postJson(
     } catch (err) {
       if (err instanceof LlmError && !err.retryable) throw err;
       lastErr = err;
+      // A timeout means the model is slow, not flaky: retrying would only multiply the wait.
+      if ((err as { name?: string })?.name === 'AbortError') {
+        throw new LlmError(`${provider} timed out after ${Math.round(config.LLM_TIMEOUT_MS / 1000)}s`, provider, true);
+      }
     } finally {
       clearTimeout(timer);
     }

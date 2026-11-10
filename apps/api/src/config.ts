@@ -36,7 +36,9 @@ const schema = z.object({
   ANTHROPIC_API_KEY: z.string().optional().default(''),
   ANTHROPIC_MODEL: z.string().default('claude-opus-5-5'),
   GEMINI_API_KEY: z.string().optional().default(''),
-  GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
+  GEMINI_MODEL: z.string().default('gemini-3.8-flash'),
+  /** Reasoning effort for Gemini 3.x models. Classification and briefs need little; 'low' keeps latency down. Empty = model default. */
+  GEMINI_THINKING_LEVEL: z.enum(['', 'minimal', 'low', 'medium', 'high']).default('low'),
   LLM_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
   /** Classifications below this confidence go to the human review queue. */
   REVIEW_CONFIDENCE_THRESHOLD: z.coerce.number().min(0).max(1).default(0.75),

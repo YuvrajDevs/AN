@@ -10,6 +10,7 @@ import { HttpError } from './lib/errors';
 import { authenticate, requireAuth } from './security/auth';
 import { apiLimiter } from './security/rateLimit';
 import { BlockedUrlError } from './security/safeFetch';
+import { LlmError } from './ai/types';
 import { authRouter } from './routes/auth';
 import { companiesRouter } from './routes/companies';
 import { fundingRouter } from './routes/funding';
@@ -74,6 +75,12 @@ export function createApp() {
     }
     if (err instanceof ZodError) {
       res.status(400).json({ error: { code: 'bad_request', message: 'Validation failed', details: err.issues } });
+      return;
+    }
+    if (err instanceof LlmError) {
+      // The model provider failed (bad model id, quota, outage). Say which, never leak the raw body.
+      logger.warn({ err: err.message, provider: err.provider, path: req.path }, 'llm provider error');
+      res.status(502).json({ error: { code: 'llm_unavailable', message: `The ${err.provider} model is unavailable right now. Try again, or pick another provider.` } });
       return;
     }
     if (err instanceof BlockedUrlError) {
