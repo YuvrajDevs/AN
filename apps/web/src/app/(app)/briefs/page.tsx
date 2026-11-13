@@ -99,7 +99,7 @@ function BriefsView() {
             Generate brief
           </Button>
           {err && (
-            <p role="alert" className="w-full text-sm text-danger">
+            <p role="alert" className="w-full text-body text-danger">
               {err}
             </p>
           )}
@@ -119,11 +119,11 @@ function BriefsView() {
                 <Link href={`/briefs/${b._id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-muted">
                   <span className="min-w-0 flex-1">
                     <span className="block font-medium">{b.title}</span>
-                    <span className="block text-xs text-subtle">
+                    <span className="block text-caption text-subtle">
                       {b.scope.type} · {b.provider} ({b.model}) · {relative(b.createdAt)}
                     </span>
                   </span>
-                  <Badge tone={b.status === 'ready' ? 'success' : b.status === 'failed' ? 'danger' : 'warning'}>{b.status}</Badge>
+                  {b.status !== 'ready' && <Badge tone={b.status === 'failed' ? 'danger' : 'warning'}>{b.status === 'failed' ? 'failed' : 'drafting…'}</Badge>}
                 </Link>
               </li>
             ))}

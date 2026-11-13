@@ -99,36 +99,35 @@ export default function DashboardPage() {
   const { data, error, mutate } = useApi<Dashboard>('/dashboard');
   const recent = useApi<Recent>('/funding/recent');
   const [metric, setMetric] = useState<'usd' | 'rounds'>('usd');
-  // undefined = default (latest quarter with money), null = closed, string = a picked quarter.
-  const [picked, setPicked] = useState<string | null | undefined>(undefined);
+  // null = closed (the default: the breakdown opens when an analyst picks a quarter), string = a picked quarter.
+  const [picked, setPicked] = useState<string | null>(null);
 
   if (error) return <ErrorState error={error} retry={() => mutate()} />;
   const first = user?.name?.split(' ')[0];
   const maxSector = Math.max(1, ...(data?.bySector ?? []).map((s) => s.companies));
   const quarters = (data?.quarterly ?? []).slice(-12);
-  const fallback = [...quarters].reverse().find((q) => q.disclosedUsd > 0)?.period ?? null;
-  const period = picked === undefined ? fallback : picked;
+  const period = picked;
   const selectedIndex = period ? quarters.findIndex((q) => q.period === period) : -1;
 
   return (
     <>
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="text-display font-semibold tracking-tight">
             {greeting()}
             {first ? `, ${first}` : ''}
           </h1>
-          <p className="mt-1 text-[13px] text-subtle">
+          <p className="mt-1 text-body-sm text-subtle">
             {data ? `${data.totals.companies} startups across ${data.bySector.length} sectors, funding from SEC Form D filings.` : 'Loading your workspace…'}
           </p>
         </div>
         <Link href="/review" className={buttonClass('primary')}>
           <ClipboardCheck className="h-4 w-4" aria-hidden="true" /> Review queue
-          {!!data?.totals.pendingReview && <span className="rounded-full bg-yellow px-1.5 text-[11px] font-semibold text-ink">{data.totals.pendingReview}</span>}
+          {!!data?.totals.pendingReview && <span className="rounded-full bg-yellow px-1.5 text-micro font-semibold text-ink">{data.totals.pendingReview}</span>}
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {!data ? (
           Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-[84px]" />)
         ) : (
@@ -150,7 +149,7 @@ export default function DashboardPage() {
         )}
       </div>
 
-      <div className="mt-3 grid gap-3 lg:grid-cols-3">
+      <div className="mt-4 grid gap-4 lg:grid-cols-3">
         <Card
           className="lg:col-span-2"
           title={
@@ -174,7 +173,7 @@ export default function DashboardPage() {
           {!data ? (
             <Skeleton className="h-[160px]" />
           ) : quarters.length === 0 ? (
-            <p className="py-12 text-center text-sm text-subtle">No dated rounds yet.</p>
+            <p className="py-12 text-center text-body text-subtle">No dated rounds yet.</p>
           ) : (
             <BarChart
               height={150}
@@ -185,72 +184,6 @@ export default function DashboardPage() {
               selected={selectedIndex >= 0 ? selectedIndex : null}
               onSelect={(i) => setPicked(i === null ? null : quarters[i].period)}
             />
-          )}
-        </Card>
-
-        <Card title="Sectors" bodyClass="divide-y divide-border/60">
-          {!data
-            ? Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="m-4 h-9" />)
-            : data.bySector.map((s, i) => (
-                <Link key={s.slug} href={`/sectors/${s.slug}`} className="group block px-4 py-3 hover:bg-muted/50">
-                  <span className="flex items-center justify-between gap-2">
-                    <span className="flex min-w-0 items-center gap-2">
-                      <span className={cx('h-2.5 w-2.5 shrink-0 rounded-full', TONE_BG[sectorTone(s.color, i)])} aria-hidden="true" />
-                      <span className="truncate text-[13px] font-medium group-hover:underline">{s.name}</span>
-                    </span>
-                    <span className="tabular shrink-0 text-xs text-subtle">
-                      {s.companies} · {usd(s.disclosedUsd, '$0')}
-                    </span>
-                  </span>
-                  <span className="mt-2 block h-1.5 rounded-full bg-muted">
-                    <span className="block h-full rounded-full bg-fg" style={{ width: `${Math.max(3, (s.companies / maxSector) * 100)}%` }} />
-                  </span>
-                </Link>
-              ))}
-        </Card>
-      </div>
-
-      {period && (
-        <div className="mt-3 animate-[fadeUp_350ms_cubic-bezier(0.22,1,0.36,1)]" key={period}>
-          <QuarterBreakdown period={period} label={quarterLabel(period)} onClose={() => setPicked(null)} />
-        </div>
-      )}
-
-      <div className="mt-3 grid gap-3 lg:grid-cols-3">
-        <Card
-          className="lg:col-span-2"
-          title="Latest funding"
-          actions={
-            <Link href="/funding" className="text-xs font-medium text-subtle hover:text-fg">
-              All rounds →
-            </Link>
-          }
-        >
-          {recent.error ? (
-            <ErrorState error={recent.error} retry={() => recent.mutate()} />
-          ) : !recent.data ? (
-            <div className="space-y-2 p-4">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <Skeleton key={i} className="h-8" />
-              ))}
-            </div>
-          ) : (
-            <ul className="divide-y divide-border/60">
-              {latestPerCompany(recent.data.items, 7).map(({ round: r, more }) => (
-                <li key={r._id}>
-                  <Link href={`/companies/${r.company.slug}`} className="flex items-center gap-3 px-4 py-2 hover:bg-muted/50">
-                    <Logo src={r.company.logoUrl} name={r.company.name} size={26} />
-                    <span className="min-w-0 flex-1 truncate text-[13px] font-medium">
-                      {r.company.name}
-                      {more > 0 && <span className="ml-2 text-xs font-normal text-subtle">+{more} earlier {more === 1 ? 'round' : 'rounds'}</span>}
-                    </span>
-                    <span className="hidden text-xs text-subtle sm:block">{ROUND_LABELS[r.roundType] ?? r.roundType}</span>
-                    <span className="tabular w-24 text-right text-xs text-subtle">{date(r.date)}</span>
-                    <span className="tabular w-20 text-right text-[13px] font-semibold">{usd(r.amountUsd, '—')}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
           )}
         </Card>
 
@@ -271,7 +204,7 @@ export default function DashboardPage() {
           ) : (
             <ul className="space-y-1">
               {insights(data).map((x, i) => {
-                const body = <span className="text-[13px] leading-snug">{x.text}</span>;
+                const body = <span className="text-body-sm leading-snug">{x.text}</span>;
                 return (
                   <li key={i}>
                     {x.href ? (
@@ -287,7 +220,73 @@ export default function DashboardPage() {
               })}
             </ul>
           )}
-          <p className="px-2.5 pb-1 pt-2 text-[11px] text-subtle">Computed from stored filings; refreshed when data changes.</p>
+          <p className="px-2.5 pb-1 pt-2 text-micro text-subtle">Computed from stored filings; refreshed when data changes.</p>
+        </Card>
+      </div>
+
+      {period && (
+        <div className="mt-4 animate-[fadeUp_350ms_cubic-bezier(0.22,1,0.36,1)]" key={period}>
+          <QuarterBreakdown period={period} label={quarterLabel(period)} onClose={() => setPicked(null)} />
+        </div>
+      )}
+
+      <div className="mt-4 grid gap-4 lg:grid-cols-3">
+        <Card
+          className="lg:col-span-2"
+          title="Latest funding"
+          actions={
+            <Link href="/funding" className="text-caption font-medium text-subtle hover:text-fg">
+              All rounds →
+            </Link>
+          }
+        >
+          {recent.error ? (
+            <ErrorState error={recent.error} retry={() => recent.mutate()} />
+          ) : !recent.data ? (
+            <div className="space-y-2 p-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-8" />
+              ))}
+            </div>
+          ) : (
+            <ul className="divide-y divide-border/60">
+              {latestPerCompany(recent.data.items, 7).map(({ round: r, more }) => (
+                <li key={r._id}>
+                  <Link href={`/companies/${r.company.slug}`} className="flex items-center gap-3 px-4 py-2 hover:bg-muted/50">
+                    <Logo src={r.company.logoUrl} name={r.company.name} size={26} />
+                    <span className="min-w-0 flex-1 truncate text-body-sm font-medium">
+                      {r.company.name}
+                      {more > 0 && <span className="ml-2 text-caption font-normal text-subtle">+{more} earlier {more === 1 ? 'round' : 'rounds'}</span>}
+                    </span>
+                    <span className="hidden text-caption text-subtle sm:block">{ROUND_LABELS[r.roundType] ?? r.roundType}</span>
+                    <span className="tabular w-24 text-right text-caption text-subtle">{date(r.date)}</span>
+                    <span className="tabular w-20 text-right text-body-sm font-semibold">{usd(r.amountUsd, '—')}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+
+        <Card title="Sectors" bodyClass="divide-y divide-border/60">
+          {!data
+            ? Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="m-4 h-9" />)
+            : data.bySector.map((s, i) => (
+                <Link key={s.slug} href={`/sectors/${s.slug}`} className="group block px-4 py-3 hover:bg-muted/50">
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span className={cx('h-2.5 w-2.5 shrink-0 rounded-full', TONE_BG[sectorTone(s.color, i)])} aria-hidden="true" />
+                      <span className="truncate text-body-sm font-medium group-hover:underline">{s.name}</span>
+                    </span>
+                    <span className="tabular shrink-0 text-caption text-subtle">
+                      {s.companies} · {usd(s.disclosedUsd, '$0')}
+                    </span>
+                  </span>
+                  <span className="mt-2 block h-1.5 rounded-full bg-muted">
+                    <span className="block h-full rounded-full bg-fg" style={{ width: `${Math.max(3, (s.companies / maxSector) * 100)}%` }} />
+                  </span>
+                </Link>
+              ))}
         </Card>
       </div>
     </>

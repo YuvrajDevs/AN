@@ -31,7 +31,7 @@ const BTN_VARIANT: Record<Variant, string> = {
   danger: 'border border-danger/30 bg-surface text-danger hover:bg-danger/10',
 };
 export function buttonClass(variant: Variant = 'secondary', size: 'sm' | 'md' = 'md', className?: string) {
-  return cx(BTN_BASE, size === 'sm' ? 'h-8 px-3 text-xs' : 'h-9 px-4 text-[13px]', BTN_VARIANT[variant], className);
+  return cx(BTN_BASE, size === 'sm' ? 'h-8 px-3 text-caption' : 'h-9 px-4 text-body-sm', BTN_VARIANT[variant], className);
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; size?: 'sm' | 'md'; loading?: boolean }>(
@@ -58,7 +58,7 @@ export function Badge({ children, tone = 'neutral', className }: { children: Rea
   return (
     <span
       className={cx(
-        'inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-medium',
+        'inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-micro font-medium',
         tone === 'neutral' && 'bg-muted text-subtle',
         tone === 'accent' && 'bg-sky text-ink',
         tone === 'success' && 'bg-success/15 text-success',
@@ -74,7 +74,7 @@ export function Badge({ children, tone = 'neutral', className }: { children: Rea
 }
 
 export function Kbd({ children }: { children: ReactNode }) {
-  return <kbd className="rounded-md border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] text-subtle">{children}</kbd>;
+  return <kbd className="rounded-md border border-border bg-surface px-1.5 py-0.5 font-mono text-micro text-subtle">{children}</kbd>;
 }
 
 export function ConfidenceBadge({ value, state }: { value: number | null; state?: string }) {
@@ -114,11 +114,11 @@ export function TableSkeleton({ rows = 8, cols = 5 }: { rows?: number; cols?: nu
 export function EmptyState({ title, body, action, icon = '◇' }: { title: string; body?: ReactNode; action?: ReactNode; icon?: string }) {
   return (
     <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-      <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-full bg-muted text-base text-subtle" aria-hidden="true">
+      <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-full bg-muted text-heading text-subtle" aria-hidden="true">
         {icon}
       </div>
-      <h3 className="text-sm font-semibold">{title}</h3>
-      {body && <p className="mt-1 max-w-sm text-sm text-subtle">{body}</p>}
+      <h3 className="text-body font-semibold">{title}</h3>
+      {body && <p className="mt-1 max-w-sm text-body text-subtle">{body}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>
   );
@@ -132,8 +132,8 @@ export function ErrorState({ error, retry }: { error: unknown; retry?: () => voi
       <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-full bg-pink font-semibold text-ink" aria-hidden="true">
         !
       </div>
-      <h3 className="text-sm font-semibold">{status === 404 ? 'Not found' : status === 429 ? 'Slow down' : 'Something went wrong'}</h3>
-      <p className="mt-1 max-w-sm text-sm text-subtle">{msg}</p>
+      <h3 className="text-body font-semibold">{status === 404 ? 'Not found' : status === 429 ? 'Slow down' : 'Something went wrong'}</h3>
+      <p className="mt-1 max-w-sm text-body text-subtle">{msg}</p>
       {retry && (
         <Button className="mt-4" size="sm" onClick={retry}>
           Try again
@@ -148,7 +148,7 @@ export function PageHeader({ title, subtitle, actions, crumbs }: { title: ReactN
     <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
         {crumbs && (
-          <nav aria-label="Breadcrumb" className="mb-1.5 flex flex-wrap items-center gap-1 text-xs text-subtle">
+          <nav aria-label="Breadcrumb" className="mb-1.5 flex flex-wrap items-center gap-1 text-caption text-subtle">
             {crumbs.map((c, i) => (
               <span key={c.href} className="flex items-center gap-1">
                 {i > 0 && <span aria-hidden="true">/</span>}
@@ -159,8 +159,8 @@ export function PageHeader({ title, subtitle, actions, crumbs }: { title: ReactN
             ))}
           </nav>
         )}
-        <h1 className="truncate text-2xl font-semibold leading-tight tracking-tight">{title}</h1>
-        {subtitle && <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-subtle">{subtitle}</p>}
+        <h1 className="truncate text-display font-semibold leading-tight tracking-tight">{title}</h1>
+        {subtitle && <p className="mt-1 max-w-2xl text-body-sm leading-relaxed text-subtle">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
@@ -171,9 +171,9 @@ export function PageHeader({ title, subtitle, actions, crumbs }: { title: ReactN
 export function Stat({ label, value, hint, tone, children }: { label: string; value: ReactNode; hint?: ReactNode; tone?: Tone; children?: ReactNode }) {
   return (
     <div className={cx('flex flex-col px-4 py-3.5', tone ? cx('pastel', TONE_BG[tone]) : 'card')}>
-      <div className="text-xs font-medium text-subtle">{label}</div>
-      <div className="tabular mt-1 text-[22px] font-semibold leading-tight tracking-tight">{value}</div>
-      {hint && <div className="mt-0.5 text-[11px] leading-snug text-subtle">{hint}</div>}
+      <div className="text-caption font-medium text-subtle">{label}</div>
+      <div className="tabular mt-1 text-stat font-semibold leading-tight tracking-tight">{value}</div>
+      {hint && <div className="mt-0.5 text-micro leading-snug text-subtle">{hint}</div>}
       {children}
     </div>
   );
@@ -199,7 +199,7 @@ export function Logo({ src, name, size = 28 }: { src?: string | null; name: stri
     );
   }
   return (
-    <div className="flex shrink-0 items-center justify-center rounded-full bg-muted text-[11px] font-semibold text-subtle" style={{ width: size, height: size }} aria-hidden="true">
+    <div className="flex shrink-0 items-center justify-center rounded-full bg-muted text-micro font-semibold text-subtle" style={{ width: size, height: size }} aria-hidden="true">
       {name.slice(0, 1).toUpperCase()}
     </div>
   );
@@ -210,7 +210,7 @@ export function Card({ title, actions, children, className, bodyClass }: { title
     <section className={cx('card overflow-hidden', className)}>
       {(title || actions) && (
         <header className="flex items-center justify-between gap-2 border-b border-border/60 px-4 py-2.5">
-          <h2 className="text-[13px] font-semibold">{title}</h2>
+          <h2 className="text-body-sm font-semibold">{title}</h2>
           {actions}
         </header>
       )}
@@ -222,7 +222,7 @@ export function Card({ title, actions, children, className, bodyClass }: { title
 /** Pill segmented control (Today / Week / Month style). */
 export function Segmented<T extends string>({ value, options, onChange, label }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void; label: string }) {
   return (
-    <div role="group" aria-label={label} className="flex rounded-full bg-muted p-0.5 text-xs">
+    <div role="group" aria-label={label} className="flex rounded-full bg-muted p-0.5 text-caption">
       {options.map((o) => (
         <button
           key={o.value}

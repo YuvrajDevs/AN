@@ -51,7 +51,7 @@ export function QuarterBreakdown({ period, label, onClose }: { period: string; l
           ))}
         </div>
       ) : rows.length === 0 ? (
-        <p className="px-4 py-8 text-center text-[13px] text-subtle">No rounds in this quarter.</p>
+        <p className="px-4 py-8 text-center text-body-sm text-subtle">No rounds in this quarter.</p>
       ) : (
         <>
           <dl className="grid grid-cols-2 gap-x-6 gap-y-2 border-b border-border/60 px-4 py-3 sm:grid-cols-4">
@@ -62,8 +62,8 @@ export function QuarterBreakdown({ period, label, onClose }: { period: string; l
               ['Largest share', top?.amountUsd && total ? `${top.companyId?.name ?? '—'} · ${Math.round((top.amountUsd / total) * 100)}%` : '—'],
             ].map(([k, v]) => (
               <div key={k} className="min-w-0">
-                <dt className="text-[11px] text-subtle">{k}</dt>
-                <dd className="tabular truncate text-[13px] font-semibold">{v}</dd>
+                <dt className="text-micro text-subtle">{k}</dt>
+                <dd className="tabular truncate text-body-sm font-semibold">{v}</dd>
               </div>
             ))}
           </dl>
@@ -94,8 +94,8 @@ export function QuarterBreakdown({ period, label, onClose }: { period: string; l
                           '—'
                         )}
                       </td>
-                      <td className="td text-xs text-subtle">{ROUND_LABELS[r.roundType] ?? r.roundType}</td>
-                      <td className="td tabular whitespace-nowrap text-xs text-subtle">{date(r.date)}</td>
+                      <td className="td text-caption text-subtle">{ROUND_LABELS[r.roundType] ?? r.roundType}</td>
+                      <td className="td tabular whitespace-nowrap text-caption text-subtle">{date(r.date)}</td>
                       <td className="td tabular text-right font-semibold">{usd(r.amountUsd, 'undisclosed')}</td>
                       <td className="td tabular text-right text-subtle">{usd(r.targetAmountUsd, '—')}</td>
                       <td className="td pr-4">
@@ -103,7 +103,7 @@ export function QuarterBreakdown({ period, label, onClose }: { period: string; l
                           <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
                             <span className="block h-full rounded-full bg-fg transition-[width] duration-700 ease-out" style={{ width: `${pct}%` }} />
                           </span>
-                          <span className="tabular w-9 text-right text-xs text-subtle">{pct ? `${Math.round(pct)}%` : '—'}</span>
+                          <span className="tabular w-9 text-right text-caption text-subtle">{pct ? `${Math.round(pct)}%` : '—'}</span>
                         </span>
                       </td>
                     </tr>

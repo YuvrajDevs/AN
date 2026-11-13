@@ -82,7 +82,7 @@ function RunForm({ onQueued }: { onQueued: () => void }) {
   const help = CONNECTORS.find((c) => c.id === connector)!.help;
   return (
     <form onSubmit={submit} className="space-y-3 p-4">
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="label" htmlFor="run-connector">
             Connector
@@ -135,9 +135,9 @@ function RunForm({ onQueued }: { onQueued: () => void }) {
           </div>
         )}
       </div>
-      <p className="text-xs text-subtle">{help}</p>
+      <p className="text-caption text-subtle">{help}</p>
       {msg && (
-        <p role={msg.ok ? 'status' : 'alert'} className={`rounded-md px-3 py-2 text-sm ${msg.ok ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
+        <p role={msg.ok ? 'status' : 'alert'} className={`rounded-md px-3 py-2 text-body ${msg.ok ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
           {msg.text}
         </p>
       )}
@@ -168,7 +168,7 @@ function Users() {
   return (
     <>
       {err && (
-        <p role="alert" className="mx-4 mt-3 rounded-md bg-danger/10 px-3 py-2 text-sm text-danger">
+        <p role="alert" className="mx-4 mt-3 rounded-md bg-danger/10 px-3 py-2 text-body text-danger">
           {err}
         </p>
       )}
@@ -186,7 +186,7 @@ function Users() {
               <tr key={u._id}>
                 <td className="td">
                   <div className="font-medium">{u.name}</div>
-                  <div className="text-xs text-subtle">{u.email}</div>
+                  <div className="text-caption text-subtle">{u.email}</div>
                 </td>
                 <td className="td">
                   <select
@@ -202,7 +202,7 @@ function Users() {
                     <option value="admin">admin</option>
                   </select>
                 </td>
-                <td className="td text-xs text-subtle">{u.lastLoginAt ? relative(u.lastLoginAt) : 'never'}</td>
+                <td className="td text-caption text-subtle">{u.lastLoginAt ? relative(u.lastLoginAt) : 'never'}</td>
               </tr>
             ))}
           </tbody>
@@ -232,7 +232,7 @@ export default function AdminPage() {
   return (
     <>
       <PageHeader title="Admin" subtitle="System status, ingestion runs and user roles." />
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {!meta || !health ? (
           Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-[92px]" />)
         ) : (
@@ -240,29 +240,29 @@ export default function AdminPage() {
             <Stat
               label="Services"
               value={
-                <span className={`text-base ${health.status === 'ok' ? 'text-success' : 'text-danger'}`}>
+                <span className={`text-heading ${health.status === 'ok' ? 'text-success' : 'text-danger'}`}>
                   <span aria-hidden="true">● </span>
                   {health.status === 'ok' ? 'Healthy' : 'Degraded'}
                 </span>
               }
               hint={`MongoDB ${health.mongo ? 'up' : 'down'} · Redis ${health.redis === null ? 'not configured' : health.redis ? 'up' : 'down'}`}
             />
-            <Stat label="Event bus" value={<span className="text-base">{meta.eventBus}</span>} hint="kafka · redis · memory" />
+            <Stat label="Event bus" value={<span className="text-heading">{meta.eventBus}</span>} hint="kafka · redis · memory" />
             <Stat
               label="Job queue"
-              value={<span className="tabular text-base">{(jobs.active ?? 0) + (jobs.waiting ?? 0)} pending</span>}
+              value={<span className="tabular text-heading">{(jobs.active ?? 0) + (jobs.waiting ?? 0)} pending</span>}
               hint={jobs.completed !== undefined ? `${jobs.completed} completed · ${jobs.failed ?? 0} failed` : 'in-process (no Redis)'}
             />
-            <Stat label="LLM providers" value={<span className="text-base">{meta.llm.available.join(', ')}</span>} hint={`default: ${meta.llm.default} · review below ${meta.reviewThreshold}`} />
+            <Stat label="LLM providers" value={<span className="text-heading">{meta.llm.available.join(', ')}</span>} hint={`default: ${meta.llm.default} · review below ${meta.reviewThreshold}`} />
           </>
         )}
       </div>
 
-      <div className="mt-6 grid gap-3 lg:grid-cols-[minmax(0,380px)_1fr]">
+      <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,380px)_1fr]">
         <Card title="Run a connector">
           <RunForm onQueued={() => runs.mutate()} />
         </Card>
-        <Card title="Ingestion runs" actions={<span className="text-xs text-subtle">auto-refreshing</span>}>
+        <Card title="Ingestion runs" actions={<span className="text-caption text-subtle">auto-refreshing</span>}>
           {runs.error ? (
             <ErrorState error={runs.error} retry={() => runs.mutate()} />
           ) : !runs.data ? (
@@ -288,12 +288,12 @@ export default function AdminPage() {
                       <td className="td font-medium">{CONNECTORS.find((c) => c.id === r.connector)?.label ?? r.connector}</td>
                       <td className="td">
                         <Badge tone={r.status === 'succeeded' ? 'success' : r.status === 'failed' ? 'danger' : 'warning'}>{r.status}</Badge>
-                        {r.error && <div className="mt-1 max-w-sm whitespace-normal break-words text-xs text-danger">{r.error}</div>}
+                        {r.error && <div className="mt-1 max-w-sm whitespace-normal break-words text-caption text-danger">{r.error}</div>}
                       </td>
                       <td className="td tabular text-right">{r.counts.fetched}</td>
                       <td className="td tabular text-right">{r.counts.published}</td>
                       <td className="td tabular text-right">{r.counts.errors}</td>
-                      <td className="td text-xs text-subtle">{relative(r.createdAt)}</td>
+                      <td className="td text-caption text-subtle">{relative(r.createdAt)}</td>
                     </tr>
                   ))}
                 </tbody>

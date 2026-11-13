@@ -69,8 +69,8 @@ export function CompanyPicker({ id, value, onChange }: { id: string; value: stri
             >
               <Logo src={c.logoUrl} name={c.name} size={20} />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-[13px] font-medium">{c.name}</span>
-                <span className="block truncate text-[11px] text-subtle">{c.oneLiner}</span>
+                <span className="block truncate text-body-sm font-medium">{c.name}</span>
+                <span className="block truncate text-micro text-subtle">{c.oneLiner}</span>
               </span>
             </li>
           ))}

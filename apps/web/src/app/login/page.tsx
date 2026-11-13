@@ -72,14 +72,14 @@ function LoginForm() {
   }
 
   return (
-    <div className="grid min-h-screen gap-3 p-3 lg:grid-cols-[minmax(0,460px)_1fr]">
+    <div className="grid min-h-screen gap-4 p-3 lg:grid-cols-[minmax(0,460px)_1fr]">
       <aside className="hidden flex-col justify-between rounded-2xl bg-ink p-8 text-white lg:flex">
         <Link href="/" className="w-fit">
           <Wordmark className="text-lg" />
         </Link>
         <div className="max-w-sm">
-          <h2 className="text-[28px] font-semibold leading-tight tracking-tight">Every number, traced to its source.</h2>
-          <ul className="mt-5 space-y-2.5 text-[13px] text-white/80">
+          <h2 className="text-display font-semibold leading-tight tracking-tight">Every number, traced to its source.</h2>
+          <ul className="mt-5 space-y-2.5 text-body-sm text-white/80">
             {[
               '465 startups in Legal AI, Climate Tech and Payments',
               'Funding from 136 hand-checked SEC Form D filings',
@@ -93,19 +93,19 @@ function LoginForm() {
             ))}
           </ul>
         </div>
-        <p className="text-[11px] text-white/50">Public data only: YC directory, SEC EDGAR, RSS, GitHub.</p>
+        <p className="text-micro text-white/50">Public data only: YC directory, SEC EDGAR, RSS, GitHub.</p>
       </aside>
 
       <main className="flex items-center justify-center px-2 py-10">
         <div className="w-full max-w-[400px]">
-          <Link href="/" className="mb-8 inline-flex items-center gap-1.5 text-xs font-medium text-subtle hover:text-fg">
+          <Link href="/" className="mb-8 inline-flex items-center gap-1.5 text-caption font-medium text-subtle hover:text-fg">
             <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Back to overview
           </Link>
           <div className="mb-6 lg:hidden">
             <Wordmark className="text-lg" />
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
-          <p className="mt-2 text-sm text-subtle">The demo account is filled in. Pick a role and press sign in.</p>
+          <h1 className="text-display font-semibold tracking-tight">Sign in</h1>
+          <p className="mt-2 text-body text-subtle">The demo account is filled in. Pick a role and press sign in.</p>
 
           <form onSubmit={submit} className="mt-6 space-y-4" noValidate>
             <fieldset>
@@ -120,8 +120,8 @@ function LoginForm() {
                     )}
                   >
                     <input type="radio" name="role" value={r} checked={role === r} onChange={() => pick(r)} className="sr-only" />
-                    <span className="block text-sm font-semibold">{DEMO[r].label}</span>
-                    <span className={cx('mt-0.5 block text-[11px] leading-snug', role === r ? 'text-ink/75' : 'text-subtle')}>{DEMO[r].blurb}</span>
+                    <span className="block text-body font-semibold">{DEMO[r].label}</span>
+                    <span className={cx('mt-0.5 block text-micro leading-snug', role === r ? 'text-ink/75' : 'text-subtle')}>{DEMO[r].blurb}</span>
                   </label>
                 ))}
               </div>
@@ -139,14 +139,14 @@ function LoginForm() {
               <input id="password" type="password" className="input" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" minLength={8} required />
             </div>
             {error && (
-              <p role="alert" className="rounded-xl bg-danger/10 px-3 py-2 text-[13px] text-danger">
+              <p role="alert" className="rounded-xl bg-danger/10 px-3 py-2 text-body-sm text-danger">
                 {error}
               </p>
             )}
             <Button ref={submitRef} type="submit" variant="primary" className="h-10 w-full" loading={loading}>
               Sign in {!loading && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
             </Button>
-            <p className="min-h-[1.25rem] text-center text-xs text-subtle" aria-live="polite">
+            <p className="min-h-[1.25rem] text-center text-caption text-subtle" aria-live="polite">
               {slow ? 'Waking the free server. The first sign-in can take up to a minute…' : ''}
             </p>
           </form>

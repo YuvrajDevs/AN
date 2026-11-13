@@ -38,7 +38,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
     return (
       <div className="space-y-4">
         <Skeleton className="h-12 w-1/3" />
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="h-24" />
           ))}
@@ -59,20 +59,20 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
         subtitle={data.sector.description}
         actions={
           <>
-            <a href={`/api/companies/export.csv?sector=${slug}`} download className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-sm font-medium hover:bg-muted">
+            <a href={`/api/companies/export.csv?sector=${slug}`} download className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-body font-medium hover:bg-muted">
               Export companies
             </a>
-            <a href={`/api/funding/export.csv?sector=${slug}`} download className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-sm font-medium hover:bg-muted">
+            <a href={`/api/funding/export.csv?sector=${slug}`} download className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-body font-medium hover:bg-muted">
               Export rounds
             </a>
-            <Link href={`/briefs?sector=${slug}`} className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full bg-accent px-4 text-sm font-medium text-accent-fg hover:bg-accent/90">
+            <Link href={`/briefs?sector=${slug}`} className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full bg-accent px-4 text-body font-medium text-accent-fg hover:bg-accent/90">
               Analyst brief
             </Link>
           </>
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Stat tone="yellow" label="Companies" value={k.companies} hint={`${k.active} active · ${k.acquired} acquired · ${k.inactive} inactive`} />
         <Stat tone="pink" label="Classified" value={`${k.classified}/${k.companies}`} hint={k.pendingReview ? <Link href="/review" className="font-medium underline-offset-2 hover:underline">{k.pendingReview} awaiting review →</Link> : 'Queue clear'} />
         <Stat tone="sage" label="Disclosed funding (Form D)" value={usd(k.totalDisclosedUsd)} hint={`${k.withDisclosedFunding} companies with filings`} />
@@ -80,9 +80,9 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
       </div>
 
       <div className="mb-2.5 mt-6 flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
-        <h2 className="text-base font-semibold tracking-tight">Market map</h2>
+        <h2 className="text-heading font-semibold tracking-tight">Market map</h2>
         {/* legend: what the bar, the numbers and a faded company mean */}
-        <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-subtle" aria-label="How to read the market map">
+        <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 text-micro text-subtle" aria-label="How to read the market map">
           <li className="flex items-center gap-1.5">
             <span className="block h-1.5 w-6 rounded-full bg-fg" aria-hidden="true" /> companies, relative to the largest subsector
           </li>
@@ -94,30 +94,30 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
           </li>
         </ul>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {sortedMap.map((m, idx) => (
           <section key={m.slug} className="card flex flex-col p-3.5" aria-labelledby={`mm-${m.slug}`}>
             <div className="mb-1 flex items-baseline justify-between gap-2">
-              <h3 id={`mm-${m.slug}`} className="flex min-w-0 items-center gap-2 text-[13px] font-semibold">
+              <h3 id={`mm-${m.slug}`} className="flex min-w-0 items-center gap-2 text-body-sm font-semibold">
                 <span className={cx('h-2.5 w-2.5 shrink-0 rounded-full', TONE_BG[TONES[idx % TONES.length]])} aria-hidden="true" />
                 <Link href={`/companies?sector=${slug}&subsector=${m.slug}`} className="hover:underline">
                   {m.name}
                 </Link>
               </h3>
-              <span className="tabular shrink-0 text-xs text-subtle">
+              <span className="tabular shrink-0 text-caption text-subtle">
                 {m.count} · {usd(m.disclosedUsd, '$0')}
               </span>
             </div>
             <span className="mt-1.5 block"><HBar value={m.count} max={maxCount} /></span>
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {m.companies.length === 0 && <span className="text-xs text-subtle">No companies classified here yet.</span>}
+              {m.companies.length === 0 && <span className="text-caption text-subtle">No companies classified here yet.</span>}
               {m.companies.map((c) => (
                 <Link
                   key={c.slug}
                   href={`/companies/${c.slug}`}
                   title={`${c.name}${c.ycBatch ? ` (${c.ycBatch})` : ''}${c.totalRaisedUsd ? ` · ${usd(c.totalRaisedUsd)}` : ''}`}
                   className={cx(
-                    'flex items-center gap-1.5 rounded-full bg-muted py-0.5 pl-0.5 pr-2 text-xs hover:bg-pink/60',
+                    'flex items-center gap-1.5 rounded-full bg-muted py-0.5 pl-0.5 pr-2 text-caption hover:bg-pink/60',
                     c.status !== 'active' && 'text-subtle [&_img]:opacity-50 [&_img]:grayscale',
                   )}
                 >
@@ -126,7 +126,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
                 </Link>
               ))}
               {m.count > m.companies.length && (
-                <Link href={`/companies?sector=${slug}&subsector=${m.slug}`} className="self-center rounded-full px-2 py-0.5 text-xs font-medium text-subtle hover:text-fg">
+                <Link href={`/companies?sector=${slug}&subsector=${m.slug}`} className="self-center rounded-full px-2 py-0.5 text-caption font-medium text-subtle hover:text-fg">
                   +{m.count - m.companies.length} more
                 </Link>
               )}
@@ -135,12 +135,12 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
         ))}
       </div>
       {k.unclassified > 0 && (
-        <p className="mt-2 text-xs text-subtle">
+        <p className="mt-2 text-caption text-subtle">
           {k.unclassified} companies are not shown: out of scope for this taxonomy, or awaiting review.
         </p>
       )}
 
-      <div className="mt-6 grid gap-3 lg:grid-cols-2">
+      <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <Card
           title="Form D funding by year of first sale"
           bodyClass="p-4"
@@ -157,7 +157,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
           }
         >
           {data.fundingByYear.length === 0 ? (
-            <p className="py-12 text-center text-sm text-subtle">No Form D filings linked to this sector yet.</p>
+            <p className="py-12 text-center text-body text-subtle">No Form D filings linked to this sector yet.</p>
           ) : (
             <BarChart
               ariaLabel="Funding by year"
@@ -171,7 +171,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
         </Card>
       </div>
 
-      <div className="mt-3 grid gap-3 lg:grid-cols-2">
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <Card title="Notable companies">
           <ul className="divide-y divide-border">
             {data.notable.map((c) => (
@@ -180,9 +180,9 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
                   <Logo src={c.logoUrl} name={c.name} />
                   <span className="min-w-0 flex-1">
                     <span className="block font-medium">{c.name}</span>
-                    <span className="block truncate text-xs text-subtle">{c.oneLiner}</span>
+                    <span className="block truncate text-caption text-subtle">{c.oneLiner}</span>
                   </span>
-                  <span className="tabular text-right text-xs">
+                  <span className="tabular text-right text-caption">
                     <span className="block font-medium">{usd(c.metrics.totalRaisedUsd)}</span>
                     <span className="text-subtle">{c.ycBatch}</span>
                   </span>
@@ -193,7 +193,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
         </Card>
         <Card title="Latest rounds">
           {data.recentRounds.length === 0 ? (
-            <p className="px-4 py-12 text-center text-sm text-subtle">No rounds yet.</p>
+            <p className="px-4 py-12 text-center text-body text-subtle">No rounds yet.</p>
           ) : (
             <ul className="divide-y divide-border">
               {data.recentRounds.map((r) => (
@@ -203,7 +203,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
                     <span className="flex-1 truncate font-medium">{r.company.name}</span>
                     <Badge>{ROUND_LABELS[r.roundType]}</Badge>
                     <span className="tabular w-16 text-right font-medium">{usd(r.amountUsd, '—')}</span>
-                    <span className="tabular hidden w-24 text-right text-xs text-subtle sm:block">{date(r.date)}</span>
+                    <span className="tabular hidden w-24 text-right text-caption text-subtle sm:block">{date(r.date)}</span>
                   </Link>
                 </li>
               ))}
@@ -211,7 +211,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
           )}
         </Card>
       </div>
-      <p className="mt-4 text-xs text-subtle">Computed {new Date(data.generatedAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })} from stored sources; cached and refreshed when data changes.</p>
+      <p className="mt-4 text-caption text-subtle">Computed {new Date(data.generatedAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })} from stored sources; cached and refreshed when data changes.</p>
     </>
   );
 }

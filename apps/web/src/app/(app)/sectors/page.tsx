@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useCan } from '@/components/session';
-import { Badge, Button, Card, ErrorState, PageHeader, Skeleton } from '@/components/ui';
+import { Badge, Button, Card, ErrorState, PageHeader, Skeleton, TONE_BG, cx, sectorTone } from '@/components/ui';
 import { api, ApiError, useApi } from '@/lib/api';
 import type { TaxonomyNode } from '@/lib/types';
 
@@ -51,7 +51,7 @@ function NodeEditor({ node, onDone, parentSlug }: { node?: TaxonomyNode; parentS
         <input id={`k-${node?.slug ?? 'new'}`} className="input" value={keywords} onChange={(e) => setKeywords(e.target.value)} />
       </div>
       {error && (
-        <p role="alert" className="text-xs text-danger">
+        <p role="alert" className="text-caption text-danger">
           {error}
         </p>
       )}
@@ -105,7 +105,7 @@ export default function SectorsPage() {
         }
       />
       {actionError && (
-        <p role="alert" className="mb-4 rounded-md bg-danger/10 px-3 py-2 text-sm text-danger">
+        <p role="alert" className="mb-4 rounded-md bg-danger/10 px-3 py-2 text-body text-danger">
           {actionError}
         </p>
       )}
@@ -114,7 +114,7 @@ export default function SectorsPage() {
           <NodeEditor onDone={done} parentSlug={null} />
         </div>
       )}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {!data
           ? Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-64" />)
           : data.taxonomy.map((s) => (
@@ -122,15 +122,15 @@ export default function SectorsPage() {
                 key={s.slug}
                 title={
                   <span className="flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: s.color ?? 'rgb(var(--accent))' }} aria-hidden="true" />
+                    <span className={cx('h-2.5 w-2.5 rounded-full', TONE_BG[sectorTone(s.color)])} aria-hidden="true" />
                     {s.name}
                     {s.tracked && <Badge tone="success">tracked</Badge>}
-                    <span className="text-xs font-normal text-subtle">{s.companyCount} classified</span>
+                    <span className="text-caption font-normal text-subtle">{s.companyCount} classified</span>
                   </span>
                 }
                 actions={
                   <div className="flex gap-2">
-                    <Link href={`/sectors/${s.slug}`} className="inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-full bg-accent px-3 text-xs font-medium text-accent-fg hover:bg-accent/90">
+                    <Link href={`/sectors/${s.slug}`} className="inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-full bg-accent px-3 text-caption font-medium text-accent-fg hover:bg-accent/90">
                       Landscape →
                     </Link>
                     {canEdit && (
@@ -141,7 +141,7 @@ export default function SectorsPage() {
                   </div>
                 }
               >
-                <p className="border-b border-border px-4 py-2 text-xs text-subtle">
+                <p className="border-b border-border px-4 py-2 text-caption text-subtle">
                   {s.description} {s.sourceTags.length > 0 && <>Ingested from YC tags: {s.sourceTags.join(', ')}.</>}
                 </p>
                 {editing === `add:${s.slug}` && (
@@ -161,9 +161,9 @@ export default function SectorsPage() {
                               <Link href={`/companies?sector=${s.slug}&subsector=${c.slug}`} className="font-medium hover:underline">
                                 {c.name}
                               </Link>
-                              <span className="tabular text-xs text-subtle">{c.companyCount}</span>
+                              <span className="tabular text-caption text-subtle">{c.companyCount}</span>
                             </div>
-                            <p className="mt-0.5 text-xs text-subtle">{c.description}</p>
+                            <p className="mt-0.5 text-caption text-subtle">{c.description}</p>
                           </div>
                           {canEdit && (
                             <div className="flex shrink-0 gap-1">

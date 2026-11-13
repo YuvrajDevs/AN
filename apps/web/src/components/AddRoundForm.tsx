@@ -50,7 +50,7 @@ export function AddRoundForm({ companySlug, onDone }: { companySlug: string; onD
   }
 
   return (
-    <form onSubmit={submit} className="grid gap-3 border-b border-border bg-muted/30 p-4 sm:grid-cols-2" onKeyDown={(e) => e.key === 'Escape' && onDone()}>
+    <form onSubmit={submit} className="grid gap-4 border-b border-border bg-muted/30 p-4 sm:grid-cols-2" onKeyDown={(e) => e.key === 'Escape' && onDone()}>
       <div>
         <label className="label" htmlFor="r-date">
           Date
@@ -102,7 +102,7 @@ export function AddRoundForm({ companySlug, onDone }: { companySlug: string; onD
         <textarea id="r-excerpt" className="input h-16 py-2" value={sourceExcerpt} onChange={(e) => setSourceExcerpt(e.target.value)} required />
       </div>
       {error && (
-        <p role="alert" className="text-sm text-danger sm:col-span-2">
+        <p role="alert" className="text-body text-danger sm:col-span-2">
           {error}
         </p>
       )}

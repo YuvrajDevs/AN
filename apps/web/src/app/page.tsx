@@ -124,13 +124,13 @@ export default function Landing() {
       <header className="flex h-16 items-center justify-between">
         <Mark />
         <nav aria-label="Landing" className="flex items-center gap-1">
-          <a href="#how" className="hidden rounded-full px-3 py-1.5 text-[13px] text-subtle hover:text-fg sm:inline">
+          <a href="#how" className="hidden rounded-full px-3 py-1.5 text-body-sm text-subtle hover:text-fg sm:inline">
             How it works
           </a>
-          <a href={REPO} target="_blank" rel="noopener noreferrer" className="hidden rounded-full px-3 py-1.5 text-[13px] text-subtle hover:text-fg sm:inline">
+          <a href={REPO} target="_blank" rel="noopener noreferrer" className="hidden rounded-full px-3 py-1.5 text-body-sm text-subtle hover:text-fg sm:inline">
             GitHub
           </a>
-          <Link href={DEMO} className="ml-1 inline-flex h-9 items-center rounded-full bg-fg px-4 text-[13px] font-medium text-bg hover:bg-fg/85">
+          <Link href={DEMO} className="ml-1 inline-flex h-9 items-center rounded-full bg-fg px-4 text-body-sm font-medium text-bg hover:bg-fg/85">
             Sign in
           </Link>
         </nav>
@@ -139,11 +139,11 @@ export default function Landing() {
       <main>
         <section className="grid items-center gap-10 pb-14 pt-8 lg:grid-cols-[1fr_1.1fr] lg:pt-12">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-[12px] font-medium">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-caption font-medium">
               <span className="h-1.5 w-1.5 rounded-full bg-success" aria-hidden="true" /> Live demo on real public data
             </span>
             <h1 className="mt-4 text-[36px] font-semibold leading-[1.08] tracking-tight sm:text-[46px]">Startup intelligence you can check.</h1>
-            <p className="mt-4 max-w-md text-[15px] leading-relaxed text-subtle">
+            <p className="mt-4 max-w-md text-lead leading-relaxed text-subtle">
               Track startups by sector, see funding taken from SEC filings, and read briefs where every claim cites its source.
             </p>
             <div className="mt-6 flex flex-wrap gap-2.5">
@@ -154,7 +154,7 @@ export default function Landing() {
                 <Github className="h-4 w-4" aria-hidden="true" /> Source
               </a>
             </div>
-            <ul className="mt-5 space-y-1.5 text-[13px] text-subtle">
+            <ul className="mt-5 space-y-1.5 text-body-sm text-subtle">
               {['Demo account pre-filled, one click to sign in', 'No paid data: YC directory, SEC EDGAR, RSS, GitHub'].map((t) => (
                 <li key={t} className="flex items-stretch gap-2">
                   <Check className="h-3.5 w-3.5 text-fg" aria-hidden="true" /> {t}
@@ -170,42 +170,42 @@ export default function Landing() {
             ['465', 'Startups tracked'],
             ['136 / 234', 'SEC filings kept after checks'],
             ['3', 'Sectors mapped'],
-            ['140', 'Automated tests in CI'],
+            ['145', 'Automated tests in CI'],
           ].map(([v, l]) => (
             <div key={l} className="px-5 py-4">
-              <div className="tabular text-xl font-semibold tracking-tight">{v}</div>
-              <div className="mt-0.5 text-xs text-subtle">{l}</div>
+              <div className="tabular text-title font-semibold tracking-tight">{v}</div>
+              <div className="mt-0.5 text-caption text-subtle">{l}</div>
             </div>
           ))}
         </section>
 
         <section aria-labelledby="answers" className="pt-16">
-          <h2 id="answers" className="text-2xl font-semibold tracking-tight">
+          <h2 id="answers" className="text-display font-semibold tracking-tight">
             Questions it answers
           </h2>
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
+          <div className="mt-5 grid gap-4 md:grid-cols-3">
             {QUESTIONS.map((x) => (
               <article key={x.q} className="rounded-2xl border border-border/70 bg-surface p-4">
                 <Search className="h-4 w-4 text-subtle" aria-hidden="true" />
-                <h3 className="mt-2.5 text-[15px] font-semibold leading-snug">{x.q}</h3>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-subtle">{x.a}</p>
+                <h3 className="mt-2.5 text-lead font-semibold leading-snug">{x.q}</h3>
+                <p className="mt-1.5 text-body-sm leading-relaxed text-subtle">{x.a}</p>
               </article>
             ))}
           </div>
         </section>
 
         <section aria-labelledby="features" className="pt-16">
-          <h2 id="features" className="text-2xl font-semibold tracking-tight">
+          <h2 id="features" className="text-display font-semibold tracking-tight">
             Built to show its working
           </h2>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {FEATURES.map((f) => (
               <article key={f.title} className="rounded-2xl border border-border/70 bg-surface p-4">
                 <span className={`flex h-8 w-8 items-center justify-center rounded-lg text-ink ${f.tone}`}>
                   <f.icon className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
                 </span>
-                <h3 className="mt-3 text-[15px] font-semibold">{f.title}</h3>
-                <p className="mt-1 text-[13px] leading-relaxed text-subtle">{f.body}</p>
+                <h3 className="mt-3 text-lead font-semibold">{f.title}</h3>
+                <p className="mt-1 text-body-sm leading-relaxed text-subtle">{f.body}</p>
               </article>
             ))}
           </div>
@@ -213,18 +213,18 @@ export default function Landing() {
 
         <section id="how" aria-labelledby="how-h" className="scroll-mt-6 pt-16">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-            <h2 id="how-h" className="text-2xl font-semibold tracking-tight">
+            <h2 id="how-h" className="text-display font-semibold tracking-tight">
               How it works
             </h2>
-            <p className="max-w-md text-[13px] text-subtle">Every write is an upsert on a natural key, so replaying the log never duplicates data.</p>
+            <p className="max-w-md text-body-sm text-subtle">Every write is an upsert on a natural key, so replaying the log never duplicates data.</p>
           </div>
           <ol className="mt-5 grid gap-2 sm:grid-cols-5">
             {PIPELINE.map(([t, s], i) => (
               <li key={t} className="flex items-stretch gap-2">
                 <div className="flex-1 rounded-xl border border-border/70 bg-surface px-3 py-2.5">
-                  <div className="tabular text-[11px] text-subtle">0{i + 1}</div>
-                  <div className="text-[13px] font-semibold">{t}</div>
-                  <div className="text-[11px] text-subtle">{s}</div>
+                  <div className="tabular text-micro text-subtle">0{i + 1}</div>
+                  <div className="text-body-sm font-semibold">{t}</div>
+                  <div className="text-micro text-subtle">{s}</div>
                 </div>
                 {i < PIPELINE.length - 1 && <ArrowRight className="hidden h-3.5 w-3.5 shrink-0 self-center text-subtle sm:block" aria-hidden="true" />}
               </li>
@@ -232,7 +232,7 @@ export default function Landing() {
           </ol>
           <div className="mt-5 flex flex-wrap gap-1.5">
             {STACK.map((s) => (
-              <span key={s} className="rounded-full border border-border bg-surface px-2.5 py-1 text-[12px]">
+              <span key={s} className="rounded-full border border-border bg-surface px-2.5 py-1 text-caption">
                 {s}
               </span>
             ))}
@@ -241,8 +241,8 @@ export default function Landing() {
 
         <section className="mt-16 flex flex-col gap-4 rounded-2xl bg-ink px-6 py-7 text-white sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight">See it with real data</h2>
-            <p className="mt-1 text-[13px] text-white/70">Legal AI, Climate Tech and Payments. The analyst account is ready; the first load may take a minute on free hosting.</p>
+            <h2 className="text-title font-semibold tracking-tight">See it with real data</h2>
+            <p className="mt-1 text-body-sm text-white/70">Legal AI, Climate Tech and Payments. The analyst account is ready; the first load may take a minute on free hosting.</p>
           </div>
           <Link href={DEMO} className={`${btn} bg-white text-ink hover:bg-white/85`}>
             Try the live demo <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -250,7 +250,7 @@ export default function Landing() {
         </section>
       </main>
 
-      <footer className="flex flex-col gap-2 py-8 text-xs text-subtle sm:flex-row sm:items-center sm:justify-between">
+      <footer className="flex flex-col gap-2 py-8 text-caption text-subtle sm:flex-row sm:items-center sm:justify-between">
         <span className="flex items-center gap-1.5">
           <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" /> Public data only. No paid databases or scraping.
         </span>

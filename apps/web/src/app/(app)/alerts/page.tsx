@@ -17,6 +17,16 @@ interface AlertItem {
   watchlistId: { name: string } | null;
 }
 
+/** Alerts grouped under the watchlist that raised them, in the order they arrived. */
+function groupByWatchlist(items: AlertItem[]): [string, AlertItem[]][] {
+  const groups = new Map<string, AlertItem[]>();
+  for (const a of items) {
+    const key = a.watchlistId?.name ?? 'Other';
+    groups.set(key, [...(groups.get(key) ?? []), a]);
+  }
+  return [...groups.entries()];
+}
+
 export default function AlertsPage() {
   const [unreadOnly, setUnreadOnly] = useState(false);
   const { data, error, isLoading, mutate } = useApi<{ items: AlertItem[]; unread: number }>(`/alerts${qs({ unread: unreadOnly ? 'true' : undefined })}`);
@@ -57,14 +67,21 @@ export default function AlertsPage() {
             title={unreadOnly ? 'You are all caught up' : 'No alerts yet'}
             body="Alerts appear when a company or subsector on one of your watchlists files a new round."
             action={
-              <Link href="/watchlists" className="text-sm text-accent hover:underline">
+              <Link href="/watchlists" className="text-body text-accent hover:underline">
                 Manage watchlists →
               </Link>
             }
           />
         ) : (
+          <div className="divide-y divide-border">
+          {groupByWatchlist(data.items).map(([list, items]) => (
+          <section key={list} aria-label={list}>
+          <h2 className="flex items-center justify-between bg-muted/50 px-4 py-2 text-caption font-medium text-subtle">
+            <span>{list}</span>
+            <span className="tabular">{items.length}</span>
+          </h2>
           <ul className="divide-y divide-border">
-            {data.items.map((a) => (
+            {items.map((a) => (
               <li key={a._id} className={cx('flex items-center gap-3 px-4 py-3', !a.read && 'bg-yellow/30')}>
                 <span className={cx('h-2 w-2 shrink-0 rounded-full', a.read ? 'bg-transparent' : 'bg-accent')} aria-label={a.read ? undefined : 'Unread'} />
                 {a.companyId && <Logo src={a.companyId.logoUrl} name={a.companyId.name} />}
@@ -72,8 +89,8 @@ export default function AlertsPage() {
                   <Link href={a.companyId ? `/companies/${a.companyId.slug}` : '#'} onClick={() => !a.read && markOne(a._id)} className="font-medium hover:underline">
                     {a.message}
                   </Link>
-                  <div className="text-xs text-subtle">
-                    {a.watchlistId?.name} · round dated {date(a.fundingRoundId?.date)} · {relative(a.createdAt)}
+                  <div className="text-caption text-subtle">
+                    Round dated {date(a.fundingRoundId?.date)} · {relative(a.createdAt)}
                     {a.webhookStatus && <> · webhook {a.webhookStatus}</>}
                   </div>
                 </div>
@@ -85,6 +102,9 @@ export default function AlertsPage() {
               </li>
             ))}
           </ul>
+          </section>
+          ))}
+          </div>
         )}
       </div>
     </>

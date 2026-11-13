@@ -14,7 +14,7 @@ export const viewport: Viewport = { width: 'device-width', initialScale: 1, them
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={sans.variable}>
-      <body className="min-h-screen font-sans text-sm">{children}</body>
+      <body className="min-h-screen font-sans text-body">{children}</body>
     </html>
   );
 }

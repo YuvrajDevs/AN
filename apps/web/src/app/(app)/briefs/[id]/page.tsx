@@ -56,7 +56,7 @@ export default function BriefPage({ params }: { params: Promise<{ id: string }> 
         actions={<Badge tone={b.status === 'ready' ? 'success' : b.status === 'failed' ? 'danger' : 'warning'}>{b.status}</Badge>}
       />
       {b.status === 'queued' || b.status === 'running' ? (
-        <div className="card flex items-center justify-center gap-3 py-16 text-sm text-subtle" role="status">
+        <div className="card flex items-center justify-center gap-3 py-16 text-body text-subtle" role="status">
           <Spinner /> Building the evidence pack and drafting… claims are checked against sources before they appear.
         </div>
       ) : b.status === 'failed' ? (
@@ -64,14 +64,14 @@ export default function BriefPage({ params }: { params: Promise<{ id: string }> 
           <EmptyState icon="!" title="Brief failed" body={b.error ?? 'Unknown error'} />
         </div>
       ) : (
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
           <article className="card space-y-3 p-6">
             {b.sections.map((s) => (
               <section key={s.heading}>
-                <h2 className="mb-2 text-base font-semibold">{s.heading}</h2>
+                <h2 className="mb-2 text-heading font-semibold">{s.heading}</h2>
                 <ul className="space-y-2">
                   {s.claims.map((c, i) => (
-                    <li key={i} className="text-sm leading-relaxed">
+                    <li key={i} className="text-body leading-relaxed">
                       {c.text}{' '}
                       {c.sourceIds.map((sid) => (
                         <a
@@ -81,7 +81,7 @@ export default function BriefPage({ params }: { params: Promise<{ id: string }> 
                           onMouseLeave={() => setFocus(null)}
                           onFocus={() => setFocus(sid)}
                           onBlur={() => setFocus(null)}
-                          className="ml-0.5 rounded bg-pink px-1 align-super text-[10px] font-semibold text-ink hover:bg-pink/70"
+                          className="ml-0.5 rounded-md bg-pink px-1 align-super text-micro font-semibold text-ink hover:bg-pink/70"
                           aria-label={`Source ${order.get(sid)}`}
                         >
                           {order.get(sid)}
@@ -93,7 +93,7 @@ export default function BriefPage({ params }: { params: Promise<{ id: string }> 
               </section>
             ))}
             {b.rejectedClaims.length > 0 && (
-              <details className="rounded-md border border-dashed border-border p-3 text-xs">
+              <details className="rounded-md border border-dashed border-border p-3 text-caption">
                 <summary className="cursor-pointer text-subtle">{b.rejectedClaims.length} draft claims were dropped by citation validation</summary>
                 <ul className="mt-2 space-y-1">
                   {b.rejectedClaims.map((r, i) => (
@@ -108,7 +108,7 @@ export default function BriefPage({ params }: { params: Promise<{ id: string }> 
           <Card title={`Sources (${sources.length})`} className="h-fit lg:sticky lg:top-6">
             <ol className="divide-y divide-border">
               {sources.map((s) => (
-                <li key={s._id} id={`src-${s._id}`} className={`px-4 py-3 text-xs transition-colors ${focus === s._id ? 'bg-pink/50' : ''}`}>
+                <li key={s._id} id={`src-${s._id}`} className={`px-4 py-3 text-caption transition-colors ${focus === s._id ? 'bg-pink/50' : ''}`}>
                   <div className="mb-1 flex items-center gap-2">
                     <span className="font-semibold text-accent">[{order.get(s._id)}]</span>
                     <Badge>{SOURCE_LABELS[s.kind] ?? s.kind}</Badge>

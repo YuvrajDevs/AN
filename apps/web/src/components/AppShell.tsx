@@ -120,7 +120,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const group = (title: string, items: NavItem[]) => (
     <div>
-      <div className="mb-1.5 px-3 text-[10.5px] font-medium uppercase tracking-wider text-white/45">{title}</div>
+      <div className="mb-1.5 px-3 text-micro font-medium uppercase tracking-wider text-white/45">{title}</div>
       <ul className="space-y-0.5">
         {items.map((n) => {
           const on = active(n.href);
@@ -131,7 +131,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 href={n.href}
                 aria-current={on ? 'page' : undefined}
                 className={cx(
-                  'group relative flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-[13px] transition-colors',
+                  'group relative flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-body-sm transition-colors',
                   on ? 'bg-white/[0.08] text-pink' : 'text-white/80 hover:bg-white/[0.06] hover:text-white',
                 )}
               >
@@ -139,7 +139,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
                 <span className="flex-1">{n.label}</span>
                 {count(n.href) > 0 && (
-                  <span className={cx('rounded-full px-1.5 text-[10px] font-semibold text-ink', n.href === '/review' ? 'bg-yellow' : 'bg-pink')}>{count(n.href)}</span>
+                  <span className={cx('rounded-full px-1.5 text-micro font-semibold text-ink', n.href === '/review' ? 'bg-yellow' : 'bg-pink')}>{count(n.href)}</span>
                 )}
               </Link>
             </li>
@@ -176,13 +176,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {nav}
         <div className="mt-auto space-y-1 pt-4">
           <div className="flex items-center gap-2.5 rounded-xl bg-white/[0.06] px-2.5 py-2">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-yellow text-[10px] font-semibold text-ink">{initials}</span>
-            <span className="min-w-0 text-xs">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-yellow text-micro font-semibold text-ink">{initials}</span>
+            <span className="min-w-0 text-caption">
               <span className="block truncate font-medium">{user?.name ?? '…'}</span>
               <span className="block truncate capitalize text-white/60">{user?.role}</span>
             </span>
           </div>
-          <button onClick={logout} className="flex w-full items-center gap-2.5 rounded-lg px-3 py-1.5 text-[13px] text-white/80 hover:bg-white/[0.06] hover:text-white">
+          <button onClick={logout} className="flex w-full items-center gap-2.5 rounded-lg px-3 py-1.5 text-body-sm text-white/80 hover:bg-white/[0.06] hover:text-white">
             <LogOut className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
             Log out
           </button>
@@ -191,18 +191,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Mobile header */}
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between bg-ink px-4 text-white lg:hidden">
-        <button onClick={() => setMenu((m) => !m)} aria-expanded={menu} aria-controls="mobile-nav" className="flex items-center gap-1.5 rounded-full px-2 py-1 text-sm hover:bg-white/10">
+        <button onClick={() => setMenu((m) => !m)} aria-expanded={menu} aria-controls="mobile-nav" className="flex items-center gap-1.5 rounded-full px-2 py-1 text-body hover:bg-white/10">
           {menu ? <X className="h-4 w-4" aria-hidden="true" /> : <Menu className="h-4 w-4" aria-hidden="true" />} Menu
         </button>
         <Wordmark className="text-lg" />
-        <button onClick={() => setPalette(true)} className="flex items-center gap-1.5 rounded-full px-2 py-1 text-sm hover:bg-white/10">
+        <button onClick={() => setPalette(true)} className="flex items-center gap-1.5 rounded-full px-2 py-1 text-body hover:bg-white/10">
           <Search className="h-4 w-4" aria-hidden="true" /> Search
         </button>
       </header>
       {menu && (
         <div id="mobile-nav" className="sticky top-14 z-30 bg-ink px-3 pb-4 pt-2 text-white lg:hidden">
           {nav}
-          <button onClick={logout} className="mt-4 flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-white/85 hover:bg-white/10">
+          <button onClick={logout} className="mt-4 flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-body text-white/85 hover:bg-white/10">
             <LogOut className="h-4 w-4" aria-hidden="true" /> Log out
           </button>
         </div>
@@ -212,7 +212,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="mb-5 hidden items-center gap-2 pt-1 lg:flex">
           <button
             onClick={() => setPalette(true)}
-            className="flex h-9 min-w-0 max-w-md flex-1 items-center gap-2.5 rounded-full border border-border bg-surface pl-3 pr-2 text-left text-[13px] text-subtle hover:border-fg/40"
+            className="flex h-9 min-w-0 max-w-md flex-1 items-center gap-2.5 rounded-full border border-border bg-surface pl-3 pr-2 text-left text-body-sm text-subtle hover:border-fg/40"
           >
             <Search className="h-4 w-4 shrink-0" strokeWidth={2} aria-hidden="true" />
             <span className="flex-1 truncate">Search companies, sectors, briefs…</span>
@@ -226,7 +226,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link href="/watchlists" aria-label="Watchlists" className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface text-fg hover:bg-muted">
               <Bookmark className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
             </Link>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-yellow text-xs font-semibold text-ink" title={user ? `${user.name} · ${user.role}` : undefined}>
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-yellow text-caption font-semibold text-ink" title={user ? `${user.name} · ${user.role}` : undefined}>
               {initials}
             </span>
           </div>

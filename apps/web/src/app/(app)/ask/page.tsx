@@ -92,7 +92,7 @@ export default function AskPage() {
           onChange={(e) => setQ(e.target.value)}
           maxLength={300}
           placeholder="Ask about companies, sectors or funding…"
-          className="min-w-0 flex-1 bg-transparent py-2 text-[15px] outline-none placeholder:text-subtle/80 focus-visible:outline-none"
+          className="min-w-0 flex-1 bg-transparent py-2 text-lead outline-none placeholder:text-subtle/80 focus-visible:outline-none"
           autoComplete="off"
           autoFocus
         />
@@ -103,22 +103,22 @@ export default function AskPage() {
 
       <div className="mb-6 flex flex-wrap gap-2">
         {EXAMPLES.map((e) => (
-          <button key={e} type="button" onClick={() => run(e)} disabled={busy} className="rounded-full border border-border bg-surface px-3 py-1 text-[13px] text-subtle hover:border-fg/40 hover:text-fg disabled:opacity-50">
+          <button key={e} type="button" onClick={() => run(e)} disabled={busy} className="rounded-full border border-border bg-surface px-3 py-1 text-body-sm text-subtle hover:border-fg/40 hover:text-fg disabled:opacity-50">
             {e}
           </button>
         ))}
       </div>
 
       {err && (
-        <p role="alert" className="mb-4 text-sm text-danger">
+        <p role="alert" className="mb-4 text-body text-danger">
           {err}
         </p>
       )}
 
       {!res && !busy && (
-        <section aria-labelledby="ask-guide" className="space-y-3">
+        <section aria-labelledby="ask-guide" className="space-y-4">
           <h2 id="ask-guide" className="sr-only">Before you ask</h2>
-          <ul className="grid gap-3 md:grid-cols-3">
+          <ul className="grid gap-4 md:grid-cols-3">
             {[
               {
                 icon: Database,
@@ -145,12 +145,12 @@ export default function AskPage() {
                 <span className={cx('mb-3 grid h-8 w-8 place-items-center rounded-lg text-ink', TONE_BG[tone])}>
                   <Icon className="h-4 w-4" aria-hidden="true" />
                 </span>
-                <p className="text-sm font-semibold">{title}</p>
-                <p className="mt-1 text-[13px] leading-relaxed text-subtle">{body}</p>
+                <p className="text-body font-semibold">{title}</p>
+                <p className="mt-1 text-body-sm leading-relaxed text-subtle">{body}</p>
               </li>
             ))}
           </ul>
-          <details className="group card px-4 py-3 text-[13px] text-subtle">
+          <details className="group card px-4 py-3 text-body-sm text-subtle">
             <summary className="cursor-pointer select-none font-medium text-fg">How retrieval works</summary>
             <p className="mt-2 leading-relaxed">
               Semantic search ({status?.model ?? 'Gemini embeddings'}), keyword search and exact company names each rank the passages; the three lists are merged by
@@ -163,7 +163,7 @@ export default function AskPage() {
       {busy && !res && (
         <div className="grid items-start gap-4 lg:grid-cols-[1.2fr_1fr]" aria-busy="true">
           <Card bodyClass="p-5" title="Answer">
-            <p className="mb-4 flex items-center gap-2 text-sm text-subtle" role="status">
+            <p className="mb-4 flex items-center gap-2 text-body text-subtle" role="status">
               <Spinner /> Searching the dataset and drafting a cited answer…
             </p>
             <div className="space-y-2.5">
@@ -195,7 +195,7 @@ export default function AskPage() {
             {res.answerable && res.claims.length ? (
               <ul className="space-y-3">
                 {res.claims.map((c, i) => (
-                  <li key={i} className="text-[15px] leading-relaxed">
+                  <li key={i} className="text-lead leading-relaxed">
                     {c.text}{' '}
                     {c.refs.map((r) => (
                       <button
@@ -207,7 +207,7 @@ export default function AskPage() {
                           setFocus(r);
                           document.getElementById(`p-${r}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                         }}
-                        className="ml-0.5 rounded bg-accent/15 px-1.5 py-0.5 align-middle font-mono text-[11px] font-semibold text-fg hover:bg-accent hover:text-accent-fg"
+                        className="ml-0.5 rounded-md bg-accent/15 px-1.5 py-0.5 align-middle font-mono text-micro font-semibold text-fg hover:bg-accent hover:text-accent-fg"
                       >
                         {r}
                       </button>
@@ -216,9 +216,9 @@ export default function AskPage() {
                 ))}
               </ul>
             ) : (
-              <p className="text-[15px] text-subtle">The dataset does not contain an answer to that. Try naming a company, a sector (Legal AI, Climate Tech, Payments) or a kind of product.</p>
+              <p className="text-lead text-subtle">The dataset does not contain an answer to that. Try naming a company, a sector (Legal AI, Climate Tech, Payments) or a kind of product.</p>
             )}
-            <p className="mt-4 border-t border-border pt-3 text-xs text-subtle/80">
+            <p className="mt-4 border-t border-border pt-3 text-caption text-subtle/80">
               {res.answerMode === 'extractive'
                 ? 'The language model was unavailable, so these are the opening lines of the best-matching passages.'
                 : `${res.claims.length} claim${res.claims.length === 1 ? '' : 's'} passed the citation check${res.rejected.length ? `; ${res.rejected.length} dropped for unsupported citations or numbers` : ''}.`}{' '}
@@ -231,14 +231,14 @@ export default function AskPage() {
               {res.passages.map((p) => (
                 <li key={p.ref} id={`p-${p.ref}`} className={cx('px-4 py-3 transition-colors', focus === p.ref && 'bg-accent/10')}>
                   <div className="flex items-start gap-2">
-                    <span className="mt-0.5 rounded bg-muted px-1.5 py-0.5 font-mono text-[11px] font-semibold">{p.ref}</span>
+                    <span className="mt-0.5 rounded-md bg-muted px-1.5 py-0.5 font-mono text-micro font-semibold">{p.ref}</span>
                     <div className="min-w-0 flex-1">
-                      <p className="flex flex-wrap items-center gap-2 text-sm font-semibold">
+                      <p className="flex flex-wrap items-center gap-2 text-body font-semibold">
                         {p.companySlug ? <Link href={`/companies/${p.companySlug}`} className="hover:underline">{p.title}</Link> : p.title}
-                        <span className="text-[11px] font-normal text-subtle/80">{KIND_LABEL[p.kind]}</span>
+                        <span className="text-micro font-normal text-subtle/80">{KIND_LABEL[p.kind]}</span>
                       </p>
-                      <p className="mt-1 line-clamp-3 text-[13px] leading-snug text-subtle">{p.text}</p>
-                      <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[11px] text-subtle/80">
+                      <p className="mt-1 line-clamp-3 text-body-sm leading-snug text-subtle">{p.text}</p>
+                      <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-micro text-subtle/80">
                         {p.via.map((v) => (
                           <span key={v} className="rounded-full border border-border px-1.5">{v}</span>
                         ))}

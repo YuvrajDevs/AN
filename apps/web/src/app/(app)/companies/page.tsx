@@ -99,12 +99,12 @@ function CompaniesView() {
         title="Companies"
         subtitle={data ? `${data.total.toLocaleString()} companies match` : 'Search and filter every tracked company'}
         actions={
-          <a href={exportHref} className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-sm font-medium hover:bg-muted" download>
+          <a href={exportHref} className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-body font-medium hover:bg-muted" download>
             Export CSV
           </a>
         }
       />
-      <div className="card mb-4 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6">
+      <div className="card mb-4 grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6">
         <div className="sm:col-span-2 lg:col-span-4 2xl:col-span-2">
           <label htmlFor="q" className="label">
             Search <Kbd>f</Kbd>
@@ -173,7 +173,7 @@ function CompaniesView() {
                 key={chip.l}
                 aria-pressed={on}
                 onClick={() => set({ [chip.k]: on ? undefined : chip.v })}
-                className={`rounded-full border px-2.5 py-1 text-xs ${on ? 'border-transparent bg-pink font-medium text-ink' : 'border-border text-subtle hover:text-fg'}`}
+                className={`rounded-full border px-2.5 py-1 text-caption ${on ? 'border-transparent bg-pink font-medium text-ink' : 'border-border text-subtle hover:text-fg'}`}
               >
                 {chip.l}
               </button>
@@ -181,7 +181,7 @@ function CompaniesView() {
           })}
           {sp.toString() && (
             <button
-              className="ml-auto text-xs text-subtle hover:text-fg"
+              className="ml-auto text-caption text-subtle hover:text-fg"
               onClick={() => {
                 setQ('');
                 router.replace(pathname);
@@ -238,7 +238,7 @@ function CompaniesView() {
                           <span className="block font-medium hover:underline">
                             {c.name} {c.notable && <span title="Notable" aria-label="Notable">★</span>}
                           </span>
-                          <span className="block max-w-xs truncate text-xs text-subtle">{c.oneLiner}</span>
+                          <span className="block max-w-xs truncate text-caption text-subtle">{c.oneLiner}</span>
                         </span>
                       </Link>
                     </td>
@@ -259,7 +259,7 @@ function CompaniesView() {
           </div>
         )}
         {data && data.total > params.pageSize && (
-          <div className="flex items-center justify-between border-t border-border px-3 py-2 text-xs text-subtle">
+          <div className="flex items-center justify-between border-t border-border px-3 py-2 text-caption text-subtle">
             <span>
               Page {params.page} of {pages} · <Kbd>j</Kbd>/<Kbd>k</Kbd> move · <Kbd>↵</Kbd> open
             </span>

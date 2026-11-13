@@ -43,7 +43,7 @@ function WatchlistForm({ taxonomy, onDone, initial }: { taxonomy: TaxonomyNode[]
   const all = taxonomy.flatMap((s) => [{ slug: s.slug, name: s.name, root: true }, ...s.children.map((c) => ({ slug: c.slug, name: `${s.name} › ${c.name}`, root: false }))]);
 
   return (
-    <form onSubmit={submit} className={`grid gap-3 sm:grid-cols-2 ${initial ? 'p-4' : 'card mb-6 p-4'}`} onKeyDown={(e) => e.key === 'Escape' && onDone()}>
+    <form onSubmit={submit} className={`grid gap-4 sm:grid-cols-2 ${initial ? 'p-4' : 'card mb-6 p-4'}`} onKeyDown={(e) => e.key === 'Escape' && onDone()}>
       <div>
         <label className="label" htmlFor={`wl-name-${initial?._id ?? 'new'}`}>
           Name
@@ -67,14 +67,14 @@ function WatchlistForm({ taxonomy, onDone, initial }: { taxonomy: TaxonomyNode[]
                 key={s.slug}
                 aria-pressed={on}
                 onClick={() => setSectors(on ? sectors.filter((x) => x !== s.slug) : [...sectors, s.slug])}
-                className={`rounded-full border px-2.5 py-1 text-xs ${on ? 'border-transparent bg-pink font-medium text-ink' : 'border-border text-subtle hover:text-fg'} ${s.root ? 'font-semibold' : ''}`}
+                className={`rounded-full border px-2.5 py-1 text-caption ${on ? 'border-transparent bg-pink font-medium text-ink' : 'border-border text-subtle hover:text-fg'} ${s.root ? 'font-semibold' : ''}`}
               >
                 {s.name}
               </button>
             );
           })}
         </div>
-        <p className="mt-1 text-xs text-subtle">Add individual companies from their profile page.</p>
+        <p className="mt-1 text-caption text-subtle">Add individual companies from their profile page.</p>
       </div>
       <div className="sm:col-span-2">
         <label className="label" htmlFor={`wl-hook-${initial?._id ?? 'new'}`}>
@@ -83,7 +83,7 @@ function WatchlistForm({ taxonomy, onDone, initial }: { taxonomy: TaxonomyNode[]
         <input id={`wl-hook-${initial?._id ?? 'new'}`} className="input" placeholder="https://hooks.example.com/…" value={webhook} onChange={(e) => setWebhook(e.target.value)} />
       </div>
       {error && (
-        <p role="alert" className="text-sm text-danger sm:col-span-2">
+        <p role="alert" className="text-body text-danger sm:col-span-2">
           {error}
         </p>
       )}
@@ -179,7 +179,7 @@ export default function WatchlistsPage() {
               <>
               <div className="flex flex-wrap gap-1.5">
                 {w.sectorSlugs.map((s) => (
-                  <Badge key={s} tone="accent">
+                  <Badge key={s}>
                     {names.get(s) ?? s}
                   </Badge>
                 ))}
@@ -187,12 +187,12 @@ export default function WatchlistsPage() {
                 {w.webhookUrl && <Badge tone="success">webhook</Badge>}
               </div>
               {w.companyIds.length === 0 ? (
-                <p className="text-xs text-subtle">No individual companies — alerts come from the sectors above.</p>
+                <p className="text-caption text-subtle">No individual companies — alerts come from the sectors above.</p>
               ) : (
                 <ul className="flex flex-wrap gap-1.5">
                   {w.companyIds.map((c) => (
                     <li key={c._id}>
-                      <Link href={`/companies/${c.slug}`} className="flex items-center gap-1.5 rounded-md border border-border px-1.5 py-1 text-xs hover:border-ink/30">
+                      <Link href={`/companies/${c.slug}`} className="flex items-center gap-1.5 rounded-md border border-border px-1.5 py-1 text-caption hover:border-ink/30">
                         <Logo src={c.logoUrl} name={c.name} size={16} />
                         {c.name}
                       </Link>

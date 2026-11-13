@@ -62,7 +62,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
         role="dialog"
         aria-modal="true"
         aria-label="Search"
-        className="w-full max-w-lg animate-[fadeUp_240ms_cubic-bezier(0.22,1,0.36,1)] overflow-hidden rounded-3xl border border-border bg-surface shadow-2xl"
+        className="w-full max-w-lg animate-[fadeUp_240ms_cubic-bezier(0.22,1,0.36,1)] overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl"
         onMouseDown={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
           if (e.key === 'Escape') onClose();
@@ -86,7 +86,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search companies or jump to a page…"
-            className="h-12 flex-1 bg-transparent text-sm outline-none placeholder:text-subtle"
+            className="h-12 flex-1 bg-transparent text-body outline-none placeholder:text-subtle"
             role="combobox"
             aria-expanded="true"
             aria-controls="palette-results"
@@ -95,7 +95,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
           {isLoading && <Spinner className="h-4 w-4 text-subtle" />}
         </div>
         <ul id="palette-results" role="listbox" className="max-h-80 overflow-y-auto p-1">
-          {results.length === 0 && <li className="px-3 py-6 text-center text-sm text-subtle">No matches</li>}
+          {results.length === 0 && <li className="px-3 py-6 text-center text-body text-subtle">No matches</li>}
           {results.map((r, i) => (
             <li
               key={r.key}
@@ -109,12 +109,12 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
               {r.hint === 'Page' ? <span className="w-6 text-center text-subtle">→</span> : <Logo src={r.logo} name={r.label} size={24} />}
               <span className="min-w-0 flex-1">
                 <span className="block truncate font-medium">{r.label}</span>
-                <span className="block truncate text-xs text-subtle">{r.hint}</span>
+                <span className="block truncate text-caption text-subtle">{r.hint}</span>
               </span>
             </li>
           ))}
         </ul>
-        <div className="flex items-center gap-3 border-t border-border px-3 py-2 text-[11px] text-subtle">
+        <div className="flex items-center gap-3 border-t border-border px-3 py-2 text-micro text-subtle">
           <span>
             <Kbd>↑</Kbd> <Kbd>↓</Kbd> navigate
           </span>

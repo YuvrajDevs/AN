@@ -94,19 +94,19 @@ export default function ReviewPage() {
           </select>
         }
       />
-      {!canDecide && <p className="mb-4 rounded-md bg-warning/10 px-3 py-2 text-sm text-warning">You have viewer access: decisions require the analyst role.</p>}
+      {!canDecide && <p className="mb-4 rounded-md bg-warning/10 px-3 py-2 text-body text-warning">You have viewer access: decisions require the analyst role.</p>}
       {error ? (
         <ErrorState error={error} retry={() => mutate()} />
       ) : isLoading && !data ? (
         <TableSkeleton rows={8} cols={3} />
       ) : items.length === 0 ? (
         <div className="card">
-          <EmptyState icon="✓" title="Queue is clear" body="Every classification is either confident enough to auto-accept or has been reviewed." action={<Link href="/companies" className="text-sm text-accent hover:underline">Browse companies →</Link>} />
+          <EmptyState icon="✓" title="Queue is clear" body="Every classification is either confident enough to auto-accept or has been reviewed." action={<Link href="/companies" className="text-body text-accent hover:underline">Browse companies →</Link>} />
         </div>
       ) : (
         <div className="grid gap-4 lg:grid-cols-[minmax(0,320px)_1fr]">
           <div className="card max-h-[70vh] overflow-y-auto">
-            <div className="sticky top-0 border-b border-border bg-surface px-3 py-2 text-xs text-subtle">
+            <div className="sticky top-0 border-b border-border bg-surface px-3 py-2 text-caption text-subtle">
               {data?.total} pending · <Kbd>j</Kbd>/<Kbd>k</Kbd>
             </div>
             <ul aria-label="Pending items">
@@ -114,8 +114,8 @@ export default function ReviewPage() {
                 <li key={it._id}>
                   <button onClick={() => setIndex(i)} aria-current={i === index ? 'true' : undefined} className={cx('flex w-full items-center gap-2 border-b border-border px-3 py-2 text-left', i === index ? 'bg-pink/50' : 'hover:bg-muted')}>
                     <Logo src={it.company.logoUrl} name={it.company.name} size={22} />
-                    <span className="min-w-0 flex-1 truncate text-sm">{it.company.name}</span>
-                    <span className="tabular text-xs text-subtle">{pct(it.confidence)}</span>
+                    <span className="min-w-0 flex-1 truncate text-body">{it.company.name}</span>
+                    <span className="tabular text-caption text-subtle">{pct(it.confidence)}</span>
                   </button>
                 </li>
               ))}
@@ -127,16 +127,16 @@ export default function ReviewPage() {
               <div className="flex items-start gap-3">
                 <Logo src={current.company.logoUrl} name={current.company.name} size={40} />
                 <div className="min-w-0 flex-1">
-                  <h2 className="text-lg font-semibold">
+                  <h2 className="text-title font-semibold">
                     <Link href={`/companies/${current.company.slug}`} className="hover:underline">
                       {current.company.name}
                     </Link>
                   </h2>
-                  <p className="text-sm text-subtle">{current.company.oneLiner}</p>
+                  <p className="text-body text-subtle">{current.company.oneLiner}</p>
                 </div>
                 {current.company.ycBatch && <Badge>{current.company.ycBatch}</Badge>}
               </div>
-              <p tabIndex={0} aria-label="Company description" className="mt-4 max-h-40 overflow-y-auto whitespace-pre-line rounded-lg text-sm leading-relaxed">{current.company.description || 'No description.'}</p>
+              <p tabIndex={0} aria-label="Company description" className="mt-4 max-h-40 overflow-y-auto whitespace-pre-line rounded-lg text-body leading-relaxed">{current.company.description || 'No description.'}</p>
               {current.company.tags.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-1">
                   {current.company.tags.map((t) => (
@@ -147,16 +147,16 @@ export default function ReviewPage() {
 
               <div className="mt-5 rounded-md border border-border bg-bg p-4">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs text-subtle">Model proposal</span>
+                  <span className="text-caption text-subtle">Model proposal</span>
                   <span className="font-semibold">{current.subsectorSlug ? names.get(current.subsectorSlug) : 'No subsector fits'}</span>
                   <ConfidenceBadge value={current.confidence} />
-                  <span className="text-xs text-subtle">
+                  <span className="text-caption text-subtle">
                     {current.provider} · {current.model}
                   </span>
                 </div>
-                <p className="mt-2 text-sm">{current.rationale}</p>
+                <p className="mt-2 text-body">{current.rationale}</p>
                 {current.alternatives.length > 0 && (
-                  <p className="mt-1 text-xs text-subtle">
+                  <p className="mt-1 text-caption text-subtle">
                     Alternatives: {current.alternatives.map((a) => `${names.get(a.subsectorSlug)} (${pct(a.confidence)})`).join(', ')}
                   </p>
                 )}
@@ -168,7 +168,7 @@ export default function ReviewPage() {
                   <Button variant="primary" disabled={!canDecide} loading={busy} onClick={() => (current.subsectorSlug ? void decide('accept') : void decide('override', null))}>
                     {current.subsectorSlug ? 'Accept' : 'Accept: out of scope'} <Kbd>a</Kbd>
                   </Button>
-                  <span className="text-xs text-subtle">or choose the right subsector:</span>
+                  <span className="text-caption text-subtle">or choose the right subsector:</span>
                 </div>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {options.map((o, i) => (
@@ -177,18 +177,18 @@ export default function ReviewPage() {
                       disabled={busy || !canDecide}
                       onClick={() => decide('override', o.slug)}
                       className={cx(
-                        'flex items-start gap-2 rounded-md border px-3 py-2 text-left text-sm disabled:opacity-50',
+                        'flex items-start gap-2 rounded-md border px-3 py-2 text-left text-body disabled:opacity-50',
                         o.slug === current.subsectorSlug ? 'border-ink/30 bg-yellow/30' : 'border-border hover:bg-muted',
                       )}
                     >
                       <Kbd>{i + 1}</Kbd>
                       <span>
                         <span className="block font-medium">{o.name}</span>
-                        <span className="line-clamp-2 text-xs text-subtle">{o.description}</span>
+                        <span className="line-clamp-2 text-caption text-subtle">{o.description}</span>
                       </span>
                     </button>
                   ))}
-                  <button disabled={busy || !canDecide} onClick={() => decide('override', null)} className="flex items-center gap-2 rounded-md border border-dashed border-border px-3 py-2 text-left text-sm hover:bg-muted disabled:opacity-50">
+                  <button disabled={busy || !canDecide} onClick={() => decide('override', null)} className="flex items-center gap-2 rounded-md border border-dashed border-border px-3 py-2 text-left text-body hover:bg-muted disabled:opacity-50">
                     <Kbd>0</Kbd> Out of scope for this sector
                   </button>
                 </div>
@@ -198,7 +198,7 @@ export default function ReviewPage() {
         </div>
       )}
       {toast && (
-        <div role="status" className="fixed bottom-4 right-4 z-40 animate-[fadeUp_240ms_cubic-bezier(0.22,1,0.36,1)] rounded-full bg-ink px-4 py-2 text-sm text-white shadow-lg">
+        <div role="status" className="fixed bottom-4 right-4 z-40 animate-[fadeUp_240ms_cubic-bezier(0.22,1,0.36,1)] rounded-full bg-ink px-4 py-2 text-body text-white shadow-lg">
           {toast}
         </div>
       )}

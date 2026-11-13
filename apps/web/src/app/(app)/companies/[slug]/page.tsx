@@ -17,6 +17,9 @@ interface Detail {
   watchlists: { _id: string; name: string; contains: boolean }[];
 }
 
+/** Sources shown before 'Show all': enough to see what kinds of evidence exist without a wall of text. */
+const SOURCES_PREVIEW = 3;
+
 export default function CompanyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const { data, error, mutate } = useApi<Detail>(`/companies/${slug}`);
@@ -26,6 +29,7 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [addingRound, setAddingRound] = useState(false);
+  const [allSources, setAllSources] = useState(false);
 
   if (error) return <ErrorState error={error} retry={() => mutate()} />;
   if (!data)
@@ -96,22 +100,22 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
               </Button>
             )}
             {c.website && (
-              <a href={c.website} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-sm font-medium hover:bg-muted">
+              <a href={c.website} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-body font-medium hover:bg-muted">
                 Website ↗
               </a>
             )}
-            <Link href={`/briefs?company=${c.slug}`} className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full bg-accent px-4 text-sm font-medium text-accent-fg hover:bg-accent/90">
+            <Link href={`/briefs?company=${c.slug}`} className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full bg-accent px-4 text-body font-medium text-accent-fg hover:bg-accent/90">
               Analyst brief
             </Link>
           </>
         }
       />
 
-      <div className="grid gap-3 lg:grid-cols-3">
-        <div className="space-y-3 lg:col-span-2">
+      <div className="grid gap-4 lg:grid-cols-3">
+        <div className="space-y-4 lg:col-span-2">
           <Card title="About" bodyClass="p-4">
-            <p className="whitespace-pre-line break-words text-sm leading-relaxed">{c.description || c.oneLiner || 'No description available.'}</p>
-            <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-4">
+            <p className="whitespace-pre-line break-words text-body leading-relaxed">{c.description || c.oneLiner || 'No description available.'}</p>
+            <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-body sm:grid-cols-4">
               {[
                 ['HQ', [c.hq.city, c.hq.country].filter(Boolean).join(', ') || '—'],
                 ['YC batch', c.ycBatch ?? '—'],
@@ -119,7 +123,7 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
                 ['Disclosed funding', usd(c.metrics.totalRaisedUsd)],
               ].map(([k, v]) => (
                 <div key={k as string}>
-                  <dt className="text-xs text-subtle">{k}</dt>
+                  <dt className="text-caption text-subtle">{k}</dt>
                   <dd className="tabular font-medium">{v}</dd>
                 </div>
               ))}
@@ -137,7 +141,6 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
             title="Funding timeline"
             actions={
               <span className="flex items-center gap-3">
-                <span className="text-xs text-subtle">{rounds.length} entries</span>
                 {canAnalyse && !addingRound && (
                   <Button size="sm" onClick={() => setAddingRound(true)}>
                     Add round
@@ -158,6 +161,19 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
             {rounds.length === 0 ? (
               <EmptyState title="No funding recorded" body="No primary-source funding has been linked to this company yet." />
             ) : (
+              <>
+              <dl className="grid grid-cols-3 border-b border-border/60 px-4 py-3">
+                {[
+                  ['Disclosed in total', usd(rounds.reduce((a, r) => a + (r.amountUsd ?? 0), 0), '—')],
+                  ['Rounds on record', String(rounds.length)],
+                  ['Latest', date(rounds[0]?.date)],
+                ].map(([k, v]) => (
+                  <div key={k}>
+                    <dt className="text-caption text-subtle">{k}</dt>
+                    <dd className="tabular text-heading font-semibold">{v}</dd>
+                  </div>
+                ))}
+              </dl>
               <ol className="relative px-4 py-4">
                 <span className="absolute bottom-6 left-[27px] top-6 w-px bg-border" aria-hidden="true" />
                 {rounds.map((r) => (
@@ -165,13 +181,13 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
                     <span className={`relative z-10 mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ring-4 ring-surface ${r.amountUsd ? 'bg-accent' : 'bg-subtle'}`} aria-hidden="true" />
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-baseline gap-x-2">
-                        <span className="tabular text-base font-semibold">{usd(r.amountUsd, 'Undisclosed')}</span>
-                        <Badge tone={r.roundType === 'accelerator' ? 'neutral' : 'accent'}>{ROUND_LABELS[r.roundType] ?? r.roundType}</Badge>
-                        <span className="text-xs text-subtle">{date(r.date)}</span>
+                        <span className="tabular text-heading font-semibold">{usd(r.amountUsd, 'Undisclosed')}</span>
+                        <Badge>{ROUND_LABELS[r.roundType] ?? r.roundType}</Badge>
+                        <span className="text-caption text-subtle">{date(r.date)}</span>
                       </div>
-                      {r.targetAmountUsd ? <div className="text-xs text-subtle">Offering size {usd(r.targetAmountUsd)}</div> : null}
-                      {r.investors.length > 0 && <div className="mt-0.5 text-xs">Investors: {r.investors.join(', ')}</div>}
-                      <div className="mt-1 flex flex-wrap gap-2 text-xs">
+                      {r.targetAmountUsd ? <div className="text-caption text-subtle">Offering size {usd(r.targetAmountUsd)}</div> : null}
+                      {r.investors.length > 0 && <div className="mt-0.5 text-caption">Investors: {r.investors.join(', ')}</div>}
+                      <div className="mt-1 flex flex-wrap gap-2 text-caption">
                         {r.sourceIds.map((id) => {
                           const s = sourceById.get(id);
                           return s ? (
@@ -185,36 +201,47 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
                   </li>
                 ))}
               </ol>
+              </>
             )}
           </Card>
 
-          <Card title="Sources" actions={<span className="text-xs text-subtle">Every fact on this page traces to one of these</span>}>
+          <Card title="Sources" actions={<span className="text-caption text-subtle">Every fact on this page traces to one of these</span>}>
             <ul className="divide-y divide-border">
-              {sources.map((s) => (
+              {(allSources ? sources : sources.slice(0, SOURCES_PREVIEW)).map((s) => (
                 <li key={s._id} className="px-4 py-3">
                   <div className="flex items-center gap-2">
                     <Badge>{SOURCE_LABELS[s.kind] ?? s.kind}</Badge>
-                    <a href={s.url.startsWith('http') ? s.url : undefined} target="_blank" rel="noopener noreferrer nofollow" className="truncate text-sm font-medium hover:underline">
+                    <a href={s.url.startsWith('http') ? s.url : undefined} target="_blank" rel="noopener noreferrer nofollow" className="truncate text-body font-medium hover:underline">
                       {s.title}
                     </a>
                   </div>
-                  <p className="mt-1 line-clamp-2 text-xs text-subtle">{s.excerpt}</p>
+                  <p className="mt-1 line-clamp-2 text-caption text-subtle">{s.excerpt}</p>
                 </li>
               ))}
             </ul>
+            {sources.length > SOURCES_PREVIEW && (
+              <button
+                type="button"
+                onClick={() => setAllSources((v) => !v)}
+                aria-expanded={allSources}
+                className="w-full border-t border-border px-4 py-2.5 text-left text-caption font-medium text-subtle hover:bg-muted/50 hover:text-fg"
+              >
+                {allSources ? 'Show fewer sources' : `Show all ${sources.length} sources`}
+              </button>
+            )}
           </Card>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           <Card title="Classification" bodyClass="p-4 space-y-3">
             <div>
-              <div className="text-xs text-subtle">{sector ? names.get(sector) : 'Sector'}</div>
-              <div className="text-base font-semibold">{c.classification.subsectorSlug ? names.get(c.classification.subsectorSlug) : 'Not classified'}</div>
+              <div className="text-caption text-subtle">{sector ? names.get(sector) : 'Sector'}</div>
+              <div className="text-heading font-semibold">{c.classification.subsectorSlug ? names.get(c.classification.subsectorSlug) : 'Not classified'}</div>
             </div>
             <ConfidenceBadge value={c.classification.confidence} state={c.classification.state} />
-            {c.classification.rationale && <p className="text-xs text-subtle">{c.classification.rationale}</p>}
+            {c.classification.rationale && <p className="text-caption text-subtle">{c.classification.rationale}</p>}
             {c.classification.state === 'pending_review' && (
-              <Link href="/review" className="block text-xs text-accent hover:underline">
+              <Link href="/review" className="block text-caption text-accent hover:underline">
                 In the review queue →
               </Link>
             )}
@@ -229,14 +256,14 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
                   ))}
                 </div>
                 {msg && (
-                  <p className="mt-2 text-xs" role="status">
+                  <p className="mt-2 text-caption" role="status">
                     {msg}
                   </p>
                 )}
               </div>
             )}
             {classificationHistory.length > 0 && (
-              <details className="border-t border-border pt-3 text-xs">
+              <details className="border-t border-border pt-3 text-caption">
                 <summary className="cursor-pointer text-subtle">History ({classificationHistory.length})</summary>
                 <ul className="mt-2 space-y-2">
                   {classificationHistory.map((h) => (
@@ -252,7 +279,7 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
 
           <Card title="Watchlists" bodyClass="p-4">
             {watchlists.length === 0 ? (
-              <p className="text-xs text-subtle">
+              <p className="text-caption text-subtle">
                 You have no watchlists.{' '}
                 <Link className="text-accent underline" href="/watchlists">
                   Create one
@@ -262,7 +289,7 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
               <ul className="space-y-2">
                 {watchlists.map((w) => (
                   <li key={w._id}>
-                    <label className="flex cursor-pointer items-center gap-2 text-sm">
+                    <label className="flex cursor-pointer items-center gap-2 text-body">
                       <input type="checkbox" checked={w.contains} onChange={() => toggleWatch(w._id, w.contains)} className="accent-[rgb(var(--accent))]" />
                       {w.name}
                     </label>
@@ -273,7 +300,7 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
           </Card>
 
           {c.legalNames.length > 0 && (
-            <Card title="Linked SEC entities" bodyClass="p-4 text-xs space-y-1">
+            <Card title="Linked SEC entities" bodyClass="p-4 text-caption space-y-1">
               {c.legalNames.map((n) => (
                 <div key={n}>{n}</div>
               ))}

@@ -33,7 +33,7 @@ export default function FundingPage() {
         title="Funding rounds"
         subtitle="Every round traces to a stored primary source. Form D rounds report amount sold; round names and investors are not on the form."
         actions={
-          <a href={`/api/funding/export.csv${qs({ sector })}`} download className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-sm font-medium hover:bg-muted">
+          <a href={`/api/funding/export.csv${qs({ sector })}`} download className="inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full border border-border bg-surface px-4 text-body font-medium hover:bg-muted">
             Export CSV
           </a>
         }
@@ -93,7 +93,7 @@ export default function FundingPage() {
                     </td>
                     <td className="td tabular text-right font-medium">{usd(r.amountUsd, 'undisclosed')}</td>
                     <td className="td tabular text-right text-subtle">{usd(r.targetAmountUsd)}</td>
-                    <td className="td whitespace-nowrap text-xs text-subtle">{sourceLabel(r.extractedBy)}</td>
+                    <td className="td whitespace-nowrap text-caption text-subtle">{sourceLabel(r.extractedBy)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -101,7 +101,7 @@ export default function FundingPage() {
           </div>
         )}
         {data && data.total > 50 && (
-          <div className="flex items-center justify-between border-t border-border px-3 py-2 text-xs text-subtle">
+          <div className="flex items-center justify-between border-t border-border px-3 py-2 text-caption text-subtle">
             <span>
               {data.total.toLocaleString()} rounds · page {page} of {pages}
             </span>

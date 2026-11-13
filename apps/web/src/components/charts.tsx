@@ -69,7 +69,7 @@ export function BarChart({
   return (
     <figure className="w-full">
       {/* Value readout: shows the hovered (or selected) bar. Stays in place, so nothing is clipped. */}
-      <div className="mb-2 flex h-5 items-baseline gap-1.5 text-xs" aria-live="polite">
+      <div className="mb-2 flex h-5 items-baseline gap-1.5 text-caption" aria-live="polite">
         {tip !== null ? (
           <>
             <span className="font-semibold">{data[tip].label}</span>
@@ -90,7 +90,7 @@ export function BarChart({
       </div>
       <div className="flex">
       {/* value scale: top, middle and zero, so bar heights can be read without hovering */}
-      <div className="relative mr-2 w-10 shrink-0 text-right text-[10px] tabular text-subtle" style={{ height }} aria-hidden="true">
+      <div className="relative mr-2 w-10 shrink-0 text-right text-micro tabular text-subtle" style={{ height }} aria-hidden="true">
         {ticks.map((t, i) => (
           <span key={i} className="absolute right-0 -translate-y-1/2 whitespace-nowrap" style={{ top: `${(i / (ticks.length - 1)) * 100}%` }}>
             {t === 0 ? '0' : axisLabel(t, format)}
@@ -137,7 +137,7 @@ export function BarChart({
         </div>
       </div>
       </div>
-      <div className="ml-12 mt-1.5 flex text-[10px] text-subtle" aria-hidden="true">
+      <div className="ml-12 mt-1.5 flex text-micro text-subtle" aria-hidden="true">
         {data.map((d, i) => (
           <div key={d.label} className={`whitespace-nowrap text-center transition-colors duration-200 ${selected === i ? 'font-semibold text-fg' : ''}`} style={{ width: `${100 / data.length}%` }}>
             {thin && i % 2 === 1 && selected !== i ? '' : d.label}
