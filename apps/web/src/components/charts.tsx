@@ -16,6 +16,21 @@ export interface BarDatum {
 
 const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
+/** Scale labels must fit a narrow column: use the chart's own format when short ("$500M"), else a bare compact number. */
+function axisLabel(v: number, format: (v: number) => string): string {
+  const f = format(v);
+  if (f.length <= 6) return f;
+  return v >= 1e6 ? `${+(v / 1e6).toFixed(1)}M` : v >= 1e3 ? `${+(v / 1e3).toFixed(1)}K` : String(+v.toFixed(1));
+}
+
+/** Round a maximum up to a readable axis top: 1, 2, 2.5 or 5 times a power of ten. */
+function niceMax(max: number): number {
+  if (max <= 0) return 1;
+  const p = 10 ** Math.floor(Math.log10(max));
+  for (const m of [1, 2, 2.5, 5, 10]) if (m * p >= max) return m * p;
+  return 10 * p;
+}
+
 export function BarChart({
   data,
   format = (v) => String(v),
@@ -43,7 +58,10 @@ export function BarChart({
     return () => cancelAnimationFrame(id);
   }, []);
 
-  const max = Math.max(1, ...data.map((d) => d.value));
+  const top = niceMax(Math.max(0, ...data.map((d) => d.value)));
+  const ticks = [top, top / 2, 0];
+  const total = data.reduce((a, d) => a + d.value, 0);
+  const peak = data.reduce((best, d, i) => (d.value > (data[best]?.value ?? -1) ? i : best), 0);
   const focus = hover ?? selected;
   const tip = focus !== null && data[focus] ? focus : null;
   const thin = data.length > 8;
@@ -58,20 +76,37 @@ export function BarChart({
             <span className="tabular font-semibold">{format(data[tip].value)}</span>
             {data[tip].secondary !== undefined && <span className="text-subtle">· {secondaryLabel(data[tip].secondary!)}</span>}
           </>
-        ) : (
-          <span className="text-subtle">Hover a bar for its value</span>
-        )}
+        ) : data.length ? (
+          <span className="text-subtle">
+            Total <span className="tabular font-semibold text-fg">{format(total)}</span>
+            {data[peak]?.value > 0 && (
+              <>
+                {' '}· peak <span className="font-semibold text-fg">{data[peak].label}</span>
+              </>
+            )}
+            {onSelect ? ' · select a bar for detail' : ''}
+          </span>
+        ) : null}
       </div>
-      <div className="relative" style={{ height }} role="group" aria-label={ariaLabel} onMouseLeave={() => setHover(null)}>
-        {/* gridlines */}
+      <div className="flex">
+      {/* value scale: top, middle and zero, so bar heights can be read without hovering */}
+      <div className="relative mr-2 w-10 shrink-0 text-right text-[10px] tabular text-subtle" style={{ height }} aria-hidden="true">
+        {ticks.map((t, i) => (
+          <span key={i} className="absolute right-0 -translate-y-1/2 whitespace-nowrap" style={{ top: `${(i / (ticks.length - 1)) * 100}%` }}>
+            {t === 0 ? '0' : axisLabel(t, format)}
+          </span>
+        ))}
+      </div>
+      <div className="relative flex-1" style={{ height }} role="group" aria-label={ariaLabel} onMouseLeave={() => setHover(null)}>
+        {/* gridlines at the scale ticks */}
         <div className="pointer-events-none absolute inset-0 flex flex-col justify-between" aria-hidden="true">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="border-t border-fg/[0.07]" />
+          {ticks.map((_, i) => (
+            <div key={i} className={i === ticks.length - 1 ? 'border-t border-fg/[0.18]' : 'border-t border-dashed border-fg/[0.09]'} />
           ))}
         </div>
         <div className="absolute inset-0 flex items-end">
           {data.map((d, i) => {
-            const h = ready ? Math.max((d.value / max) * 100, d.value > 0 ? 1.5 : 0) : 0;
+            const h = ready ? Math.max((d.value / top) * 100, d.value > 0 ? 1.5 : 0) : 0;
             const dim = focus !== null && i !== hover && i !== selected;
             const isSel = selected === i;
             const label = `${d.label}: ${format(d.value)}${d.secondary !== undefined ? `, ${secondaryLabel(d.secondary)}` : ''}`;
@@ -101,7 +136,8 @@ export function BarChart({
           })}
         </div>
       </div>
-      <div className="mt-1.5 flex text-[10px] text-subtle" aria-hidden="true">
+      </div>
+      <div className="ml-12 mt-1.5 flex text-[10px] text-subtle" aria-hidden="true">
         {data.map((d, i) => (
           <div key={d.label} className={`whitespace-nowrap text-center transition-colors duration-200 ${selected === i ? 'font-semibold text-fg' : ''}`} style={{ width: `${100 / data.length}%` }}>
             {thin && i % 2 === 1 && selected !== i ? '' : d.label}

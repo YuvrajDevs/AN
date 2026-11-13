@@ -79,7 +79,21 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
         <Stat tone="sky" label="Median team size" value={k.medianTeam ? Math.round(k.medianTeam) : '—'} hint="Per YC directory" />
       </div>
 
-      <h2 className="mb-2.5 mt-6 text-base font-semibold tracking-tight">Market map</h2>
+      <div className="mb-2.5 mt-6 flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
+        <h2 className="text-base font-semibold tracking-tight">Market map</h2>
+        {/* legend: what the bar, the numbers and a faded company mean */}
+        <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-subtle" aria-label="How to read the market map">
+          <li className="flex items-center gap-1.5">
+            <span className="block h-1.5 w-6 rounded-full bg-fg" aria-hidden="true" /> companies, relative to the largest subsector
+          </li>
+          <li>
+            numbers: companies · Form D capital sold
+          </li>
+          <li className="flex items-center gap-1.5">
+            <span className="block h-3 w-3 rounded-full bg-muted opacity-60 grayscale" aria-hidden="true" /> faded = acquired or inactive
+          </li>
+        </ul>
+      </div>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {sortedMap.map((m, idx) => (
           <section key={m.slug} className="card flex flex-col p-3.5" aria-labelledby={`mm-${m.slug}`}>

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Badge, Button, EmptyState, ErrorState, Logo, PageHeader, TableSkeleton } from '@/components/ui';
 import { qs, useApi } from '@/lib/api';
-import { date, ROUND_LABELS, usd } from '@/lib/format';
+import { date, ROUND_LABELS, usd, sourceLabel } from '@/lib/format';
 import type { TaxonomyNode } from '@/lib/types';
 
 interface Round {
@@ -89,11 +89,11 @@ export default function FundingPage() {
                       )}
                     </td>
                     <td className="td">
-                      <Badge tone="accent">{ROUND_LABELS[r.roundType] ?? r.roundType}</Badge>
+                      <Badge tone="neutral">{ROUND_LABELS[r.roundType] ?? r.roundType}</Badge>
                     </td>
                     <td className="td tabular text-right font-medium">{usd(r.amountUsd, 'undisclosed')}</td>
                     <td className="td tabular text-right text-subtle">{usd(r.targetAmountUsd)}</td>
-                    <td className="td text-xs text-subtle">{r.extractedBy}</td>
+                    <td className="td whitespace-nowrap text-xs text-subtle">{sourceLabel(r.extractedBy)}</td>
                   </tr>
                 ))}
               </tbody>

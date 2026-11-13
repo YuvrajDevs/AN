@@ -19,6 +19,22 @@ interface Recent {
   items: { _id: string; date: string; roundType: string; amountUsd: number | null; company: { slug: string; name: string; logoUrl: string | null } }[];
 }
 
+/** One row per company: its latest round, plus how many earlier rounds it has in the same recent window. */
+function latestPerCompany(items: Recent['items'], limit: number) {
+  const rows: { round: Recent['items'][number]; more: number }[] = [];
+  const bySlug = new Map<string, { round: Recent['items'][number]; more: number }>();
+  for (const r of items) {
+    const seen = bySlug.get(r.company.slug);
+    if (seen) seen.more += 1;
+    else {
+      const row = { round: r, more: 0 };
+      bySlug.set(r.company.slug, row);
+      rows.push(row);
+    }
+  }
+  return rows.slice(0, limit);
+}
+
 function greeting() {
   const h = new Date().getHours();
   return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
@@ -220,11 +236,14 @@ export default function DashboardPage() {
             </div>
           ) : (
             <ul className="divide-y divide-border/60">
-              {recent.data.items.slice(0, 7).map((r) => (
+              {latestPerCompany(recent.data.items, 7).map(({ round: r, more }) => (
                 <li key={r._id}>
                   <Link href={`/companies/${r.company.slug}`} className="flex items-center gap-3 px-4 py-2 hover:bg-muted/50">
                     <Logo src={r.company.logoUrl} name={r.company.name} size={26} />
-                    <span className="min-w-0 flex-1 truncate text-[13px] font-medium">{r.company.name}</span>
+                    <span className="min-w-0 flex-1 truncate text-[13px] font-medium">
+                      {r.company.name}
+                      {more > 0 && <span className="ml-2 text-xs font-normal text-subtle">+{more} earlier {more === 1 ? 'round' : 'rounds'}</span>}
+                    </span>
                     <span className="hidden text-xs text-subtle sm:block">{ROUND_LABELS[r.roundType] ?? r.roundType}</span>
                     <span className="tabular w-24 text-right text-xs text-subtle">{date(r.date)}</span>
                     <span className="tabular w-20 text-right text-[13px] font-semibold">{usd(r.amountUsd, '—')}</span>

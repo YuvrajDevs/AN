@@ -50,3 +50,12 @@ export function pct(n?: number | null) {
   if (n === null || n === undefined) return '—';
   return `${Math.round(n * 100)}%`;
 }
+
+/** Where a round's facts came from, in words an analyst recognises (the stored value is a pipeline id). */
+const EXTRACTOR_LABELS: Record<string, string> = {
+  'sec-form-d-parser': 'SEC Form D',
+  'yc-directory': 'YC directory',
+};
+export function sourceLabel(extractedBy: string): string {
+  return EXTRACTOR_LABELS[extractedBy] ?? (extractedBy.startsWith('manual') || extractedBy.includes('analyst') ? 'Analyst entry' : extractedBy);
+}

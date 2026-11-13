@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { ArrowUp, ExternalLink } from 'lucide-react';
-import { Badge, Card, PageHeader, Spinner, buttonClass, cx } from '@/components/ui';
+import { ArrowUp, BookOpenCheck, Database, ExternalLink, MessageSquareQuote } from 'lucide-react';
+import { Badge, Card, PageHeader, Skeleton, Spinner, TONE_BG, buttonClass, cx } from '@/components/ui';
 import { api, ApiError, useApi } from '@/lib/api';
 
 interface Passage {
@@ -83,7 +83,7 @@ export default function AskPage() {
           e.preventDefault();
           run(q);
         }}
-        className="card mb-3 flex items-center gap-2 p-2 pl-4"
+        className="card mb-3 flex items-center gap-2 p-2 pl-4 focus-within:border-fg/50 focus-within:ring-4 focus-within:ring-fg/[0.06]"
       >
         <label htmlFor="ask-q" className="sr-only">Question</label>
         <input
@@ -92,8 +92,9 @@ export default function AskPage() {
           onChange={(e) => setQ(e.target.value)}
           maxLength={300}
           placeholder="Ask about companies, sectors or funding…"
-          className="min-w-0 flex-1 bg-transparent py-2 text-[15px] outline-none placeholder:text-subtle/80"
+          className="min-w-0 flex-1 bg-transparent py-2 text-[15px] outline-none placeholder:text-subtle/80 focus-visible:outline-none"
           autoComplete="off"
+          autoFocus
         />
         <button type="submit" disabled={busy || q.trim().length < 3} className={buttonClass('primary', 'md', 'shrink-0 gap-1.5 disabled:opacity-50')} aria-label="Ask">
           {busy ? <Spinner /> : <ArrowUp className="h-4 w-4" />} Ask
@@ -115,24 +116,69 @@ export default function AskPage() {
       )}
 
       {!res && !busy && (
-        <Card bodyClass="p-5">
-          <p className="text-sm text-subtle">
-            {status?.embedded
-              ? `${status.embedded.toLocaleString()} passages indexed with ${status.model}: company profiles, SEC Form D filings and sector snapshots.`
-              : 'The search index is being built. Keyword search works meanwhile.'}
-          </p>
-          <p className="mt-2 text-sm text-subtle/80">
-            Retrieval combines semantic search (Gemini embeddings), keyword search and exact company names, merged by reciprocal rank fusion.
-          </p>
-        </Card>
+        <section aria-labelledby="ask-guide" className="space-y-3">
+          <h2 id="ask-guide" className="sr-only">Before you ask</h2>
+          <ul className="grid gap-3 md:grid-cols-3">
+            {[
+              {
+                icon: Database,
+                tone: 'yellow' as const,
+                title: 'What it knows',
+                body: status?.embedded
+                  ? `${status.embedded.toLocaleString()} passages: company profiles, SEC Form D filings and snapshots of Legal AI, Climate Tech and Payments Infrastructure.`
+                  : 'Company profiles, SEC Form D filings and sector snapshots. The search index is being built; keyword search works meanwhile.',
+              },
+              {
+                icon: BookOpenCheck,
+                tone: 'sage' as const,
+                title: 'How answers work',
+                body: 'Each sentence cites the passages it came from. A claim whose numbers are not in its sources is dropped, never shown.',
+              },
+              {
+                icon: MessageSquareQuote,
+                tone: 'sky' as const,
+                title: 'Ask well',
+                body: 'Name a company, a sector or a kind of product. If the data cannot answer, Strata says so instead of guessing.',
+              },
+            ].map(({ icon: Icon, tone, title, body }) => (
+              <li key={title} className="card p-4">
+                <span className={cx('mb-3 grid h-8 w-8 place-items-center rounded-lg text-ink', TONE_BG[tone])}>
+                  <Icon className="h-4 w-4" aria-hidden="true" />
+                </span>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="mt-1 text-[13px] leading-relaxed text-subtle">{body}</p>
+              </li>
+            ))}
+          </ul>
+          <details className="group card px-4 py-3 text-[13px] text-subtle">
+            <summary className="cursor-pointer select-none font-medium text-fg">How retrieval works</summary>
+            <p className="mt-2 leading-relaxed">
+              Semantic search ({status?.model ?? 'Gemini embeddings'}), keyword search and exact company names each rank the passages; the three lists are merged by
+              reciprocal rank fusion, and the top passages go to the model with an instruction to answer from them only.
+            </p>
+          </details>
+        </section>
       )}
 
       {busy && !res && (
-        <Card bodyClass="p-5">
-          <p className="flex items-center gap-2 text-sm text-subtle">
-            <Spinner /> Searching the dataset and drafting a cited answer…
-          </p>
-        </Card>
+        <div className="grid items-start gap-4 lg:grid-cols-[1.2fr_1fr]" aria-busy="true">
+          <Card bodyClass="p-5" title="Answer">
+            <p className="mb-4 flex items-center gap-2 text-sm text-subtle" role="status">
+              <Spinner /> Searching the dataset and drafting a cited answer…
+            </p>
+            <div className="space-y-2.5">
+              <Skeleton className="h-4 w-11/12" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-4/5" />
+              <Skeleton className="h-4 w-2/3" />
+            </div>
+          </Card>
+          <Card title="Sources" bodyClass="space-y-3 p-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-12" />
+            ))}
+          </Card>
+        </div>
       )}
 
       {res && (
