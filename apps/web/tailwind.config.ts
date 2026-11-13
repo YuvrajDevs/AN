@@ -35,6 +35,9 @@ export default {
         title: ['20px', { lineHeight: '26px', letterSpacing: '-0.015em' }], // panel titles
         stat: ['24px', { lineHeight: '28px', letterSpacing: '-0.02em' }], // KPI values
         display: ['26px', { lineHeight: '32px', letterSpacing: '-0.02em' }], // page titles
+        // Editorial sizes, for the landing page and the case study only
+        section: ['34px', { lineHeight: '40px', letterSpacing: '-0.025em' }],
+        hero: ['52px', { lineHeight: '56px', letterSpacing: '-0.035em' }],
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
