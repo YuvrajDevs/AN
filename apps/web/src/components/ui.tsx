@@ -145,7 +145,7 @@ export function ErrorState({ error, retry }: { error: unknown; retry?: () => voi
 
 export function PageHeader({ title, subtitle, actions, crumbs }: { title: ReactNode; subtitle?: ReactNode; actions?: ReactNode; crumbs?: { href: string; label: string }[] }) {
   return (
-    <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
         {crumbs && (
           <nav aria-label="Breadcrumb" className="mb-1.5 flex flex-wrap items-center gap-1 text-caption text-subtle">
@@ -167,14 +167,20 @@ export function PageHeader({ title, subtitle, actions, crumbs }: { title: ReactN
   );
 }
 
-/** KPI tile. With a tone it becomes a pastel card, as on the dashboard. */
-export function Stat({ label, value, hint, tone, children }: { label: string; value: ReactNode; hint?: ReactNode; tone?: Tone; children?: ReactNode }) {
+/**
+ * KPI tile. With a tone it becomes a pastel card. `visual` fills the right side with a small, data-backed
+ * view of the number (a split, a ring, a trend), so the tile shows shape as well as size.
+ */
+export function Stat({ label, value, hint, tone, visual, children }: { label: string; value: ReactNode; hint?: ReactNode; tone?: Tone; visual?: ReactNode; children?: ReactNode }) {
   return (
-    <div className={cx('flex flex-col px-4 py-3.5', tone ? cx('pastel', TONE_BG[tone]) : 'card')}>
-      <div className="text-caption font-medium text-subtle">{label}</div>
-      <div className="tabular mt-1 text-stat font-semibold leading-tight tracking-tight">{value}</div>
-      {hint && <div className="mt-0.5 text-micro leading-snug text-subtle">{hint}</div>}
-      {children}
+    <div className={cx('flex items-center gap-4 p-4', tone ? cx('pastel', TONE_BG[tone]) : 'card')}>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <div className="text-caption font-medium text-subtle">{label}</div>
+        <div className="tabular mt-1 text-stat font-semibold tracking-tight">{value}</div>
+        {hint && <div className="mt-0.5 text-micro text-subtle">{hint}</div>}
+        {children}
+      </div>
+      {visual && <div className="hidden w-[38%] max-w-[120px] shrink-0 sm:block">{visual}</div>}
     </div>
   );
 }
@@ -209,7 +215,7 @@ export function Card({ title, actions, children, className, bodyClass }: { title
   return (
     <section className={cx('card overflow-hidden', className)}>
       {(title || actions) && (
-        <header className="flex items-center justify-between gap-2 border-b border-border/60 px-4 py-2.5">
+        <header className="flex min-h-[48px] items-center justify-between gap-2 border-b border-border/60 px-4 py-2.5">
           <h2 className="text-body-sm font-semibold">{title}</h2>
           {actions}
         </header>

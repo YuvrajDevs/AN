@@ -62,6 +62,7 @@ One family, chosen by role, not by pixel size. **Never write a raw size (`text-[
 | `text-display` | 26 / 32 | Page titles (one per page) |
 
 Rules
+- Abbreviated chart labels ('25) carry a full title (2025) used by the readout and screen readers.
 - Weights: 400 for reading, 500 for labels and links, 600 for headings and figures. No 700.
 - Every figure that can be compared uses `tabular` (tabular numerals).
 - Headings use `tracking-tight`; uppercase is reserved for table headers and eyebrows (`text-micro uppercase tracking-wide`).
@@ -86,7 +87,11 @@ Rules
 - Cards sit on a 16px grid: `gap-4` between cards, `mt-4` between rows, `space-y-4` in stacked columns.
 - Card header: `px-4 py-2.5`, title in `text-body-sm font-semibold`, actions right-aligned. Card body: `p-4`
   unless it is a list or table, which runs edge to edge with `px-4` rows.
-- Page structure: `PageHeader` (title, one-line purpose, actions on the right), then content. One page title per page.
+- Page frame: one centred column, max 1304px including a 32px gutter on each side (24px tablet, 16px phone). The top
+  bar and the page share it, so their edges always line up.
+- Page structure: `PageHeader` (title, one-line purpose, actions on the right), 24px, then content. One title per page.
+- Major sections inside a page (a market map, then charts) are 32px apart; rows of cards are 16px apart.
+- Card headers are at least 48px tall, so headers with and without actions line up across a row.
 - Desktop first for analysts (1280px+); every page must still work at 390px with no horizontal scroll (tested).
 
 ---

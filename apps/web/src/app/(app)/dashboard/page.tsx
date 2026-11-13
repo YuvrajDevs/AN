@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { ArrowRight, ClipboardCheck, Lightbulb } from 'lucide-react';
-import { BarChart } from '@/components/charts';
+import { BarChart, Ring, Sparkline, SplitBars } from '@/components/charts';
 import { QuarterBreakdown } from '@/components/QuarterBreakdown';
 import { useSession } from '@/components/session';
 import { Card, ErrorState, Logo, Segmented, Skeleton, Stat, TONE_BG, buttonClass, cx, sectorTone } from '@/components/ui';
@@ -111,7 +111,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-display font-semibold tracking-tight">
             {greeting()}
@@ -132,13 +132,32 @@ export default function DashboardPage() {
           Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-[84px]" />)
         ) : (
           <>
-            <Stat tone="yellow" label="Companies tracked" value={data.totals.companies.toLocaleString()} hint={`${data.bySector.length} sectors · YC directory`} />
-            <Stat tone="pink" label="Disclosed capital" value={usd(data.totals.disclosedUsd)} hint="Form D amount sold" />
-            <Stat tone="sky" label="Funding rounds" value={data.totals.rounds} hint="Primary-source filings" />
+            <Stat
+              tone="yellow"
+              label="Companies tracked"
+              value={data.totals.companies.toLocaleString()}
+              hint={`${data.bySector.length} sectors · YC directory`}
+              visual={<SplitBars parts={data.bySector.map((x) => ({ label: x.name.split(' ')[0], value: x.companies }))} />}
+            />
+            <Stat
+              tone="pink"
+              label="Disclosed capital"
+              value={usd(data.totals.disclosedUsd)}
+              hint="Form D amount sold"
+              visual={quarters.length > 1 ? <Sparkline values={quarters.map((q) => q.disclosedUsd)} label="Form D capital sold per quarter, last twelve quarters" /> : undefined}
+            />
+            <Stat
+              tone="sky"
+              label="Funding rounds"
+              value={data.totals.rounds}
+              hint="Primary-source filings"
+              visual={quarters.length > 1 ? <Sparkline values={quarters.map((q) => q.rounds)} label="Offerings per quarter, last twelve quarters" /> : undefined}
+            />
             <Stat
               tone="sage"
               label="Awaiting review"
               value={data.totals.pendingReview}
+              visual={<Ring value={data.totals.pendingReview} max={data.totals.companies} label="Share of companies awaiting review" />}
               hint={
                 <Link href="/review" className="font-medium underline-offset-2 hover:underline">
                   Open queue →
@@ -152,11 +171,7 @@ export default function DashboardPage() {
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
         <Card
           className="lg:col-span-2"
-          title={
-            <span>
-              Disclosed funding by quarter <span className="ml-1 font-normal text-subtle">· click a bar for its rounds</span>
-            </span>
-          }
+          title="Disclosed funding by quarter"
           bodyClass="px-4 pb-3 pt-3"
           actions={
             <Segmented

@@ -258,7 +258,7 @@ export default function AdminPage() {
         )}
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,380px)_1fr]">
+      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,380px)_1fr]">
         <Card title="Run a connector">
           <RunForm onQueued={() => runs.mutate()} />
         </Card>
@@ -303,7 +303,7 @@ export default function AdminPage() {
         </Card>
       </div>
 
-      <Card title="Users & roles" className="mt-6">
+      <Card title="Users & roles" className="mt-4">
         <Users />
       </Card>
     </>

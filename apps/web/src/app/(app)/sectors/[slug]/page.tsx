@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { use, useState } from 'react';
-import { BarChart, HBar } from '@/components/charts';
+import { BarChart, HBar, MiniBars, Ring, Sparkline, SplitBars } from '@/components/charts';
 import { Badge, Card, ErrorState, Logo, PageHeader, Segmented, Skeleton, Stat, TONE_BG, TONES, cx } from '@/components/ui';
 import { useApi } from '@/lib/api';
 import { date, ROUND_LABELS, usd } from '@/lib/format';
@@ -73,13 +73,37 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
       />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Stat tone="yellow" label="Companies" value={k.companies} hint={`${k.active} active · ${k.acquired} acquired · ${k.inactive} inactive`} />
-        <Stat tone="pink" label="Classified" value={`${k.classified}/${k.companies}`} hint={k.pendingReview ? <Link href="/review" className="font-medium underline-offset-2 hover:underline">{k.pendingReview} awaiting review →</Link> : 'Queue clear'} />
-        <Stat tone="sage" label="Disclosed funding (Form D)" value={usd(k.totalDisclosedUsd)} hint={`${k.withDisclosedFunding} companies with filings`} />
-        <Stat tone="sky" label="Median team size" value={k.medianTeam ? Math.round(k.medianTeam) : '—'} hint="Per YC directory" />
+        <Stat
+          tone="yellow"
+          label="Companies"
+          value={k.companies}
+          hint={k.medianTeam ? `Median team of ${Math.round(k.medianTeam)}` : 'From the YC directory'}
+          visual={<SplitBars parts={[{ label: 'active', value: k.active }, { label: 'acquired', value: k.acquired }, { label: 'inactive', value: k.inactive }]} />}
+        />
+        <Stat
+          tone="pink"
+          label="Classified"
+          value={`${k.classified}/${k.companies}`}
+          hint={k.pendingReview ? <Link href="/review" className="font-medium underline-offset-2 hover:underline">{k.pendingReview} awaiting review →</Link> : 'Queue clear'}
+          visual={<Ring value={k.classified} max={k.companies} label="Share of companies classified" />}
+        />
+        <Stat
+          tone="sage"
+          label="Form D funding"
+          value={usd(k.totalDisclosedUsd)}
+          hint={`${k.withDisclosedFunding} companies with filings`}
+          visual={data.fundingByYear.length > 1 ? <Sparkline values={data.fundingByYear.slice(-8).map((f) => f.disclosedUsd)} label="Form D capital sold per year, last eight years" /> : undefined}
+        />
+        <Stat
+          tone="sky"
+          label="Subsectors"
+          value={sortedMap.length}
+          hint={sortedMap[0] ? `Largest: ${sortedMap[0].name}` : 'None yet'}
+          visual={sortedMap.length > 1 ? <MiniBars values={sortedMap.map((m) => ({ name: m.name, value: m.count }))} label="Companies per subsector" /> : undefined}
+        />
       </div>
 
-      <div className="mb-2.5 mt-6 flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
+      <div className="mb-3 mt-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
         <h2 className="text-heading font-semibold tracking-tight">Market map</h2>
         {/* legend: what the bar, the numbers and a faded company mean */}
         <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 text-micro text-subtle" aria-label="How to read the market map">
@@ -96,7 +120,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
       </div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {sortedMap.map((m, idx) => (
-          <section key={m.slug} className="card flex flex-col p-3.5" aria-labelledby={`mm-${m.slug}`}>
+          <section key={m.slug} className="card flex flex-col p-4" aria-labelledby={`mm-${m.slug}`}>
             <div className="mb-1 flex items-baseline justify-between gap-2">
               <h3 id={`mm-${m.slug}`} className="flex min-w-0 items-center gap-2 text-body-sm font-semibold">
                 <span className={cx('h-2.5 w-2.5 shrink-0 rounded-full', TONE_BG[TONES[idx % TONES.length]])} aria-hidden="true" />
@@ -140,7 +164,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
         </p>
       )}
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+      <div className="mt-8 grid gap-4 lg:grid-cols-2">
         <Card
           title="Form D funding by year of first sale"
           bodyClass="p-4"
@@ -167,7 +191,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
           )}
         </Card>
         <Card title="New companies by YC batch year" bodyClass="p-4">
-          <BarChart ariaLabel="Companies by YC batch year" data={data.cohorts.map((c) => ({ label: String(c.year).slice(2), value: c.companies }))} format={(v) => `${v} companies`} />
+          <BarChart ariaLabel="Companies by YC batch year" data={data.cohorts.map((c) => ({ label: `'${String(c.year).slice(2)}`, title: String(c.year), value: c.companies }))} format={(v) => `${v} companies`} />
         </Card>
       </div>
 

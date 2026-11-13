@@ -10,6 +10,8 @@ import { useEffect, useState } from 'react';
 
 export interface BarDatum {
   label: string;
+  /** Full name for the readout and screen readers when the axis label is abbreviated ('25 -> 2025). */
+  title?: string;
   value: number;
   secondary?: number;
 }
@@ -72,7 +74,7 @@ export function BarChart({
       <div className="mb-2 flex h-5 items-baseline gap-1.5 text-caption" aria-live="polite">
         {tip !== null ? (
           <>
-            <span className="font-semibold">{data[tip].label}</span>
+            <span className="font-semibold">{data[tip].title ?? data[tip].label}</span>
             <span className="tabular font-semibold">{format(data[tip].value)}</span>
             {data[tip].secondary !== undefined && <span className="text-subtle">· {secondaryLabel(data[tip].secondary!)}</span>}
           </>
@@ -81,7 +83,7 @@ export function BarChart({
             Total <span className="tabular font-semibold text-fg">{format(total)}</span>
             {data[peak]?.value > 0 && (
               <>
-                {' '}· peak <span className="font-semibold text-fg">{data[peak].label}</span>
+                {' '}· peak <span className="font-semibold text-fg">{data[peak].title ?? data[peak].label}</span>
               </>
             )}
             {onSelect ? ' · select a bar for detail' : ''}
@@ -109,7 +111,7 @@ export function BarChart({
             const h = ready ? Math.max((d.value / top) * 100, d.value > 0 ? 1.5 : 0) : 0;
             const dim = focus !== null && i !== hover && i !== selected;
             const isSel = selected === i;
-            const label = `${d.label}: ${format(d.value)}${d.secondary !== undefined ? `, ${secondaryLabel(d.secondary)}` : ''}`;
+            const label = `${d.title ?? d.label}: ${format(d.value)}${d.secondary !== undefined ? `, ${secondaryLabel(d.secondary)}` : ''}`;
             const common = {
               onMouseEnter: () => setHover(i),
               onFocus: () => setHover(i),
@@ -157,6 +159,69 @@ export function HBar({ value, max, color = 'rgb(var(--fg))' }: { value: number; 
   return (
     <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted" aria-hidden="true">
       <div className="h-full rounded-full" style={{ width: ready && max ? `${Math.max(2, (value / max) * 100)}%` : '0%', background: color, transition: `width 700ms ${EASE}` }} />
+    </div>
+  );
+}
+
+/* ---- KPI tile visuals: small, labelled, and drawn in ink so they read on any pastel ---- */
+
+/** A trend line with a soft fill. The last point is marked, since "where are we now" is the question. */
+export function Sparkline({ values, label }: { values: number[]; label: string }) {
+  const w = 120, h = 44, pad = 3;
+  const max = Math.max(1, ...values);
+  const step = values.length > 1 ? (w - pad * 2) / (values.length - 1) : 0;
+  const pts = values.map((v, i) => [pad + i * step, h - pad - (v / max) * (h - pad * 2)] as const);
+  const line = pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join('');
+  const last = pts[pts.length - 1];
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} className="h-11 w-full" role="img" aria-label={label}>
+      {pts.length > 1 && <path d={`${line}L${last[0]},${h}L${pts[0][0]},${h}Z`} fill="rgb(var(--ink) / 0.08)" />}
+      <path d={line} fill="none" stroke="rgb(var(--ink))" strokeWidth="1.75" strokeLinejoin="round" strokeLinecap="round" />
+      {last && <circle cx={last[0]} cy={last[1]} r="2.75" fill="rgb(var(--ink))" />}
+    </svg>
+  );
+}
+
+/** Share of a whole as a ring, with the percentage inside so it reads without hovering. */
+export function Ring({ value, max, label }: { value: number; max: number; label: string }) {
+  const r = 18, c = 2 * Math.PI * r;
+  const share = max ? Math.min(1, value / max) : 0;
+  return (
+    <svg viewBox="0 0 48 48" className="ml-auto h-12 w-12" role="img" aria-label={`${label}: ${Math.round(share * 100)}%`}>
+      <circle cx="24" cy="24" r={r} fill="none" stroke="rgb(var(--ink) / 0.12)" strokeWidth="5" />
+      <circle cx="24" cy="24" r={r} fill="none" stroke="rgb(var(--ink))" strokeWidth="5" strokeLinecap="round" strokeDasharray={`${share * c} ${c}`} transform="rotate(-90 24 24)" />
+      <text x="24" y="27.5" textAnchor="middle" fontSize="10.5" fontWeight="600" fill="rgb(var(--ink))">{Math.round(share * 100)}%</text>
+    </svg>
+  );
+}
+
+/** A labelled split: each part gets a row with its count and a bar, so the breakdown reads at a glance. */
+export function SplitBars({ parts }: { parts: { label: string; value: number }[] }) {
+  const max = Math.max(1, ...parts.map((p) => p.value));
+  return (
+    <ul className="space-y-1 text-micro" aria-label="Breakdown">
+      {parts.map((p) => (
+        <li key={p.label} className="grid grid-cols-[1fr_auto] items-center gap-x-2">
+          <span className="block h-1.5 rounded-full bg-ink/10">
+            <span className="block h-full rounded-full bg-ink" style={{ width: `${Math.max(4, (p.value / max) * 100)}%` }} />
+          </span>
+          <span className="tabular whitespace-nowrap text-ink/70">
+            <span className="font-semibold text-ink">{p.value}</span> {p.label}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Sizes side by side, largest first: for "how is this spread", not for a trend over time. */
+export function MiniBars({ values, label }: { values: { name: string; value: number }[]; label: string }) {
+  const max = Math.max(1, ...values.map((v) => v.value));
+  return (
+    <div className="flex h-11 items-end gap-[3px]" role="img" aria-label={`${label}: ${values.map((v) => `${v.name} ${v.value}`).join(', ')}`}>
+      {values.map((v) => (
+        <span key={v.name} title={`${v.name}: ${v.value}`} className="flex-1 rounded-t-[3px] rounded-b-[1px] bg-ink" style={{ height: `${Math.max(8, (v.value / max) * 100)}%`, opacity: 0.35 + 0.65 * (v.value / max) }} />
+      ))}
     </div>
   );
 }

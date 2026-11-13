@@ -164,7 +164,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     .toUpperCase();
 
   return (
-    <div className="min-h-screen p-0 lg:grid lg:grid-cols-[216px_1fr] lg:gap-5 lg:p-2.5">
+    <div className="min-h-screen p-0 lg:grid lg:grid-cols-[216px_1fr] lg:p-2.5">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-full focus:bg-surface focus:px-3 focus:py-2">
         Skip to content
       </a>
@@ -208,8 +208,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      <div className="min-w-0 px-4 pb-10 sm:px-6 lg:px-1 lg:pr-3">
-        <div className="mb-5 hidden items-center gap-2 pt-1 lg:flex">
+      {/* One centred column: the top bar and the page share the same edges at every width. */}
+      <div className="mx-auto w-full min-w-0 max-w-[1304px] px-4 pb-12 sm:px-6 lg:px-8 lg:pt-3">
+        <div className="mb-6 hidden items-center gap-2 lg:flex">
           <button
             onClick={() => setPalette(true)}
             className="flex h-9 min-w-0 max-w-md flex-1 items-center gap-2.5 rounded-full border border-border bg-surface pl-3 pr-2 text-left text-body-sm text-subtle hover:border-fg/40"
@@ -231,7 +232,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </span>
           </div>
         </div>
-        <main id="main" className="mx-auto w-full max-w-[1240px] pt-5 lg:pt-0">
+        <main id="main" className="w-full pt-5 lg:pt-0">
           <div key={pathname} className="page-enter">
             {children}
           </div>
