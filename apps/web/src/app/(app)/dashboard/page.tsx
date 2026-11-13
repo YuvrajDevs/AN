@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { ArrowRight, ClipboardCheck, Lightbulb } from 'lucide-react';
 import { BarChart, Ring, Sparkline, SplitBars } from '@/components/charts';
+import { firstPerKey } from '@/lib/group';
 import { QuarterBreakdown } from '@/components/QuarterBreakdown';
 import { useSession } from '@/components/session';
 import { Card, ErrorState, Logo, Segmented, Skeleton, Stat, TONE_BG, buttonClass, cx, sectorTone } from '@/components/ui';
@@ -17,17 +18,6 @@ interface Dashboard {
 }
 interface Recent {
   items: { _id: string; date: string; roundType: string; amountUsd: number | null; company: { slug: string; name: string; logoUrl: string | null } }[];
-}
-
-/** One row per company: its latest round, plus how many earlier rounds it has in the same recent window. */
-function latestPerCompany(items: Recent['items'], limit: number) {
-  const bySlug = new Map<string, { round: Recent['items'][number]; more: number }>();
-  for (const r of items) {
-    const seen = bySlug.get(r.company.slug);
-    if (seen) seen.more += 1;
-    else bySlug.set(r.company.slug, { round: r, more: 0 });
-  }
-  return [...bySlug.values()].slice(0, limit);
 }
 
 function greeting() {
@@ -260,7 +250,7 @@ export default function DashboardPage() {
             </div>
           ) : (
             <ul className="divide-y divide-border/60">
-              {latestPerCompany(recent.data.items, 7).map(({ round: r, more }) => (
+              {firstPerKey(recent.data.items, (x) => x.company.slug, 7).map(({ item: r, more }) => (
                 <li key={r._id}>
                   <Link href={`/companies/${r.company.slug}`} className="flex items-center gap-3 px-4 py-2 hover:bg-muted/50">
                     <Logo src={r.company.logoUrl} name={r.company.name} size={26} />

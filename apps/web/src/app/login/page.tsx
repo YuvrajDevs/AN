@@ -84,7 +84,7 @@ function LoginForm() {
               '465 startups in Legal AI, Climate Tech and Payments',
               'Funding from 136 hand-checked SEC Form D filings',
               'LLM sector labels with a human review queue',
-              'Briefs that drop any claim without a valid citation',
+              'Briefs and answers that drop any claim without a valid citation',
             ].map((t) => (
               <li key={t} className="flex gap-2.5">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-pink" aria-hidden="true" />

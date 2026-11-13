@@ -1,8 +1,12 @@
 {
   "name": "strata",
   "private": true,
-  "description": "Strata — startup & sector intelligence platform",
-  "workspaces": ["apps/api", "apps/web", "e2e"],
+  "description": "Strata \u2014 startup & sector intelligence platform",
+  "workspaces": [
+    "apps/api",
+    "apps/web",
+    "e2e"
+  ],
   "scripts": {
     "dev:api": "npm run dev -w apps/api",
     "dev:worker": "npm run dev:worker -w apps/api",
@@ -10,10 +14,12 @@
     "build": "npm run build -w apps/api && npm run build -w apps/web",
     "lint": "npm run lint -w apps/api && npm run lint -w apps/web",
     "typecheck": "npm run typecheck -w apps/api && npm run typecheck -w apps/web",
-    "test": "npm test -w apps/api",
+    "test": "npm test -w apps/api && npm test -w apps/web",
     "test:e2e": "npm test -w e2e",
     "seed": "npm run seed -w apps/api",
     "eval": "npm run eval -w apps/api"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }

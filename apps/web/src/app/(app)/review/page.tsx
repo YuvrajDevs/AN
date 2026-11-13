@@ -134,7 +134,7 @@ export default function ReviewPage() {
                   </h2>
                   <p className="text-body text-subtle">{current.company.oneLiner}</p>
                 </div>
-                {current.company.ycBatch && <Badge>{current.company.ycBatch}</Badge>}
+                {current.company.ycBatch && <Badge>YC {current.company.ycBatch}</Badge>}
               </div>
               <p tabIndex={0} aria-label="Company description" className="mt-4 max-h-40 overflow-y-auto whitespace-pre-line rounded-lg text-body leading-relaxed">{current.company.description || 'No description.'}</p>
               {current.company.tags.length > 0 && (

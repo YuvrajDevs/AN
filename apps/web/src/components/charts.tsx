@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { axisLabel, niceMax } from '@/lib/scale';
 
 /**
  * Small dependency-free charts built from HTML, so bars can animate with CSS transitions.
@@ -17,21 +18,6 @@ export interface BarDatum {
 }
 
 const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
-
-/** Scale labels must fit a narrow column: use the chart's own format when short ("$500M"), else a bare compact number. */
-function axisLabel(v: number, format: (v: number) => string): string {
-  const f = format(v);
-  if (f.length <= 6) return f;
-  return v >= 1e6 ? `${+(v / 1e6).toFixed(1)}M` : v >= 1e3 ? `${+(v / 1e3).toFixed(1)}K` : String(+v.toFixed(1));
-}
-
-/** Round a maximum up to a readable axis top: 1, 2, 2.5 or 5 times a power of ten. */
-function niceMax(max: number): number {
-  if (max <= 0) return 1;
-  const p = 10 ** Math.floor(Math.log10(max));
-  for (const m of [1, 2, 2.5, 5, 10]) if (m * p >= max) return m * p;
-  return 10 * p;
-}
 
 export function BarChart({
   data,
@@ -187,7 +173,7 @@ export function Ring({ value, max, label }: { value: number; max: number; label:
   const r = 18, c = 2 * Math.PI * r;
   const share = max ? Math.min(1, value / max) : 0;
   return (
-    <svg viewBox="0 0 48 48" className="ml-auto h-12 w-12" role="img" aria-label={`${label}: ${Math.round(share * 100)}%`}>
+    <svg viewBox="0 0 48 48" className="h-12 w-12 sm:ml-auto" role="img" aria-label={`${label}: ${Math.round(share * 100)}%`}>
       <circle cx="24" cy="24" r={r} fill="none" stroke="rgb(var(--ink) / 0.12)" strokeWidth="5" />
       <circle cx="24" cy="24" r={r} fill="none" stroke="rgb(var(--ink))" strokeWidth="5" strokeLinecap="round" strokeDasharray={`${share * c} ${c}`} transform="rotate(-90 24 24)" />
       <text x="24" y="27.5" textAnchor="middle" fontSize="10.5" fontWeight="600" fill="rgb(var(--ink))">{Math.round(share * 100)}%</text>

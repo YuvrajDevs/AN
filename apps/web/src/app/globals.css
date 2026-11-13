@@ -107,7 +107,7 @@ body {
   .td {
     @apply px-3 py-2 align-middle text-body-sm;
   }
-  /* Pastel panels keep ink text in both themes. */
+  /* Pastel panels always use ink text. */
   .pastel {
     @apply rounded-2xl text-ink;
   }

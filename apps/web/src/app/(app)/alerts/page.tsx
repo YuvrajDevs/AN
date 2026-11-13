@@ -1,5 +1,6 @@
 'use client';
 
+import { groupBy } from '@/lib/group';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Button, EmptyState, ErrorState, Logo, PageHeader, TableSkeleton, cx } from '@/components/ui';
@@ -15,18 +16,6 @@ interface AlertItem {
   companyId: { slug: string; name: string; logoUrl: string | null } | null;
   fundingRoundId: { date: string; roundType: string; amountUsd: number | null } | null;
   watchlistId: { _id: string; name: string } | null;
-}
-
-/** Alerts grouped under the watchlist that raised them (by id, so same-named lists stay apart), in arrival order. */
-function groupByWatchlist(items: AlertItem[]) {
-  const groups = new Map<string, { name: string; items: AlertItem[] }>();
-  for (const a of items) {
-    const id = a.watchlistId?._id ?? 'deleted';
-    const group = groups.get(id) ?? { name: a.watchlistId?.name ?? 'Deleted watchlist', items: [] };
-    group.items.push(a);
-    groups.set(id, group);
-  }
-  return [...groups.entries()];
 }
 
 export default function AlertsPage() {
@@ -76,7 +65,7 @@ export default function AlertsPage() {
           />
         ) : (
           <div className="divide-y divide-border">
-          {groupByWatchlist(data.items).map(([id, { name: list, items }]) => (
+          {groupBy(data.items, (a) => a.watchlistId?._id ?? 'deleted', (a) => a.watchlistId?.name ?? 'Deleted watchlist').map(([id, { name: list, items }]) => (
           <section key={id} aria-label={list}>
           <h2 className="flex items-center justify-between bg-muted/50 px-4 py-2 text-caption font-medium text-subtle">
             <span>{list}</span>

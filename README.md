@@ -20,7 +20,7 @@
 | **Infra** | Redpanda (Kafka API) event backbone · Redis (cache, rate limits, BullMQ jobs) · Docker Compose |
 | **AI** | OpenAI, Anthropic and Gemini behind one provider interface (Gemini live in the demo, with model fallback and an offline heuristic fallback) · RAG over the dataset with Gemini embeddings and MongoDB Atlas Vector Search · 162-company hand-labelled classification eval set |
 | **Data** | YC public directory · SEC EDGAR Form D · company RSS/press feeds · GitHub. No Crunchbase, PitchBook, Tracxn or LinkedIn scraping. |
-| **Quality** | 110 unit/API tests · 35 Playwright end-to-end tests (flows, axe accessibility scans, mobile) · CI runs the full Docker stack; the suite also passes against the live demo |
+| **Quality** | 110 unit/API tests · 21 web unit tests · 35 Playwright end-to-end tests (flows, axe accessibility scans, mobile) · CI runs the full Docker stack; the suite also passes against the live demo |
 
 **Read next:** [Architecture](docs/ARCHITECTURE.md) · [API reference](docs/API.md) · [Decisions log](docs/DECISIONS.md) · [Legal AI landscape (sample analysis)](docs/landscape-legal-ai.md) · [Eval results](docs/eval-results.md) · [Free hosted demo](docs/DEPLOY.md)
 
@@ -126,7 +126,7 @@ npm run dev:web        # http://localhost:3000
 
 | Command | What it does |
 |---|---|
-| `npm test` | Unit and API tests (Vitest + Supertest + in-memory MongoDB, plus real-socket SSRF tests) |
+| `npm test` | Unit and API tests (Vitest + Supertest + in-memory MongoDB, plus real-socket SSRF tests), then the web unit tests |
 | `npm run test:e2e` | Playwright against a running stack (`BASE_URL`, default `http://localhost:3000`) |
 | `npm run lint` / `npm run typecheck` | ESLint and `tsc --noEmit` for both apps |
 | `npm run eval -w apps/api -- --provider anthropic` | Classification accuracy against the hand-labelled set |

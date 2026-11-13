@@ -97,13 +97,13 @@ function Preview() {
 const QUESTIONS = [
   { q: 'Which Legal AI subsectors are crowded, and which are funded?', a: 'Market map with company counts and Form D capital per subsector.' },
   { q: 'Who raised in Payments this year, and where is the filing?', a: 'Funding table filtered by sector, each row linked to its SEC document.' },
-  { q: 'Is this company really Climate Tech?', a: 'LLM label with confidence and rationale, confirmed or overridden by an analyst.' },
+  { q: 'Who is working on carbon removal?', a: 'Ask in plain English. The answer comes from stored profiles and filings, every sentence cited.' },
 ];
 
 const FEATURES = [
   { tone: 'bg-yellow', icon: Database, title: 'Primary-source funding', body: 'Rounds come from SEC Form D. A filing links to a company only when name, entity type and dates agree.' },
   { tone: 'bg-pink', icon: Sparkles, title: 'LLM labels, human review', body: 'Each company gets a subsector and a confidence. Below 0.75 it goes to a keyboard-driven queue.' },
-  { tone: 'bg-sage', icon: FileText, title: 'Cited analyst briefs', body: 'Claims without a valid citation, or with numbers absent from the source, are dropped.' },
+  { tone: 'bg-sage', icon: FileText, title: 'Cited briefs and answers', body: 'Briefs and Ask Strata answers cite stored sources; any claim whose numbers are not in its source is dropped.' },
   { tone: 'bg-sky', icon: Layers, title: 'Sector landscapes', body: 'Market map, funding by year, YC cohorts and notable companies, exportable to CSV.' },
 ];
 
@@ -112,10 +112,10 @@ const PIPELINE = [
   ['Kafka', 'Replayable event log'],
   ['MongoDB', 'Idempotent upserts'],
   ['LLM + review', 'BullMQ jobs'],
-  ['Landscapes', 'Cached aggregations'],
+  ['Landscapes + Ask', 'Aggregations, vector search'],
 ];
 
-const STACK = ['Node.js', 'Express', 'TypeScript', 'MongoDB', 'Kafka', 'Redis', 'BullMQ', 'Next.js', 'React', 'OpenAI', 'Anthropic', 'Gemini', 'Docker', 'Playwright'];
+const STACK = ['Node.js', 'Express', 'TypeScript', 'MongoDB', 'Kafka', 'Redis', 'BullMQ', 'Next.js', 'React', 'OpenAI', 'Anthropic', 'Gemini', 'Atlas Vector Search', 'Docker', 'Playwright'];
 
 export default function Landing() {
   return (
@@ -170,7 +170,7 @@ export default function Landing() {
             ['465', 'Startups tracked'],
             ['136 / 234', 'SEC filings kept after checks'],
             ['3', 'Sectors mapped'],
-            ['145', 'Automated tests in CI'],
+            ['166', 'Automated tests in CI'],
           ].map(([v, l]) => (
             <div key={l} className="px-5 py-4">
               <div className="tabular text-title font-semibold tracking-tight">{v}</div>

@@ -40,8 +40,11 @@ Warm, paper-like neutrals with near-black ink. All colours are RGB tokens so opa
 Rules
 - Pastels identify, they never signal state. A sector keeps its pastel everywhere it appears.
 - State colours (success, warning, danger) are never decorative.
-- Text on pastel is always `ink`, in both themes (`.pastel`).
-- Contrast meets WCAG AA in light and dark; this is enforced by the axe scans in `e2e/tests/a11y.spec.ts`.
+- Text on pastel is always `ink` (`.pastel`).
+- One light theme, by design: the pastel identity colours are tuned for ink text on warm paper, and a single theme
+  keeps every colour decision and contrast check in one place. `color-scheme: light` keeps form controls light even when the
+  OS prefers dark, and the axe scans in `e2e/tests/a11y.spec.ts` run under both OS preferences.
+- Contrast meets WCAG AA; this is enforced by those scans on every page.
 
 ---
 
@@ -157,7 +160,7 @@ rationale beside the options.
 
 ## Accessibility
 
-- WCAG AA contrast in both themes; axe scans run on every page in CI.
+- WCAG AA contrast; axe scans run on every page in CI, under light and dark OS preferences.
 - Every interactive element is reachable by keyboard with a visible focus ring that never changes the element's shape.
 - Charts are labelled groups; each bar has an accessible name with its value.
 - Icons that carry meaning have labels; decorative ones are hidden from assistive tech.

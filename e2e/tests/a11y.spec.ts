@@ -23,10 +23,11 @@ for (const path of PAGES) {
   });
 }
 
-test.describe('dark mode', () => {
+// Strata is light-only by design; these check it stays readable when the OS asks for dark mode.
+test.describe('OS set to dark mode', () => {
   test.use({ colorScheme: 'dark' });
   for (const path of ['/dashboard', '/companies', '/sectors/legal-ai', '/review']) {
-    test(`${path} (dark) has no serious accessibility violations`, async ({ page }) => {
+    test(`${path} (OS dark preference) has no serious accessibility violations`, async ({ page }) => {
       await loginAs(page, ADMIN, path);
       await page.waitForLoadState('networkidle');
       await expect(page.locator('.skeleton')).toHaveCount(0, { timeout: 15_000 });
