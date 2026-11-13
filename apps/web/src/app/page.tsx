@@ -170,7 +170,7 @@ export default function Landing() {
             ['465', 'Startups tracked'],
             ['136 / 234', 'SEC filings kept after checks'],
             ['3', 'Sectors mapped'],
-            ['167', 'Automated tests in CI'],
+            ['166', 'Automated tests in CI'],
           ].map(([v, l]) => (
             <div key={l} className="px-5 py-4">
               <div className="tabular text-title font-semibold tracking-tight">{v}</div>

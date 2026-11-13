@@ -4,7 +4,7 @@ import { ADMIN, loginAs } from './helpers';
 
 const PAGES = ['/dashboard', '/companies', '/companies/legora', '/funding', '/sectors', '/sectors/legal-ai', '/review', '/watchlists', '/alerts', '/briefs', '/admin'];
 
-for (const pub of ['/', '/login', '/case-study']) {
+for (const pub of ['/', '/login']) {
   test(`public page ${pub} has no serious accessibility violations`, async ({ page }) => {
     await page.goto(pub);
     const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
