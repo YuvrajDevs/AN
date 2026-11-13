@@ -21,18 +21,13 @@ interface Recent {
 
 /** One row per company: its latest round, plus how many earlier rounds it has in the same recent window. */
 function latestPerCompany(items: Recent['items'], limit: number) {
-  const rows: { round: Recent['items'][number]; more: number }[] = [];
   const bySlug = new Map<string, { round: Recent['items'][number]; more: number }>();
   for (const r of items) {
     const seen = bySlug.get(r.company.slug);
     if (seen) seen.more += 1;
-    else {
-      const row = { round: r, more: 0 };
-      bySlug.set(r.company.slug, row);
-      rows.push(row);
-    }
+    else bySlug.set(r.company.slug, { round: r, more: 0 });
   }
-  return rows.slice(0, limit);
+  return [...bySlug.values()].slice(0, limit);
 }
 
 function greeting() {
@@ -137,21 +132,21 @@ export default function DashboardPage() {
               label="Companies tracked"
               value={data.totals.companies.toLocaleString()}
               hint={`${data.bySector.length} sectors · YC directory`}
-              visual={<SplitBars parts={data.bySector.map((x) => ({ label: x.name.split(' ')[0], value: x.companies }))} />}
+              visual={<SplitBars parts={data.bySector.map((x) => ({ key: x.slug, label: x.name.split(' ')[0], title: x.name, value: x.companies }))} />}
             />
             <Stat
               tone="pink"
               label="Disclosed capital"
               value={usd(data.totals.disclosedUsd)}
               hint="Form D amount sold"
-              visual={quarters.length > 1 ? <Sparkline values={quarters.map((q) => q.disclosedUsd)} label="Form D capital sold per quarter, last twelve quarters" /> : undefined}
+              visual={quarters.length > 1 ? <Sparkline values={quarters.map((q) => q.disclosedUsd)} label={`Form D capital sold per quarter, last ${quarters.length} quarters`} /> : undefined}
             />
             <Stat
               tone="sky"
               label="Funding rounds"
               value={data.totals.rounds}
               hint="Primary-source filings"
-              visual={quarters.length > 1 ? <Sparkline values={quarters.map((q) => q.rounds)} label="Offerings per quarter, last twelve quarters" /> : undefined}
+              visual={quarters.length > 1 ? <Sparkline values={quarters.map((q) => q.rounds)} label={`Offerings per quarter, last ${quarters.length} quarters`} /> : undefined}
             />
             <Stat
               tone="sage"

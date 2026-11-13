@@ -115,12 +115,11 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
         <div className="space-y-4 lg:col-span-2">
           <Card title="About" bodyClass="p-4">
             <p className="whitespace-pre-line break-words text-body leading-relaxed">{c.description || c.oneLiner || 'No description available.'}</p>
-            <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-body sm:grid-cols-4">
+            <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-body sm:grid-cols-3">
               {[
                 ['HQ', [c.hq.city, c.hq.country].filter(Boolean).join(', ') || '—'],
                 ['YC batch', c.ycBatch ?? '—'],
                 ['Team size', c.teamSize ?? '—'],
-                ['Disclosed funding', usd(c.metrics.totalRaisedUsd)],
               ].map(([k, v]) => (
                 <div key={k as string}>
                   <dt className="text-caption text-subtle">{k}</dt>
@@ -164,7 +163,7 @@ export default function CompanyPage({ params }: { params: Promise<{ slug: string
               <>
               <dl className="grid grid-cols-3 border-b border-border/60 px-4 py-3">
                 {[
-                  ['Disclosed in total', usd(rounds.reduce((a, r) => a + (r.amountUsd ?? 0), 0), '—')],
+                  ['Disclosed in total', usd(c.metrics.totalRaisedUsd, '—')],
                   ['Rounds on record', String(rounds.length)],
                   ['Latest', date(rounds[0]?.date)],
                 ].map(([k, v]) => (

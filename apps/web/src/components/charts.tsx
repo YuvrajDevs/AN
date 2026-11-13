@@ -196,12 +196,12 @@ export function Ring({ value, max, label }: { value: number; max: number; label:
 }
 
 /** A labelled split: each part gets a row with its count and a bar, so the breakdown reads at a glance. */
-export function SplitBars({ parts }: { parts: { label: string; value: number }[] }) {
+export function SplitBars({ parts }: { parts: { key?: string; label: string; title?: string; value: number }[] }) {
   const max = Math.max(1, ...parts.map((p) => p.value));
   return (
     <ul className="space-y-1 text-micro" aria-label="Breakdown">
       {parts.map((p) => (
-        <li key={p.label} className="grid grid-cols-[1fr_auto] items-center gap-x-2">
+        <li key={p.key ?? p.label} title={p.title} className="grid grid-cols-[1fr_auto] items-center gap-x-2">
           <span className="block h-1.5 rounded-full bg-ink/10">
             <span className="block h-full rounded-full bg-ink" style={{ width: `${Math.max(4, (p.value / max) * 100)}%` }} />
           </span>

@@ -173,14 +173,14 @@ export function PageHeader({ title, subtitle, actions, crumbs }: { title: ReactN
  */
 export function Stat({ label, value, hint, tone, visual, children }: { label: string; value: ReactNode; hint?: ReactNode; tone?: Tone; visual?: ReactNode; children?: ReactNode }) {
   return (
-    <div className={cx('flex items-center gap-4 p-4', tone ? cx('pastel', TONE_BG[tone]) : 'card')}>
+    <div className={cx('flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4', tone ? cx('pastel', TONE_BG[tone]) : 'card')}>
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="text-caption font-medium text-subtle">{label}</div>
         <div className="tabular mt-1 text-stat font-semibold tracking-tight">{value}</div>
         {hint && <div className="mt-0.5 text-micro text-subtle">{hint}</div>}
         {children}
       </div>
-      {visual && <div className="hidden w-[38%] max-w-[120px] shrink-0 sm:block">{visual}</div>}
+      {visual && <div className="w-full shrink-0 sm:w-[38%] sm:max-w-[120px]">{visual}</div>}
     </div>
   );
 }

@@ -14,15 +14,17 @@ interface AlertItem {
   webhookStatus: string | null;
   companyId: { slug: string; name: string; logoUrl: string | null } | null;
   fundingRoundId: { date: string; roundType: string; amountUsd: number | null } | null;
-  watchlistId: { name: string } | null;
+  watchlistId: { _id: string; name: string } | null;
 }
 
-/** Alerts grouped under the watchlist that raised them, in the order they arrived. */
-function groupByWatchlist(items: AlertItem[]): [string, AlertItem[]][] {
-  const groups = new Map<string, AlertItem[]>();
+/** Alerts grouped under the watchlist that raised them (by id, so same-named lists stay apart), in arrival order. */
+function groupByWatchlist(items: AlertItem[]) {
+  const groups = new Map<string, { name: string; items: AlertItem[] }>();
   for (const a of items) {
-    const key = a.watchlistId?.name ?? 'Other';
-    groups.set(key, [...(groups.get(key) ?? []), a]);
+    const id = a.watchlistId?._id ?? 'deleted';
+    const group = groups.get(id) ?? { name: a.watchlistId?.name ?? 'Deleted watchlist', items: [] };
+    group.items.push(a);
+    groups.set(id, group);
   }
   return [...groups.entries()];
 }
@@ -74,8 +76,8 @@ export default function AlertsPage() {
           />
         ) : (
           <div className="divide-y divide-border">
-          {groupByWatchlist(data.items).map(([list, items]) => (
-          <section key={list} aria-label={list}>
+          {groupByWatchlist(data.items).map(([id, { name: list, items }]) => (
+          <section key={id} aria-label={list}>
           <h2 className="flex items-center justify-between bg-muted/50 px-4 py-2 text-caption font-medium text-subtle">
             <span>{list}</span>
             <span className="tabular">{items.length}</span>

@@ -57,5 +57,8 @@ const EXTRACTOR_LABELS: Record<string, string> = {
   'yc-directory': 'YC directory',
 };
 export function sourceLabel(extractedBy: string): string {
-  return EXTRACTOR_LABELS[extractedBy] ?? (extractedBy.startsWith('manual') || extractedBy.includes('analyst') ? 'Analyst entry' : extractedBy);
+  if (EXTRACTOR_LABELS[extractedBy]) return EXTRACTOR_LABELS[extractedBy];
+  if (extractedBy.startsWith('manual')) return 'Analyst entry';
+  if (extractedBy.startsWith('llm:')) return 'Press (AI-extracted)';
+  return 'Other source';
 }

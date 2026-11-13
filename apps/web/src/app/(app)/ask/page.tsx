@@ -83,7 +83,7 @@ export default function AskPage() {
           e.preventDefault();
           run(q);
         }}
-        className="card mb-3 flex items-center gap-2 p-2 pl-4 focus-within:border-fg/50 focus-within:ring-4 focus-within:ring-fg/[0.06]"
+        className="card mb-3 flex items-center gap-2 p-2 pl-4 focus-within:border-fg focus-within:ring-2 focus-within:ring-fg/25"
       >
         <label htmlFor="ask-q" className="sr-only">Question</label>
         <input

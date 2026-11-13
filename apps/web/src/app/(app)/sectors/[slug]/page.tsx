@@ -92,7 +92,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
           label="Form D funding"
           value={usd(k.totalDisclosedUsd)}
           hint={`${k.withDisclosedFunding} companies with filings`}
-          visual={data.fundingByYear.length > 1 ? <Sparkline values={data.fundingByYear.slice(-8).map((f) => f.disclosedUsd)} label="Form D capital sold per year, last eight years" /> : undefined}
+          visual={data.fundingByYear.length > 1 ? <Sparkline values={data.fundingByYear.slice(-8).map((f) => f.disclosedUsd)} label={`Form D capital sold per year, last ${Math.min(8, data.fundingByYear.length)} years`} /> : undefined}
         />
         <Stat
           tone="sky"
@@ -114,7 +114,7 @@ export default function LandscapePage({ params }: { params: Promise<{ slug: stri
             numbers: companies · Form D capital sold
           </li>
           <li className="flex items-center gap-1.5">
-            <span className="block h-3 w-3 rounded-full bg-muted opacity-60 grayscale" aria-hidden="true" /> faded = acquired or inactive
+            <span className="block h-3 w-3 rounded-full bg-muted opacity-60 grayscale" aria-hidden="true" /> faded = not active (acquired, inactive or public)
           </li>
         </ul>
       </div>
